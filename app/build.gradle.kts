@@ -1,3 +1,19 @@
+import java.util.Properties
+
+android {
+    defaultConfig {
+        val localProperties = Properties().apply {
+            val file = rootProject.file("local.properties")
+            if (file.exists()) {
+                file.inputStream().use { load(it) }
+            }
+        }
+        val appKey = localProperties.getProperty("appKey") ?: ""
+
+        buildConfigField("String", "APP_KEY", "\"$appKey\"")
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)

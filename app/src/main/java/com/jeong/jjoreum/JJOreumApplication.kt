@@ -24,8 +24,9 @@ class JJOreumApplication : Application() {
         super.onCreate()
         jjOreumApplication = this
 
+        val appKey = BuildConfig.APP_KEY
         // 카카오 맵 SDK 초기화
-        KakaoMapSdk.init(this, "d1617d031980d89d9587daeb98c120ff")
+        KakaoMapSdk.init(this, appKey)
 
         // 화면을 세로 모드로 고정
         settingScreenPortrait()
