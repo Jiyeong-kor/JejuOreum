@@ -1,0 +1,6 @@
+<selector xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:alpha="@dimen/material_emphasis_disabled_background" android:color="?attr/colorOnSurface" android:state_enabled="false" />
+    <item android:color="?attr/colorContainerChecked" android:state_checked="true" tools:ignore="PrivateResource" />
+    <item android:color="?attr/colorContainerUnchecked" android:state_checkable="true" tools:ignore="PrivateResource" />
+    <item android:color="?attr/colorContainer" tools:ignore="PrivateResource" />
+</selector>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "778412079349",
+    "project_id": "jiyeong-jjoreum",
+    "storage_bucket": "jiyeong-jjoreum.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778412079349:android:f0b8dc8cb1c200eb2dadbc",
+        "android_client_info": {
+          "package_name": "com.jeong.jjoreum"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtHSuEv5IpV8MA5gRpimcRIk7E_yEg_G0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

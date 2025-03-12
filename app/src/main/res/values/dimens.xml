@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- splash -->
+    <dimen name="splash_text_size">50sp</dimen>
+    <dimen name="splash_text_margin_top">20dp</dimen>
+
+    <!-- permission -->
+    <dimen name="permission_padding">30dp</dimen>
+    <dimen name="permission_title_text_size">30sp</dimen>
+    <dimen name="permission_margin_top">15dp</dimen>
+    <dimen name="permission_uses_text_size">20sp</dimen>
+    <dimen name="permission_uses_sub_text_size">17sp</dimen>
+    <dimen name="permission_btn_text_size">15sp</dimen>
+
+    <!-- dialog_network -->
+    <dimen name="network_error_text_padding_horizontal">30dp</dimen>
+    <dimen name="network_error_text_padding_vertical">20dp</dimen>
+    <dimen name="network_retry_text_padding_vertical">15dp</dimen>
+    <dimen name="network_text_size">17sp</dimen>
+    <dimen name="network_border">1dp</dimen>
+
+    <!-- main -->
+    <dimen name="main_title_text_size">20sp</dimen>
+    <dimen name="main_title_margin_horizontal">20dp</dimen>
+
+    <!-- recyclerview_item -->
+    <dimen name="rv_item_layout_height">150dp</dimen>
+    <dimen name="rv_item_layout_margin_bottom">15dp</dimen>
+    <dimen name="rv_item_layout_margin_horizontal">20dp</dimen>
+    <dimen name="rv_item_icon_margin">10dp</dimen>
+    <dimen name="rv_item_icon_size">20dp</dimen>
+    <dimen name="rv_item_icon_interval">3dp</dimen>
+    <dimen name="rv_item_name_text_size">25sp</dimen>
+    <dimen name="rv_item_icon_text_size">18sp</dimen>
+
+    <!-- detail -->
+    <dimen name="detail_image_height">290dp</dimen>
+    <dimen name="detail_title_margin_horizontal">20dp</dimen>
+    <dimen name="detail_title_text_size">30sp</dimen>
+    <dimen name="detail_title_margin_top">20dp</dimen>
+    <dimen name="detail_content_margin_top">20dp</dimen>
+    <dimen name="detail_content_margin_end">30dp</dimen>
+    <dimen name="detail_content_text_size">20sp</dimen>
+    <dimen name="detail_review_margin_top">40dp</dimen>
+    <dimen name="detail_review_rv_margin_top">10dp</dimen>
+    <dimen name="detail_review_title_text_size">20sp</dimen>
+    <dimen name="detail_bottom_margin_horizontal">20dp</dimen>
+    <dimen name="detail_bottom_margin_vertical">10dp</dimen>
+    <dimen name="detail_bottom_btn_text_size">15sp</dimen>
+
+    <!-- rv_item_detail_review -->
+    <dimen name="detail_rv_item_layout_padding_horizontal">15dp</dimen>
+    <dimen name="detail_rv_item_layout_margin_horizontal">5dp</dimen>
+    <dimen name="detail_rv_item_layout_margin_bottom">10dp</dimen>
+    <dimen name="detail_rv_item_nickname_margin_top">15dp</dimen>
+    <dimen name="detail_rv_item_nickname_text_size">15sp</dimen>
+    <dimen name="detail_rv_item_review_text_size">18sp</dimen>
+    <dimen name="detail_rv_item_review_margin_vertical">5dp</dimen>
+    <dimen name="detail_rv_item_time_text_size">13sp</dimen>
+    <dimen name="detail_rv_item_like_padding_vertical">3dp</dimen>
+    <dimen name="detail_rv_item_like_padding_horizontal">5dp</dimen>
+
+    <!-- recyclerview_item_stamp -->
+    <dimen name="stamp_rv_item_padding">10dp</dimen>
+    <dimen name="stamp_rv_item_image_size">100dp</dimen>
+    <dimen name="stamp_rv_item_text_size">18sp</dimen>
+
+    <!-- stamp_setting_location -->
+    <dimen name="setting_location_width">300dp</dimen>
+    <dimen name="setting_location_height">180dp</dimen>
+    <dimen name="setting_location_text_size">20sp</dimen>
+
+    <!-- marker click dialog -->
+    <dimen name="dialog_marker_text_margin_horizontal">20dp</dimen>
+    <dimen name="dialog_marker_text_margin_top">20dp</dimen>
+    <dimen name="dialog_marker_name_text_size">25sp</dimen>
+    <dimen name="dialog_marker_addr_text_size">15sp</dimen>
+
+    <!-- login -->
+    <dimen name="login_btn_back_margin">30dp</dimen>
+    <dimen name="login_btn_margin_top">20dp</dimen>
+    <dimen name="login_txt_join_margin_top">20dp</dimen>
+    <dimen name="login_txt_join_padding_horizontal">5dp</dimen>
+    <dimen name="login_btn_text_size">15sp</dimen>
+    <dimen name="login_error_margin">30dp</dimen>
+
+    <!-- join_form -->
+    <dimen name="join_form_margin">30dp</dimen>
+    <dimen name="join_form_layout_margin_top">20dp</dimen>
+    <dimen name="join_form_title_size">28sp</dimen>
+    <dimen name="join_form_edittext_size">18sp</dimen>
+    <dimen name="join_form_btn_text_size">15sp</dimen>
+
+    <!-- dialog_join_success -->
+    <dimen name="join_success_image_margin_top">20dp</dimen>
+    <dimen name="join_success_text_margin_top">5dp</dimen>
+    <dimen name="join_success_title_text_size">17sp</dimen>
+    <dimen name="join_success_content_text_size">14sp</dimen>
+    <dimen name="join_success_content_padding_vertical">20dp</dimen>
+    <dimen name="join_success_content_padding_horizontal">30dp</dimen>
+    <dimen name="join_success_border">1dp</dimen>
+    <dimen name="join_success_btn_padding_vertical">15dp</dimen>
+
+    <!-- dialog_network -->
+    <dimen name="stamp_false_padding_horizontal">30dp</dimen>
+    <dimen name="stamp_false_padding_vertical">20dp</dimen>
+    <dimen name="stamp_false_text_size">17sp</dimen>
+    <dimen name="stamp_false_confirm_padding_vertical">15dp</dimen>
+    <dimen name="stamp_false_border">1dp</dimen>
+
+    <!-- dialog_review -->
+    <dimen name="review_margin_horizontal">40dp</dimen>
+    <dimen name="review_padding_vertical">20dp</dimen>
+    <dimen name="review_padding_horizontal">30dp</dimen>
+    <dimen name="review_edt_text_size">14sp</dimen>
+    <dimen name="review_border">1dp</dimen>
+    <dimen name="review_register_padding_vertical">15dp</dimen>
+    <dimen name="review_register_text_size">17sp</dimen>
+
+    <!-- search -->
+    <dimen name="search_margin_horizontal">20dp</dimen>
+
+    <!-- fragment_my_stmap -->
+    <dimen name="my_stamp_text_size">20sp</dimen>
+    <dimen name="my_stamp_image_size">30dp</dimen>
+    <dimen name="my_stamp_margin_top">10dp</dimen>
+    <dimen name="my_stamp_image_margin_start">20dp</dimen>
+    <dimen name="my_stamp_num_margin_start">5dp</dimen>
+
+    <!-- activity_setting -->
+    <dimen name="setting_margin">30dp</dimen>
+
+    <!-- dialog_join_term -->
+    <dimen name="term_padding">30dp</dimen>
+    <dimen name="term_margin_vertical">20dp</dimen>
+    <dimen name="term_btn_text_size">15sp</dimen>
+
+    <!-- dialog_join_term_content -->
+    <dimen name="join_term_content_margin">10dp</dimen>
+
+    <!-- activity_withdrawal -->
+    <dimen name="withdrawal_padding">30dp</dimen>
+    <dimen name="withdrawal_title_text_size">20sp</dimen>
+    <dimen name="withdrawal_note_title_text_size">17sp</dimen>
+    <dimen name="withdrawal_note_content_text_size">15sp</dimen>
+    <dimen name="withdrawal_btn_text_size">15sp</dimen>
+
+    <!--map-->
+    <dimen name="map_title_margin">20dp</dimen>
+
+    <!-- themes -->
+    <dimen name="tab_text_size">18sp</dimen>
+
+    <!--fragment_oreum_list-->
+    <dimen name="margin_small">8dp</dimen>
+</resources>

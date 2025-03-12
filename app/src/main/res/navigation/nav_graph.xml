@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/navigation_map">
+    <fragment
+        android:id="@+id/joinTermFragment"
+        android:name="com.jeong.jjoreum.presentation.ui.login.JoinTermFragment"
+        android:label="Join Term"
+        tools:layout="@layout/dialog_join_term">
+        <action
+            android:id="@+id/action_joinTermFragment_to_joinTermContent"
+            app:destination="@id/joinTermContentActivity"
+            app:launchSingleTop="true" />
+    </fragment>
+
+    <activity
+        android:id="@+id/joinTermContentActivity"
+        android:name="com.jeong.jjoreum.presentation.ui.login.JoinTermContent"
+        android:label="Join Term Content"
+        tools:layout="@layout/dialog_join_term_content" />
+
+    <fragment
+        android:id="@+id/navigation_map"
+        android:name="com.jeong.jjoreum.presentation.ui.map.MapFragment"
+        android:label="MapFragment"
+        tools:layout="@layout/fragment_map">
+
+        <action
+            android:id="@+id/action_mapFragment_to_detailFragment"
+            app:destination="@id/detailFragment"/>
+    </fragment>
+
+
+    <dialog
+        android:id="@+id/oreumDetailBottomSheetFragment"
+        android:name="com.jeong.jjoreum.presentation.ui.map.OreumDetailBottomSheetDialogFragment"
+        android:label="Oreum Detail">
+
+        <action
+            android:id="@+id/action_oreumDetailBottomSheetFragment_to_detailFragment"
+            app:destination="@id/detailFragment"/>
+    </dialog>
+
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.jeong.jjoreum.presentation.ui.detail.DetailFragment"
+        android:label="DetailFragment"
+        tools:layout="@layout/fragment_detail">
+
+        <argument
+            android:name="oreumData"
+            app:argType="com.jeong.jjoreum.data.model.api.ResultSummary"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_list"
+        android:name="com.jeong.jjoreum.presentation.ui.list.OreumListFragment"
+        android:label="ListFragment"
+        tools:layout="@layout/fragment_oreum_list">
+        <action
+            android:id="@+id/action_listFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_my"
+        android:name="com.jeong.jjoreum.presentation.ui.profile.MyFragment"
+        android:label="MyFragment"
+        tools:layout="@layout/fragment_my" />
+
+    <fragment
+        android:id="@+id/navigation_my_favorite"
+        android:name="com.jeong.jjoreum.presentation.ui.profile.favorite.MyFavoriteFragment"
+        android:label="MyFavoriteFragment"
+        tools:layout="@layout/fragment_my_favorite" />
+
+    <fragment
+        android:id="@+id/navigation_my_stamp"
+        android:name="com.jeong.jjoreum.presentation.ui.profile.stamp.MyStampFragment"
+        android:label="MyStampFragment"
+        tools:layout="@layout/fragment_my_stamp" />
+
+</navigation>

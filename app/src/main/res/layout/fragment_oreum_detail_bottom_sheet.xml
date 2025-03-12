@@ -1,0 +1,96 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
+    app:strokeColor="?attr/colorOutline">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 오름 이름 -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/bottom_detail_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingHorizontal="16dp"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 오름 주소 -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/bottom_detail_addr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingHorizontal="16dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bottom_detail_name" />
+
+        <!-- 즐겨찾기 & 스탬프 정보 그룹 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bottom_detail_addr">
+
+            <!-- 좋아요 아이콘 -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/icon_favorite"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="좋아요"
+                android:src="@drawable/selector_favorite_checkbox"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:tint="?attr/colorOnSurface" />
+
+            <!-- 좋아요 개수 -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/bottom_detail_favorite_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="0"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toEndOf="@id/icon_favorite"
+                app:layout_constraintBottom_toBottomOf="@id/icon_favorite" />
+
+            <!-- 스탬프 아이콘 -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/icon_stamp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="스탬프"
+                android:src="@drawable/selector_stamp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/bottom_detail_favorite_count"
+                app:tint="?attr/colorOnSurface" />
+
+            <!-- 스탬프 개수 -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/bottom_detail_stamp_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="0"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toEndOf="@id/icon_stamp"
+                app:layout_constraintBottom_toBottomOf="@id/icon_stamp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
