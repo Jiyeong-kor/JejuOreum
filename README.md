@@ -49,13 +49,14 @@
 <img src="./screenshots/제주%20오름%20스플래시.png" width="300" />
 
 ### 오름 지도 화면  
-![지도](./screenshots/제주%20오름%20지도.png)
+<img src="./screenshots/제주%20오름%20지도.png" width="300" />
 
 ### 오름 상세 정보  
-![지도 상세](./screenshots/제주%20오름%20지도%20상세.png)
+<img src="./screenshots/제주%20오름%20지도%20상세.png" width="300" />
 
 ### 오름 목록  
-![목록](./screenshots/제주%20오름%20목록%20지도.png)
+<img src="./screenshots/제주%20오름%20목록%20지도.png" width="300" />
 
 ### 오름 상세 페이지  
-![상세](./screenshots/제주%20오름%20목록%20상세.png)
+<img src="./screenshots/제주%20오름%20목록%20상세.png" width="300" />
+
