@@ -14,14 +14,12 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 /**
- * 인증서 우회? 주석 다르게 쓰자
  * Retrofit과 OkHttpClient를 설정하는 객체
  */
 object RetrofitOkHttpManager {
 
     private const val BASE_URL = BuildConfig.JEJU_OREUM_URL
 
-    // SSL 인증서 우회 클라이언트 사용
     private val okHttpClient: OkHttpClient = getUnsafeOkHttpClient()
 
     /**
@@ -30,13 +28,9 @@ object RetrofitOkHttpManager {
     val oreumRetrofitBuilder: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
-        .client(okHttpClient) // 안전하지 않은 클라이언트 적용
+        .client(okHttpClient)
         .build()
 
-    /**
-     * SSL 인증서를 우회하는 OkHttpClient 설정
-     * @return SSL 인증서 검증을 우회한 OkHttpClient 인스턴스
-     */
     fun getUnsafeOkHttpClient(): OkHttpClient {
         return try {
             val trustAllCerts = arrayOf<TrustManager>(
