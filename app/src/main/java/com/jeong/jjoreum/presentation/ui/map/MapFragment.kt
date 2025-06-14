@@ -1,108 +1,213 @@
 package com.jeong.jjoreum.presentation.ui.map
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.Lifecycle
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.jeong.jjoreum.R
-import com.jeong.jjoreum.databinding.FragmentMapBinding
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.data.model.api.ResultSummary
+import com.jeong.jjoreum.data.model.api.RetrofitOkHttpManager
+import com.jeong.jjoreum.databinding.FragmentMapBinding
 import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
-import com.jeong.jjoreum.presentation.viewmodel.MapViewModel
-import com.kakao.vectormap.*
+import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
+import com.jeong.jjoreum.repository.OreumRepositoryImpl
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
+import com.kakao.vectormap.MapLifeCycleCallback
 import kotlinx.coroutines.launch
 
-/**
- * 지도를 표시하는 Fragment
- * KakaoMapSdk를 사용하여 지도에 오름 위치(마커)를 표시
- */
 class MapFragment : ViewBindingBaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate) {
 
-    // 지도 뷰
-    private var mapView: MapView? = null
+    private lateinit var mapViewModel: MapViewModel
+    private var mapController: MapController? = null
+    private var ignoreTextChanges = false
 
-    // MapViewModel
-    private lateinit var viewModel: MapViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this)[MapViewModel::class.java]
-    }
-
-    /**
-     * View가 생성된 후 호출, 지도 초기화 및 ViewModel의 상태를 관찰
-     */
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding!!) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 지도 뷰 초기화
-        mapView = binding?.mapView
+        val firestore = FirebaseFirestore.getInstance()
+        val auth = FirebaseAuth.getInstance()
+        val api =
+            RetrofitOkHttpManager.oreumRetrofitBuilder.create(OreumRetrofitInterface::class.java)
+        val repository = OreumRepositoryImpl(firestore, auth, api)
 
-        mapView?.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                Log.i("KakaoMap", "Map has been destroyed.")
+        val factory = AppViewModelFactory(
+            oreumRepository = repository
+        )
+
+        mapViewModel = ViewModelProvider(this@MapFragment, factory)[MapViewModel::class.java]
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (searchResultContainer.isVisible || textViewNoResults.isVisible) {
+                hideSearchResults()
+            } else {
+                requireActivity().finishAffinity()
             }
+        }
 
-            override fun onMapError(error: Exception) {
-                Log.e("KakaoMap", "Map error occurred: ${error.message}", error)
+        val searchResultAdapter = SearchResultAdapter { result ->
+            val latLng = LatLng.from(result.y, result.x)
+            mapController?.let {
+                it.highlightMarker(latLng)
+                it.moveCameraTo(latLng)
             }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(map: KakaoMap) {
-                // Map 준비가 완료되면 ViewModel 초기화 및 UI 업데이트
-                viewModel.initializeMap(map)
+            mapViewModel.selectOreum(latLng)
+            findNavController().navigate(
+                MapFragmentDirections.actionMapFragmentToDetailFragment(
+                    result
+                )
+            )
+            hideSearchResults()
+            hideKeyboardAndClearFocus()
+        }
+        searchResultList.adapter = searchResultAdapter
 
-                // 선택된 오름이 변경되면 BottomSheet를 표시
-                lifecycleScope.launch {
-                    repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.selectedOreum.collect { oreum ->
-                            oreum?.let { showOreumDetailBottomSheet(it) }
+        searchEditText.doOnTextChanged { text, _, _, _ ->
+            if (!ignoreTextChanges) {
+                mapViewModel.onSearchQueryChanged(text?.toString() ?: "")
+            }
+        }
+
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                mapViewModel.onSearchQueryChanged(searchEditText.text.toString())
+                hideKeyboardAndClearFocus()
+                true
+            } else false
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                mapViewModel.uiState.collect { state ->
+                    when (state) {
+                        is MapUiState.SearchResults -> {
+                            searchResultAdapter.searchResults = state.list
+                            searchResultContainer.post {
+                                searchResultContainer.visibility = View.VISIBLE
+                                searchResultList.visibility = View.VISIBLE
+                                noResultContainer.visibility = View.GONE
+                            }
+                        }
+
+                        is MapUiState.NoResults -> {
+                            searchResultAdapter.searchResults = emptyList()
+                            searchResultContainer.post {
+                                searchResultContainer.visibility = View.VISIBLE
+                                searchResultList.visibility = View.GONE
+                                noResultContainer.visibility = View.VISIBLE
+                            }
+                        }
+
+                        is MapUiState.Hidden, is MapUiState.Idle -> {
+                            searchResultAdapter.searchResults = emptyList()
+                            searchResultContainer.visibility = View.GONE
+                            noResultContainer.visibility = View.GONE
                         }
                     }
                 }
+            }
+        }
 
-                // POI(마커) 클릭 리스너 설정
-                map.setOnPoiClickListener { _, latLng, _, _ ->
-                    // 마커 아이콘 변경 및 오름 선택
-                    viewModel.changeMarkerIcon(latLng)
-                    viewModel.selectOreum(latLng)
+        mapView.start(
+            object : MapLifeCycleCallback() {
+                override fun onMapDestroy() {}
+                override fun onMapError(error: Exception) {
+                    Log.e("MapFragment", "Map error: ${error.message}")
                 }
+            },
+            object : KakaoMapReadyCallback() {
+                override fun onMapReady(map: KakaoMap) {
+                    mapController = MapController(map) { latLng ->
+                        mapController?.highlightMarker(latLng)
+                        mapViewModel.onPoiClicked(latLng)?.let {
+                            OreumInfoBottomSheetDialogFragment.newInstance(it)
+                                .show(childFragmentManager, "oreum_info")
+                        }
+                    }
 
-                // 오름 리스트가 변경될 때 마커 추가
-                lifecycleScope.launch {
-                    repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.oreumList.collect { oreumList ->
-                            oreumList.forEach {
-                                viewModel.addOreumMarker(it, R.drawable.oreum_light_pin)
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                            mapViewModel.oreumList.collect {
+                                mapController?.drawOreumMarkers(it)
                             }
                         }
                     }
+
+                    mapController?.drawOreumMarkers(mapViewModel.oreumList.value)
+
+                    map.setOnViewportClickListener { _, _, _ ->
+                        hideSearchResults()
+                        mapViewModel.onMapTouched()
+                    }
                 }
             }
-        })
-    }
+        )
 
-    /**
-     * 오름 상세 정보를 표시하는 BottomSheet를 띄우는 함수
-     * @param oreum 선택된 오름 정보
-     */
-    private fun showOreumDetailBottomSheet(oreum: ResultSummary) {
-        val bottomSheet = OreumDetailBottomSheetDialogFragment().apply {
-            arguments = Bundle().apply {
-                // 여기서 idx를 반드시 넣어준다
-                putInt("oreumIdx", oreum.idx)
-                putString("oreumName", oreum.oreumKname)
-                putString("oreumAddr", oreum.oreumAddr)
-                putString("oreumExplain", oreum.explain)
-                putString("imgPath", oreum.imgPath)
-                putDouble("x", oreum.x)
-                putDouble("y", oreum.y)
-                putDouble("oreumAltitu", oreum.oreumAltitu)
+        childFragmentManager.setFragmentResultListener(
+            "navigateToDetail",
+            viewLifecycleOwner
+        ) { _, bundle ->
+            val oreum = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                bundle.getParcelable("oreum", ResultSummary::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                bundle.getParcelable("oreum")
+            }
+
+            oreum?.let {
+                findNavController().navigate(
+                    MapFragmentDirections.actionMapFragmentToDetailFragment(
+                        it
+                    )
+                )
             }
         }
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            mapViewModel.oreumList.collect {
+                mapController?.drawOreumMarkers(it)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mapController = null
+    }
+
+    private fun hideKeyboardAndClearFocus() = with(binding!!) {
+        val imm = ContextCompat.getSystemService(requireContext(), InputMethodManager::class.java)
+        imm?.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+        searchEditText.clearFocus()
+    }
+
+    private fun hideSearchResults() = with(binding!!) {
+        mapViewModel.hideSearch()
+        ignoreTextChanges = true
+        searchEditText.setText("")
+        searchEditText.post { ignoreTextChanges = false }
+
+        searchResultContainer.visibility = View.GONE
+        searchResultList.visibility = View.GONE
+        noResultContainer.visibility = View.GONE
+        textViewNoResults.visibility = View.GONE
+
+        hideKeyboardAndClearFocus()
+    }
 }

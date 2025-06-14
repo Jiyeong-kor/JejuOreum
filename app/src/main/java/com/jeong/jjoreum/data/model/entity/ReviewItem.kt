@@ -13,9 +13,10 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class ReviewItem(
-    val userNickname: String,
-    val userReview: String,
-    val userTime: Long,
-    val reviewLikeNum: Int,
-    val isLiked: Boolean
+    val userId: String = "",
+    val userNickname: String = "",
+    val userReview: String = "",
+    val userTime: Long = 0L,
+    var reviewLikeNum: Int = 0,
+    var isLiked: Boolean = false
 ) : Parcelable

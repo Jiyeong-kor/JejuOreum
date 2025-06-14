@@ -1,63 +1,68 @@
 package com.jeong.jjoreum.presentation.ui.main
 
 import android.os.Bundle
+import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.R
+import com.jeong.jjoreum.data.local.PreferenceManager
+import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
+import com.jeong.jjoreum.data.model.api.RetrofitOkHttpManager
 import com.jeong.jjoreum.databinding.ActivityMainBinding
+import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
+import com.jeong.jjoreum.presentation.viewmodel.SplashViewModel
+import com.jeong.jjoreum.repository.OreumRepositoryImpl
 
-/**
- * 앱의 메인 액티비티
- * BottomNavigationView를 통해 주요 화면들을 이동함
- */
 class MainActivity : AppCompatActivity() {
 
-    // ViewBinding 객체
-    private lateinit var viewBinding: ActivityMainBinding
-
-    // NavController (public으로 선언하여 외부에서도 사용 가능)
-    lateinit var navController: NavController
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var viewModel: SplashViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
+        val prefs = PreferenceManager(applicationContext)
+        val firestore = FirebaseFirestore.getInstance()
+        val auth = FirebaseAuth.getInstance()
+        val apiService = RetrofitOkHttpManager.oreumRetrofitBuilder
+            .create(OreumRetrofitInterface::class.java)
+
+        val oreumRepository = OreumRepositoryImpl(firestore, auth, apiService)
+        val factory = AppViewModelFactory(
+            prefs = prefs,
+            oreumRepository = oreumRepository,
+            context = applicationContext
+        )
+        viewModel = ViewModelProvider(this, factory)[SplashViewModel::class.java]
+
+        splashScreen.setKeepOnScreenCondition {
+            viewModel.isLoading.value
+        }
+
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
-        // 뷰 바인딩 설정
-        viewBinding = ActivityMainBinding.inflate(layoutInflater).also {
-            setContentView(it.root)
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // 네비게이션 설정
-        setupNavigation()
-    }
+        viewModel.checkUserStatus()
 
-    /**
-     * NavHostFragment와 BottomNavigationView를 연동하는 함수
-     */
-    private fun setupNavigation() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
-        navController = navHostFragment?.navController ?: return
+        val navController = (supportFragmentManager
+            .findFragmentById(R.id.container_main) as NavHostFragment).navController
 
-        val bottomNav = viewBinding.navigationMain
+        binding.bottomNav.setupWithNavController(navController)
 
-        // BottomNavigationView와 NavController 연결
-        bottomNav.setupWithNavController(navController)
-
-        // 메뉴 항목 클릭 시 중복으로 같은 화면을 띄우지 않도록 처리
-        bottomNav.setOnItemSelectedListener { item ->
-            val currentDestination = navController.currentDestination?.id
-            if (item.itemId != currentDestination) {
-                navController.navigate(item.itemId)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.bottomNav.visibility = when (destination.id) {
+                R.id.splashFragment, R.id.joinFormFragment -> View.GONE
+                else -> View.VISIBLE
             }
-            true
         }
     }
-
-    /**
-     * 네비게이션 Up 버튼 동작 재정의
-     */
-    override fun onSupportNavigateUp(): Boolean =
-        navController.navigateUp() || super.onSupportNavigateUp()
 }

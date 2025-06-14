@@ -55,20 +55,11 @@
         <item name="colorContainer">@color/md_theme_surfaceContainer</item>
 
         <item name="materialButtonStyle">@style/CustomMaterialButton</item>
-
-
-
-    </style>
-
-    <!-- Bottom Navigation View Font -->
-    <style name="bottomNavigationViewTextStyle">
-        <item name="android:fontFamily">@font/jeju_myeongjo</item>
     </style>
 
     <!-- My Tab Layout Text updated to Material 3 -->
     <style name="myTabTextStyle" parent="TextAppearance.Material3.LabelLarge">
         <item name="android:textSize">@dimen/tab_text_size</item>
-        <item name="android:fontFamily">@font/jeju_myeongjo</item>
         <item name="android:textAllCaps">true</item>
     </style>
 

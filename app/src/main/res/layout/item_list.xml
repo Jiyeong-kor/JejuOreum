@@ -26,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="4dp"
-        android:fontFamily="@font/jeju_myeongjo"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:text="@string/test_word"

@@ -10,14 +10,13 @@
         android:id="@+id/stamp_rv_item_image"
         android:layout_width="@dimen/stamp_rv_item_image_size"
         android:layout_height="@dimen/stamp_rv_item_image_size"
-        android:src="@drawable/oreum_dark"
+        android:src="@drawable/oreum_selected"
         tools:ignore="ContentDescription" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/stamp_rv_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/jeju_myeongjo"
         android:text="@string/test_word"
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="?attr/colorOnSurface"

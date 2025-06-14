@@ -151,6 +151,6 @@
     <!-- themes -->
     <dimen name="tab_text_size">18sp</dimen>
 
-    <!--fragment_oreum_list-->
+    <!--fragment_list.xml-->
     <dimen name="margin_small">8dp</dimen>
 </resources>

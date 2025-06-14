@@ -2,72 +2,94 @@ package com.jeong.jjoreum.presentation.ui.profile.stamp
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.jeong.jjoreum.R
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.databinding.FragmentMyStampBinding
-import com.jeong.jjoreum.data.model.entity.MyStampItem
 import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
+import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
+import com.jeong.jjoreum.presentation.viewmodel.MyStampViewModel
+import com.jeong.jjoreum.repository.OreumRepositoryImpl
+import com.jeong.jjoreum.repository.UserInteractionRepositoryImpl
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-/**
- * '나의 스탬프' 탭을 표시하는 Fragment
- * 사용자가 획득한 스탬프 목록을 보여줌
- */
 class MyStampFragment :
     ViewBindingBaseFragment<FragmentMyStampBinding>(FragmentMyStampBinding::inflate) {
 
-    // 사용자의 스탬프 정보를 저장하는 리스트
-    private val stampList = mutableListOf<MyStampItem>()
+    private lateinit var viewModel: MyStampViewModel
     private lateinit var listAdapter: MyStampAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val firestore = FirebaseFirestore.getInstance()
+        val auth = FirebaseAuth.getInstance()
+        val apiService = OreumRetrofitInterface.create()
+
+        val oreumRepository = OreumRepositoryImpl(firestore, auth, apiService)
+        val interactionRepository = UserInteractionRepositoryImpl(firestore, auth)
+
+        val factory = AppViewModelFactory(
+            oreumRepository = oreumRepository,
+            interactionRepository = interactionRepository
+        )
+
+        viewModel = ViewModelProvider(this, factory)[MyStampViewModel::class.java]
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        updateUI()
         observeItemClicks()
-    }
 
-    /**
-     * RecyclerView 설정
-     */
-    private fun setupRecyclerView() {
-        listAdapter = MyStampAdapter()
+        viewModel.loadStampedList()
 
-        binding?.recyclerViewStampList?.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = listAdapter
-        }
-    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            combine(viewModel.nickname, viewModel.stampedList) { nickname, list ->
+                nickname to list
+            }.collectLatest { (nickname, stampedList) ->
+                val count = stampedList.size
 
-    /**
-     * UI 갱신
-     * 스탬프 목록이 비어있으면 안내 문구를 표시
-     */
-    private fun updateUI() {
-        val isEmpty = stampList.isEmpty()
-        binding?.apply {
-            textViewEmptyStampList.visibility = if (isEmpty) View.VISIBLE else View.GONE
-            recyclerViewStampList.visibility = if (isEmpty) View.GONE else View.VISIBLE
+                binding?.apply {
+                    myStampText.text = "${nickname}님의 스탬프"
+                    myStampNum.text = "${count}개"
 
-            if (::listAdapter.isInitialized && stampList.isNotEmpty()) {
-                listAdapter.submitList(stampList)
+                    textViewEmptyStampList.visibility = if (count == 0) View.VISIBLE else View.GONE
+                    recyclerViewStampList.visibility = if (count == 0) View.GONE else View.VISIBLE
+
+                    listAdapter.submitList(stampedList)
+                }
             }
         }
     }
 
-    /**
-     * 스탬프 아이템 클릭 이벤트를 관찰
-     */
+    private fun setupRecyclerView() {
+        listAdapter = MyStampAdapter()
+        binding?.recyclerViewStampList?.apply {
+            layoutManager = GridLayoutManager(requireContext(), 3)
+            adapter = listAdapter
+        }
+    }
+
     private fun observeItemClicks() {
         viewLifecycleOwner.lifecycleScope.launch {
-            listAdapter.itemClickFlow
-                .collectLatest {
-                    findNavController().navigate(R.id.action_listFragment_to_detailFragment)
+            listAdapter.itemClickFlow.collectLatest { item ->
+                val bundle = Bundle().apply {
+                    putInt("oreumIdx", item.oreumIdx)
+                    putString("oreumName", item.oreumName)
                 }
+                findNavController().navigate(
+                    com.jeong.jjoreum.R.id.action_navigation_my_to_writeReviewFragment,
+                    bundle
+                )
+            }
         }
     }
 }

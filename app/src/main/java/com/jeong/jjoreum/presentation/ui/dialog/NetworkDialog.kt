@@ -13,7 +13,7 @@ import com.jeong.jjoreum.databinding.DialogNetworkBinding
 class NetworkDialog : DialogFragment() {
 
     private lateinit var binding: DialogNetworkBinding
-    var myDialogInterface: DialogListener? = null
+    private var myDialogInterface: DialogListener? = null
 
     /**
      * 다이얼로그 인터페이스 - 확인 버튼 클릭 시 호출
@@ -24,7 +24,7 @@ class NetworkDialog : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCancelable = false // 다이얼로그 바깥 클릭으로 닫히지 않도록 설정
+        isCancelable = false
     }
 
     override fun onCreateView(
@@ -39,7 +39,6 @@ class NetworkDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 확인 버튼 클릭 시 콜백 실행
         binding.btn.setOnClickListener {
             myDialogInterface?.onDialogPositiveClick()
         }

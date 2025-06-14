@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.asSharedFlow
  */
 class MyStampAdapter : ListAdapter<MyStampItem, MyStampAdapter.MyStampViewHolder>(diffUtil) {
 
-    // 아이템 클릭 이벤트를 방출하기 위한 Flow
     private val _itemClickFlow = MutableSharedFlow<MyStampItem>(extraBufferCapacity = 1)
     val itemClickFlow = _itemClickFlow.asSharedFlow()
 
@@ -44,7 +43,7 @@ class MyStampAdapter : ListAdapter<MyStampItem, MyStampAdapter.MyStampViewHolder
     inner class MyStampViewHolder(private val binding: ItemStampBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MyStampItem) {
-            // item 뷰를 클릭 시 Flow로 이벤트 방출
+            binding.stampRvItemName.text = item.oreumName
             binding.root.setOnClickListener {
                 _itemClickFlow.tryEmit(item)
             }

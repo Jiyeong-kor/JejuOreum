@@ -1,22 +1,21 @@
 package com.jeong.jjoreum
 
+import com.jeong.jjoreum.data.model.api.RetrofitOkHttpManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import com.kakao.vectormap.KakaoMapSdk
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 
 /**
  *  애플리케이션 전역에서 사용하는 Application 클래스
  */
-class JJOreumApplication : Application() {
+class JJOreumApplication : Application(), ImageLoaderFactory {
     companion object {
         private lateinit var jjOreumApplication: JJOreumApplication
 
-        /**
-         * Application 인스턴스를 반환
-         */
         fun getInstance(): JJOreumApplication = jjOreumApplication
     }
 
@@ -24,22 +23,21 @@ class JJOreumApplication : Application() {
         super.onCreate()
         jjOreumApplication = this
 
-        val appKey = BuildConfig.APP_KEY
-        // 카카오 맵 SDK 초기화
-        KakaoMapSdk.init(this, appKey)
-
         // 화면을 세로 모드로 고정
         settingScreenPortrait()
     }
 
-    /**
-     *  모든 Activity의 화면을 세로 모드로 고정
-     */
+    override fun newImageLoader(): ImageLoader {
+        val client = RetrofitOkHttpManager.getUnsafeOkHttpClient()
+        return ImageLoader.Builder(this)
+            .okHttpClient(client)
+            .build()
+    }
+
     private fun settingScreenPortrait() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             @SuppressLint("SourceLockedOrientationActivity")
             override fun onActivityCreated(activity: Activity, p1: Bundle?) {
-                // 각 Activity가 생성될 때 화면을 세로 모드로 설정
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
 

@@ -1,6 +1,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 선택되지 않은 상태 -->
-    <item android:drawable="@drawable/ic_stamp_variant" android:tint="?attr/colorOnSurfaceVariant" android:state_checked="false" />
+    <item android:drawable="@drawable/ic_stamp_variant" android:state_checked="false" android:tint="?attr/colorOnSecondary" />
     <!-- 선택된 상태 -->
-    <item android:drawable="@drawable/ic_stamp_selected" android:tint="?attr/colorPrimary" android:state_checked="true" />
+    <item android:drawable="@drawable/ic_stamp_selected" android:state_checked="true" android:tint="?attr/colorError" />
 </selector>

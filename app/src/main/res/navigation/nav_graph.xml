@@ -3,74 +3,99 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/navigation_map">
+    app:startDestination="@id/splashFragment">
+
     <fragment
-        android:id="@+id/joinTermFragment"
-        android:name="com.jeong.jjoreum.presentation.ui.login.JoinTermFragment"
-        android:label="Join Term"
-        tools:layout="@layout/dialog_join_term">
+        android:id="@+id/splashFragment"
+        android:name="com.jeong.jjoreum.presentation.ui.splash.SplashFragment"
+        android:label="Splash"
+        tools:layout="@layout/fragment_splash">
         <action
-            android:id="@+id/action_joinTermFragment_to_joinTermContent"
-            app:destination="@id/joinTermContentActivity"
-            app:launchSingleTop="true" />
+            android:id="@+id/action_splash_to_join"
+            app:destination="@id/joinFormFragment" />
+
+        <action
+            android:id="@+id/action_splash_to_map"
+            app:destination="@id/mapFragment" />
     </fragment>
 
-    <activity
-        android:id="@+id/joinTermContentActivity"
-        android:name="com.jeong.jjoreum.presentation.ui.login.JoinTermContent"
-        android:label="Join Term Content"
-        tools:layout="@layout/dialog_join_term_content" />
+    <fragment
+        android:id="@+id/joinFormFragment"
+        android:name="com.jeong.jjoreum.presentation.ui.Join.JoinFormFragment"
+        android:label="fragment_join_form"
+        tools:layout="@layout/fragment_join_form" />
 
     <fragment
-        android:id="@+id/navigation_map"
+        android:id="@+id/mapFragment"
         android:name="com.jeong.jjoreum.presentation.ui.map.MapFragment"
         android:label="MapFragment"
         tools:layout="@layout/fragment_map">
 
         <action
-            android:id="@+id/action_mapFragment_to_detailFragment"
-            app:destination="@id/detailFragment"/>
-    </fragment>
-
-
-    <dialog
-        android:id="@+id/oreumDetailBottomSheetFragment"
-        android:name="com.jeong.jjoreum.presentation.ui.map.OreumDetailBottomSheetDialogFragment"
-        android:label="Oreum Detail">
+            android:id="@+id/action_mapFragment_to_listFragment"
+            app:destination="@id/listFragment" />
 
         <action
-            android:id="@+id/action_oreumDetailBottomSheetFragment_to_detailFragment"
-            app:destination="@id/detailFragment"/>
-    </dialog>
+            android:id="@+id/action_mapFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
 
+        <action
+            android:id="@+id/action_mapFragment_to_navigation_my"
+            app:destination="@id/navigation_my" />
+    </fragment>
 
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.jeong.jjoreum.presentation.ui.detail.DetailFragment"
         android:label="DetailFragment"
         tools:layout="@layout/fragment_detail">
-
         <argument
             android:name="oreumData"
             app:argType="com.jeong.jjoreum.data.model.api.ResultSummary"
             app:nullable="false" />
+
+        <action
+            android:id="@+id/action_detailFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+
+        <action
+            android:id="@+id/action_detailFragment_to_writeReviewFragment"
+            app:destination="@id/writeReviewFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_list"
-        android:name="com.jeong.jjoreum.presentation.ui.list.OreumListFragment"
+        android:id="@+id/listFragment"
+        android:name="com.jeong.jjoreum.presentation.ui.list.ListFragment"
         android:label="ListFragment"
-        tools:layout="@layout/fragment_oreum_list">
+        tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_navigation_my"
+            app:destination="@id/navigation_my" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_my"
         android:name="com.jeong.jjoreum.presentation.ui.profile.MyFragment"
         android:label="MyFragment"
-        tools:layout="@layout/fragment_my" />
+        tools:layout="@layout/fragment_my" >
+        <action
+            android:id="@+id/action_navigation_my_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_navigation_my_to_listFragment"
+            app:destination="@id/listFragment" />
+
+        <action
+            android:id="@+id/action_navigation_my_to_writeReviewFragment"
+            app:destination="@id/writeReviewFragment" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_my_favorite"
@@ -82,6 +107,22 @@
         android:id="@+id/navigation_my_stamp"
         android:name="com.jeong.jjoreum.presentation.ui.profile.stamp.MyStampFragment"
         android:label="MyStampFragment"
-        tools:layout="@layout/fragment_my_stamp" />
+        tools:layout="@layout/fragment_my_stamp">
+    <action
+        android:id="@+id/action_navigation_my_stamp_to_writeReviewFragment"
+        app:destination="@id/writeReviewFragment" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/writeReviewFragment"
+        android:name="com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewFragment"
+        android:label="WriteReviewFragment"
+        tools:layout="@layout/fragment_write_review">
+        <argument
+            android:name="oreumIdx"
+            app:argType="integer" />
+        <argument
+            android:name="oreumName"
+            app:argType="string" />
+    </fragment>
 </navigation>

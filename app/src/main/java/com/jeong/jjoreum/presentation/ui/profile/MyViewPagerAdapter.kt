@@ -12,10 +12,12 @@ import com.jeong.jjoreum.presentation.ui.profile.stamp.MyStampFragment
  * 마이페이지의 ViewPager 어댑터
  * 즐겨찾기(Favorite), 스탬프(Stamp) 탭을 관리함
  */
-class MyViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment),
-    TabLayoutMediator.TabConfigurationStrategy {
+class MyViewPagerAdapter(
+    fragment: Fragment
+) : FragmentStateAdapter(fragment), TabLayoutMediator.TabConfigurationStrategy {
 
-    // 각 탭에 대응되는 Fragment 생성 람다
+    private val context = fragment.requireContext()
+
     private val fragmentLaunchers: List<() -> Fragment> = listOf(
         { MyFavoriteFragment() },
         { MyStampFragment() }
@@ -47,5 +49,5 @@ class MyViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment),
      * @param position 탭 인덱스
      */
     private fun tabTitles(position: Int): String =
-        fragmentLaunchers[0]().requireContext().getString(titlesRes[position])
+        context.getString(titlesRes[position])
 }

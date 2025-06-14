@@ -11,6 +11,10 @@ android {
         val appKey = localProperties.getProperty("appKey") ?: ""
 
         buildConfigField("String", "APP_KEY", "\"$appKey\"")
+
+        val jejuOreumBaseUrl = localProperties.getProperty("jejuOreumBaseUrl") ?: ""
+
+        buildConfigField("String", "JEJU_OREUM_URL", "\"$jejuOreumBaseUrl\"")
     }
 }
 
@@ -18,6 +22,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
 }
@@ -59,7 +65,8 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -86,6 +93,8 @@ dependencies {
     implementation(libs.coil.kt.coil)
     implementation(libs.okhttp)
     implementation(libs.play.services.maps)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.androidx.core.splashscreen)
 
     testImplementation(libs.junit)
 

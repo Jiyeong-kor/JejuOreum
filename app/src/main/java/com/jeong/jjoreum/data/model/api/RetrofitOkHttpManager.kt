@@ -1,6 +1,7 @@
 package com.jeong.jjoreum.data.model.api
 
 import android.annotation.SuppressLint
+import com.jeong.jjoreum.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,11 +14,12 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 /**
+ * 인증서 우회? 주석 다르게 쓰자
  * Retrofit과 OkHttpClient를 설정하는 객체
  */
 object RetrofitOkHttpManager {
 
-    private const val BASE_URL = "https://gis.jeju.go.kr/rest/JejuOleumVRImg/"
+    private const val BASE_URL = BuildConfig.JEJU_OREUM_URL
 
     // SSL 인증서 우회 클라이언트 사용
     private val okHttpClient: OkHttpClient = getUnsafeOkHttpClient()
@@ -62,7 +64,7 @@ object RetrofitOkHttpManager {
 
             OkHttpClient.Builder()
                 .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-                .hostnameVerifier { _, _ -> true } // 모든 호스트 인증서 허용
+                .hostnameVerifier { _, _ -> true }
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
                 .addInterceptor(HttpLoggingInterceptor().apply {
