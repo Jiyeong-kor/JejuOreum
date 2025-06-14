@@ -15,25 +15,28 @@
 - **데이터**: 제주 오름 Open API + Firebase Firestore  
 
 ## 🤷‍♀️ 기획 의도  
-올레길보다 검색량이 많지만 관광 요소로 저평가된 '오름'을  
-탐방·기록할 수 있는 앱을 통해 제주 관광 활성화를 도모하고자 개발했습니다.
+올레길보다 검색량이 많지만 관광 요소로 저평가된 '오름'을 탐방·기록할 수 있는 앱을 통해 제주 관광 활성화를 도모하고자 개발했습니다.
 
 ---
 
 ## 🛠 사용 기술 스택
 
-| 기술 | 설명 |
-|------|------|
-| Kotlin | 메인 개발 언어 |
-| Android Studio | 개발 환경 |
-| Kakao Map SDK | 지도 기능 구현 |
-| Retrofit | Open API 연동 |
-| Firebase Firestore | 사용자 인증 및 사용자와 오름 관련 데이터 저장 |
-| GPS | 위치 기반 기능 구현 |
+| Category | Technology |
+|----------|------------|
+| Language | Kotlin |
+| Architecture | MVVM, Repository Pattern, ViewModelFactory (manual DI) |
+| Async Programming | Kotlin Coroutines, StateFlow, SharedFlow |
+| Navigation | Jetpack Navigation |
+| Location | Android Location Services |
+| Local Storage | SharedPreferences |
+| Networking | Retrofit2, OkHttp, Firebase Firestore, Firebase Auth, Gson |
+| Map SDK | Kakao Map SDK |
+| Image Loading | Coil |
+| Tools | Git, Figma |
 
 ---
 
-## 📱 주요 기능 시연
+## 📱 주요 기능 시연 및 설명
 
 ### 📍 1. 지도 기반 오름 탐색
 
