@@ -46,7 +46,7 @@
 ## 📸 앱 화면
 
 ### 스플래시 화면  
-<img src="./screenshots/제주%20오름%20스플래시.png" width="300" />
+<img src="./screenshots/스플래시 & 회원가입.mp4" width="300" />
 
 ### 오름 지도 화면  
 <img src="./screenshots/제주%20오름%20지도.png" width="300" />
