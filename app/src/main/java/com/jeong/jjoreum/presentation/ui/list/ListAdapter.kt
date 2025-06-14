@@ -80,7 +80,7 @@ class ListAdapter(
             }
 
             favoriteIcon.setImageResource(
-                if (item.userLiked) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_variant
+                if (item.userLiked) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
             )
 
             stampIcon.setImageResource(

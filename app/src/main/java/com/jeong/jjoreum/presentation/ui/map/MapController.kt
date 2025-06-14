@@ -68,7 +68,7 @@ class MapController(
      * @param list
      * @param iconResId
      */
-    fun drawOreumMarkers(list: List<ResultSummary>, iconResId: Int = R.drawable.oreum_pin) {
+    fun drawOreumMarkers(list: List<ResultSummary>, iconResId: Int = R.drawable.oreum_unselected) {
         clearAllMarkers()
         list.forEach {
             val latLng = LatLng.from(it.y, it.x)
@@ -88,7 +88,7 @@ class MapController(
      * @param latLng
      */
     fun highlightMarker(latLng: LatLng) {
-        previousSelectedLabel?.changeStyles(createLabelStyles(R.drawable.oreum_pin, 24))
+        previousSelectedLabel?.changeStyles(createLabelStyles(R.drawable.oreum_unselected, 24))
         val label = oreumMarkers.entries.find { isSameLocation(it.key, latLng) }?.value
         label?.changeStyles(createLabelStyles(R.drawable.oreum_selected, 32))
         previousSelectedLabel = label
