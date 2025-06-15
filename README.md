@@ -21,7 +21,7 @@
 
 ## 🛠 사용 기술 스택
 
-| Category | Technology |
+| 구분 | 기술 |
 |----------|------------|
 | Language | Kotlin |
 | Architecture | MVVM, Repository Pattern, ViewModelFactory (manual DI) |
