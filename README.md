@@ -8,7 +8,7 @@
 ## 📱 프로젝트 개요
 
 - **앱 이름**: JejuOreum  
-- **개발 기간**: 2025.01 ~ 2025.02 (현재도 개선 및 업데이트 진행 중)
+- **개발 기간**: 2025.01 ~ 2025.02 (Compose, Hilt를 사용한 Clean Architecture 업데이트 진행 중)
 - **플랫폼**: Android  
 - **개발 언어**: Kotlin  
 - **개발 환경**: Android Studio  
