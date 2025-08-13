@@ -2,70 +2,93 @@ package com.jeong.jjoreum.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.repository.ReviewRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class WriteReviewViewModel @Inject constructor(
-    private val reviewRepo: ReviewRepository
+    private val reviewRepo: ReviewRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private val _reviews = MutableStateFlow<List<ReviewItem>>(emptyList())
-    val reviews: StateFlow<List<ReviewItem>> = _reviews
+    val reviews: StateFlow<List<ReviewItem>> = _reviews.asStateFlow()
 
-    fun loadReviews(oreumIdx: String) {
+    private val _oreumIdx = MutableStateFlow("")
+    private val _oreumName = MutableStateFlow("")
+    val oreumName: StateFlow<String> = _oreumName.asStateFlow()
+
+    private val _reviewInputText = MutableStateFlow("")
+    val reviewInputText: StateFlow<String> = _reviewInputText.asStateFlow()
+
+    fun init(oreumIdx: Int, oreumName: String) {
+        val idxString = oreumIdx.toString()
+
+        // 중복 초기화 방지
+        if (_oreumIdx.value == idxString) return
+
+        _oreumIdx.value = idxString
+        _oreumName.value = oreumName
+        loadReviews()
+    }
+
+    fun onReviewTextChange(text: String) {
+        _reviewInputText.value = text
+    }
+
+    private fun loadReviews() {
+        if (_oreumIdx.value.isEmpty()) return
         viewModelScope.launch {
-            try {
-                val list = reviewRepo.getReviews(oreumIdx)
-                _reviews.value = list
-            } catch (e: Exception) {
-                // 필요 시 오류 처리
+            _reviews.value = reviewRepo.getReviews(_oreumIdx.value)
+        }
+    }
+
+    fun saveReview() {
+        if (_reviewInputText.value.isBlank()) return
+
+        val currentUser = auth.currentUser ?: return
+        val nickname = auth.currentUser?.displayName ?: "익명"
+
+        val newReview = ReviewItem(
+            userId = currentUser.uid,
+            userNickname = nickname,
+            userReview = _reviewInputText.value.trim(),
+            userTime = System.currentTimeMillis()
+        )
+
+        viewModelScope.launch {
+            reviewRepo.writeReview(_oreumIdx.value, newReview).onSuccess {
+
+                // 입력창 초기화
+                _reviewInputText.value = ""
+
+                // 리뷰 목록 새로고침
+                loadReviews()
             }
         }
     }
 
-    fun saveReview(
-        oreumIdx: String,
-        review: ReviewItem,
-        onResult: (success: Boolean) -> Unit
-    ) {
+    fun toggleReviewLike(review: ReviewItem) {
         viewModelScope.launch {
-            val result = reviewRepo.writeReview(oreumIdx, review)
-            if (result.isSuccess) {
-                loadReviews(oreumIdx)
-                onResult(true)
-            } else {
-                onResult(false)
+            reviewRepo.toggleReviewLike(
+                _oreumIdx.value, review.userId
+            ).onSuccess {
+                loadReviews()
             }
         }
     }
 
-    fun toggleReviewLike(oreumIdx: String, userId: String) {
+    fun deleteReview(review: ReviewItem) {
         viewModelScope.launch {
-            val result = reviewRepo.toggleReviewLike(oreumIdx, userId)
-            if (result.isSuccess) {
-                loadReviews(oreumIdx)
-            }
-        }
-    }
-
-    fun deleteReview(
-        oreumIdx: String,
-        userId: String,
-        onResult: (Boolean) -> Unit
-    ) {
-        viewModelScope.launch {
-            val result = reviewRepo.deleteReview(oreumIdx, userId)
-            if (result.isSuccess) {
-                loadReviews(oreumIdx)
-                onResult(true)
-            } else {
-                onResult(false)
+            reviewRepo.deleteReview(_oreumIdx.value, review.userId).onSuccess {
+                loadReviews()
             }
         }
     }
