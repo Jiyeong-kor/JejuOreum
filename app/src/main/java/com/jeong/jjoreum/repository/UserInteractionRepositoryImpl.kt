@@ -1,5 +1,6 @@
 package com.jeong.jjoreum.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -42,32 +43,40 @@ class UserInteractionRepositoryImpl @Inject constructor(
             "oreum_info_col"
         ).document(oreumIdx)
 
-        return firestore.runTransaction { tx ->
-            val userSnap = tx.get(userDoc)
-            val oreumSnap = tx.get(oreumDoc)
+        return try {
+            firestore.runTransaction { tx ->
+                val userSnap = tx.get(userDoc)
+                val oreumSnap = tx.get(oreumDoc)
 
-            val favorites = (userSnap.get("favorites") as? Map<String, Boolean>)?.toMutableMap()
-                ?: mutableMapOf()
-            var count = oreumSnap.getLong("favorite")?.toInt() ?: 0
+                val favorites = (userSnap.get("favorites") as? Map<String, Boolean>)?.toMutableMap()
+                    ?: mutableMapOf()
+                var count = oreumSnap.getLong("favorite")?.toInt() ?: 0
 
-            if (newIsFavorite) {
-                favorites[oreumIdx] = true
-                count++
-            } else {
-                favorites.remove(oreumIdx)
-                if (count > 0) count--
-            }
+                if (newIsFavorite) {
+                    favorites[oreumIdx] = true
+                    count++
+                } else {
+                    favorites.remove(oreumIdx)
+                    if (count > 0) count--
+                }
 
-            tx.set(
-                userDoc,
-                mapOf("favorites" to favorites), SetOptions.merge()
-            )
-            tx.set(
-                oreumDoc,
-                mapOf("favorite" to count), SetOptions.merge()
-            )
-            count
-        }.await()
+                tx.set(
+                    userDoc,
+                    mapOf("favorites" to favorites), SetOptions.merge()
+                )
+                tx.set(
+                    oreumDoc,
+                    mapOf("favorite" to count), SetOptions.merge()
+                )
+                Log.d("FavoriteDebug", "✅ [쓰기 성공] Oreum $oreumIdx -> $newIsFavorite")
+                count
+            }.await()
+        } catch (e: Exception) {
+            Log.e("FavoriteDebug", "❌ [쓰기 실패] 원인: ", e) // 실패 로그
+            // 트랜잭션 실패 시 현재 카운트를 그대로 반환하거나 기본값 처리
+            val oreumSnap = oreumDoc.get().await()
+            oreumSnap.getLong("favorite")?.toInt() ?: 0
+        }
     }
 
     override suspend fun getAllFavoriteStatus(): Map<String, Boolean> {

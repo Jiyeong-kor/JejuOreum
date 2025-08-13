@@ -53,7 +53,7 @@ class ListViewModel @Inject constructor(
             val newIsFavorite = !target.userLiked
 
             val newTotal = userInteractionRepository.toggleFavorite(oreumIdx, newIsFavorite)
-
+            oreumRepository.refreshAllOreumsWithNewUserData()
             // 변경된 항목만 반영한 새로운 리스트 생성
             val updatedList = currentList.map {
                 if (it.idx.toString() == oreumIdx) {

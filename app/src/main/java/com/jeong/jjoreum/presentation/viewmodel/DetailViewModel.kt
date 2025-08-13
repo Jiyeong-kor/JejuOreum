@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.data.model.entity.ReviewItem
+import com.jeong.jjoreum.repository.OreumRepository
 import com.jeong.jjoreum.repository.ReviewRepository
 import com.jeong.jjoreum.repository.StampRepository
 import com.jeong.jjoreum.repository.UserInteractionRepository
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
+    private val oreumRepository: OreumRepository,
     private val interactionRepo: UserInteractionRepository,
     private val reviewRepo: ReviewRepository,
     private val stampRepo: StampRepository
@@ -45,6 +47,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             val newStatus = !_isFavorite.value
             interactionRepo.toggleFavorite(oreumIdx, newStatus)
+            oreumRepository.refreshAllOreumsWithNewUserData()
             _isFavorite.value = newStatus
         }
     }

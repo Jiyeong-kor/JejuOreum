@@ -8,4 +8,5 @@ interface OreumRepository {
     suspend fun loadOreumListIfNeeded()
     fun getCachedOreumList(): List<ResultSummary>
     suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary
+    suspend fun refreshAllOreumsWithNewUserData()
 }

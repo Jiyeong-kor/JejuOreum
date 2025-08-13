@@ -79,6 +79,17 @@ class OreumRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun refreshAllOreumsWithNewUserData() {
+        val cachedList = getCachedOreumList()
+        if (cachedList.isEmpty()) {
+            // 캐시된 목록이 없으면 그냥 새로 로드
+            loadOreumListIfNeeded()
+        } else {
+            // 캐시된 목록이 있으면 사용자 정보만 덧씌워서 Flow를 업데이트
+            _oreumListFlow.value = mergeWithFirestoreData(cachedList)
+        }
+    }
+
     private suspend fun mergeWithFirestoreData(apiData: List<ResultSummary>): List<ResultSummary> {
         return try {
             val oreumSnapshot = firestore.collection("oreum_info_col").get().await()
@@ -100,6 +111,8 @@ class OreumRepositoryImpl @Inject constructor(
 
             val userFavorites =
                 userSnapshot?.get("favorites") as? Map<String, Boolean> ?: emptyMap()
+            Log.d("FavoriteDebug", "✅ [읽기 성공] 불러온 즐겨찾기 정보: $userFavorites")
+
             val userStamps =
                 userSnapshot?.get("stampedOreums") as? Map<String, String> ?: emptyMap()
 
