@@ -7,32 +7,32 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.ImageLoader
 import coil.request.ImageRequest
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PermissionManager
-import com.jeong.jjoreum.data.model.api.RetrofitOkHttpManager
 import com.jeong.jjoreum.databinding.FragmentDetailBinding
 import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
 import com.jeong.jjoreum.presentation.ui.profile.review.ReviewRecyclerViewAdapter
-import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
 import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
-import com.jeong.jjoreum.repository.ReviewRepositoryImpl
-import com.jeong.jjoreum.repository.StampRepositoryImpl
-import com.jeong.jjoreum.repository.UserInteractionRepositoryImpl
 import com.jeong.jjoreum.util.toastMessage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailFragment :
     ViewBindingBaseFragment<FragmentDetailBinding>(FragmentDetailBinding::inflate) {
 
-    private lateinit var viewModel: DetailViewModel
+    private val viewModel: DetailViewModel by viewModels()
+
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
     private lateinit var reviewAdapter: ReviewRecyclerViewAdapter
 
     private val permissionLauncher = registerForActivityResult(
@@ -50,17 +50,6 @@ class DetailFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val context = requireContext()
-        val firestore = FirebaseFirestore.getInstance()
-        val auth = FirebaseAuth.getInstance()
-
-        val factory = AppViewModelFactory(
-            interactionRepository = UserInteractionRepositoryImpl(firestore, auth),
-            reviewRepository = ReviewRepositoryImpl(firestore, auth),
-            stampRepository = StampRepositoryImpl(context, firestore, auth)
-        )
-        viewModel = ViewModelProvider(this, factory)[DetailViewModel::class.java]
-
         val oreumData = DetailFragmentArgs.fromBundle(requireArguments()).oreumData
         with(viewModel) {
             setOreumDetail(oreumData)
@@ -73,7 +62,8 @@ class DetailFragment :
 
         reviewAdapter = ReviewRecyclerViewAdapter(onLikeClick = {}, onDeleteClick = {})
         binding?.detailReviewRv?.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+            layoutManager =
+                androidx.recyclerview.widget.LinearLayoutManager(requireContext())
             adapter = reviewAdapter
         }
 
@@ -81,7 +71,9 @@ class DetailFragment :
             val oreumIdx = viewModel.oreumDetail.value?.idx?.toString() ?: return@setOnClickListener
             val isCurrentlyLiked = viewModel.isFavorite.value
             viewModel.toggleFavorite(oreumIdx)
-            toastMessage(if (!isCurrentlyLiked) "관심 오름에 추가되었습니다" else "관심 오름에서 제외되었습니다")
+            toastMessage(
+                if (!isCurrentlyLiked) "관심 오름에 추가되었습니다" else "관심 오름에서 제외되었습니다"
+            )
             setFragmentResult("oreum_update", Bundle().apply {
                 putBoolean("shouldRefresh", true)
                 putInt("oreumIdx", oreumIdx.toInt())
@@ -108,10 +100,8 @@ class DetailFragment :
                 } else {
                     permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }
-
             }
         }
-
         observeViewModel()
     }
 
@@ -135,11 +125,14 @@ class DetailFragment :
                         detailExplain.text = it.explain
 
                         val imageLoader = ImageLoader.Builder(requireContext())
-                            .okHttpClient { RetrofitOkHttpManager.getUnsafeOkHttpClient() }
+                            .okHttpClient(okHttpClient) // 주입받은 okHttpClient 사용
                             .build()
 
                         val request = ImageRequest.Builder(requireContext())
-                            .data(if (it.imgPath.startsWith("http")) it.imgPath else "https://example.com/default_image.jpg")
+                            .data(
+                                if (it.imgPath.startsWith("http")) it.imgPath
+                                else "https://example.com/default_image.jpg"
+                            )
                             .crossfade(true)
                             .placeholder(R.drawable.placeholder_image)
                             .error(R.drawable.error_image)

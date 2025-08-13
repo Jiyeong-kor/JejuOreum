@@ -8,11 +8,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.jeong.jjoreum.databinding.DialogLocationPermissionBinding
 import com.jeong.jjoreum.presentation.viewmodel.LocationPermissionViewModel
 import com.jeong.jjoreum.presentation.viewmodel.PermissionEvent
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LocationPermissionDialogFragment : DialogFragment() {
 
     private var _binding: DialogLocationPermissionBinding? = null
@@ -37,7 +38,9 @@ class LocationPermissionDialogFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogLocationPermissionBinding.inflate(inflater, container, false)
+        _binding = DialogLocationPermissionBinding.inflate(
+            inflater, container, false
+        )
         dialog?.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -51,7 +54,9 @@ class LocationPermissionDialogFragment : DialogFragment() {
         locationPermissionViewModel.permissionEvent.observe(viewLifecycleOwner) { event ->
             when (event) {
                 is PermissionEvent.RequestLocationPermission -> {
-                    requestPermissionLauncher.launch(locationPermissionViewModel.getRequiredPermissions())
+                    requestPermissionLauncher.launch(
+                        locationPermissionViewModel.getRequiredPermissions()
+                    )
                 }
 
                 is PermissionEvent.PermissionGranted -> {

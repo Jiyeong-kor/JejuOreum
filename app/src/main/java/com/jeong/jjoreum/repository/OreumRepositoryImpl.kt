@@ -5,11 +5,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.data.model.api.ResultSummary
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
 
-class OreumRepositoryImpl(
+@Singleton
+class OreumRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val apiService: OreumRetrofitInterface
@@ -33,7 +36,9 @@ class OreumRepositoryImpl(
                 val enumerated = apiData.mapIndexed { idx, oreum -> oreum.copy(idx = idx) }
                 mergeWithFirestoreData(enumerated)
             } else {
-                Log.e("OreumRepository", "❌ API 실패: ${response.errorBody()?.string()}")
+                Log.e(
+                    "OreumRepository", "❌ API 실패: ${response.errorBody()?.string()}"
+                )
                 emptyList()
             }
         } catch (e: Exception) {
@@ -48,9 +53,13 @@ class OreumRepositoryImpl(
             ?: throw IllegalStateException("해당 오름을 찾을 수 없습니다.")
 
         val userId = auth.currentUser?.uid
-        val oreumDoc = firestore.collection("oreum_info_col").document(oreumIdx).get().await()
+        val oreumDoc = firestore.collection(
+            "oreum_info_col"
+        ).document(oreumIdx).get().await()
         val userDoc = userId?.let {
-            firestore.collection("user_info_col").document(it).get().await()
+            firestore.collection(
+                "user_info_col"
+            ).document(it).get().await()
         }
 
         val totalFavorites = oreumDoc.getLong("favorite")?.toInt() ?: 0
@@ -75,15 +84,24 @@ class OreumRepositoryImpl(
             val oreumSnapshot = firestore.collection("oreum_info_col").get().await()
             val userId = auth.currentUser?.uid
 
-            val stampMap = oreumSnapshot.documents.associate { it.id to (it.getLong("stamp")?.toInt() ?: 0) }
-            val favMap = oreumSnapshot.documents.associate { it.id to (it.getLong("favorite")?.toInt() ?: 0) }
-
-            val userSnapshot = userId?.let {
-                firestore.collection("user_info_col").document(it).get().await()
+            val stampMap =
+                oreumSnapshot.documents.associate {
+                    it.id to (it.getLong("stamp")?.toInt() ?: 0)
+                }
+            val favMap = oreumSnapshot.documents.associate {
+                it.id to (it.getLong("favorite")?.toInt() ?: 0)
             }
 
-            val userFavorites = userSnapshot?.get("favorites") as? Map<String, Boolean> ?: emptyMap()
-            val userStamps = userSnapshot?.get("stampedOreums") as? Map<String, String> ?: emptyMap()
+            val userSnapshot = userId?.let {
+                firestore.collection(
+                    "user_info_col"
+                ).document(it).get().await()
+            }
+
+            val userFavorites =
+                userSnapshot?.get("favorites") as? Map<String, Boolean> ?: emptyMap()
+            val userStamps =
+                userSnapshot?.get("stampedOreums") as? Map<String, String> ?: emptyMap()
 
             apiData.map { oreum ->
                 val idStr = oreum.idx.toString()

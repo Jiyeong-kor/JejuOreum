@@ -1,5 +1,6 @@
 package com.jeong.jjoreum.presentation.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -14,8 +15,11 @@ import com.jeong.jjoreum.repository.OreumRepository
 import com.kakao.vectormap.KakaoMapSdk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SplashViewModel(
+@HiltViewModel
+class SplashViewModel @Inject constructor(
     private val prefs: PreferenceManager,
     private val oreumRepository: OreumRepository,
     private val context: Context

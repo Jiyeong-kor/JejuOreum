@@ -2,46 +2,24 @@ package com.jeong.jjoreum.presentation.ui.profile.stamp
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.databinding.FragmentMyStampBinding
 import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
-import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
 import com.jeong.jjoreum.presentation.viewmodel.MyStampViewModel
-import com.jeong.jjoreum.repository.OreumRepositoryImpl
-import com.jeong.jjoreum.repository.UserInteractionRepositoryImpl
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MyStampFragment :
     ViewBindingBaseFragment<FragmentMyStampBinding>(FragmentMyStampBinding::inflate) {
 
-    private lateinit var viewModel: MyStampViewModel
+    private val viewModel: MyStampViewModel by viewModels()
     private lateinit var listAdapter: MyStampAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val firestore = FirebaseFirestore.getInstance()
-        val auth = FirebaseAuth.getInstance()
-        val apiService = OreumRetrofitInterface.create()
-
-        val oreumRepository = OreumRepositoryImpl(firestore, auth, apiService)
-        val interactionRepository = UserInteractionRepositoryImpl(firestore, auth)
-
-        val factory = AppViewModelFactory(
-            oreumRepository = oreumRepository,
-            interactionRepository = interactionRepository
-        )
-
-        viewModel = ViewModelProvider(this, factory)[MyStampViewModel::class.java]
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

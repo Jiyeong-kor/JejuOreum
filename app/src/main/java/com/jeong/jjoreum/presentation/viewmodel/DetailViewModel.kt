@@ -7,11 +7,14 @@ import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.repository.ReviewRepository
 import com.jeong.jjoreum.repository.StampRepository
 import com.jeong.jjoreum.repository.UserInteractionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailViewModel(
+@HiltViewModel
+class DetailViewModel @Inject constructor(
     private val interactionRepo: UserInteractionRepository,
     private val reviewRepo: ReviewRepository,
     private val stampRepo: StampRepository

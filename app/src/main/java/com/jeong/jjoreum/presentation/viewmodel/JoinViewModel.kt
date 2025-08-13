@@ -7,12 +7,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.data.local.PreferenceManager
 import com.jeong.jjoreum.data.model.entity.JoinItem
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class JoinViewModel(
+@HiltViewModel
+class JoinViewModel @Inject constructor(
     private val prefs: PreferenceManager,
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
@@ -70,10 +73,16 @@ class JoinViewModel(
 
         viewModelScope.launch {
             val currentUser = auth.currentUser
-            Log.d("JoinViewModel", "checkNicknameAvailability - Current User UID: ${currentUser?.uid}")
+            Log.d(
+                "JoinViewModel",
+                "checkNicknameAvailability - Current User UID: ${currentUser?.uid}"
+            )
 
             if (currentUser == null) {
-                Log.e("JoinViewModel", "checkNicknameAvailability - User not authenticated!")
+                Log.e(
+                    "JoinViewModel",
+                    "checkNicknameAvailability - User not authenticated!"
+                )
                 _nicknameErrorMessage.value = "사용자 인증 오류"
                 _isNicknameAvailable.value = false
                 _isLoadingNicknameAvailability.value = false
@@ -94,7 +103,10 @@ class JoinViewModel(
                     _isNicknameAvailable.value = false
                 }
             } catch (e: Exception) {
-                Log.e("JoinViewModel", "Error checking nickname availability: ${e.message}", e)
+                Log.e(
+                    "JoinViewModel",
+                    "Error checking nickname availability: ${e.message}", e
+                )
                 _nicknameErrorMessage.value = "닉네임 확인 중 오류 발생"
                 _isNicknameAvailable.value = false
             } finally {
@@ -105,15 +117,23 @@ class JoinViewModel(
 
     fun saveNickname(onSuccess: (String) -> Unit, onFailure: () -> Unit) {
         val nickname = _nickname.value.trim()
-        if (nickname.isEmpty() || _isNicknameInvalid.value || !_isNicknameAvailable.value || _isLoadingNicknameAvailability.value) {
-            Log.w("JoinViewModel", "saveNickname - Nickname is empty, invalid, not available, or still loading.")
+        if (nickname.isEmpty() || _isNicknameInvalid.value
+            || !_isNicknameAvailable.value || _isLoadingNicknameAvailability.value
+        ) {
+            Log.w(
+                "JoinViewModel",
+                "saveNickname - Nickname is empty, invalid, not available, or still loading."
+            )
             onFailure()
             return
         }
 
         viewModelScope.launch {
             val currentUser = auth.currentUser
-            Log.d("JoinViewModel", "saveNickname - Current User UID: ${currentUser?.uid}")
+            Log.d(
+                "JoinViewModel",
+                "saveNickname - Current User UID: ${currentUser?.uid}"
+            )
 
             if (currentUser == null) {
                 Log.e("JoinViewModel", "saveNickname - User not authenticated!")
@@ -134,11 +154,17 @@ class JoinViewModel(
                     .set(userInfo.toMap())
                     .await()
 
-                Log.i("JoinViewModel", "Nickname successfully saved to Firestore for UID: $uid")
+                Log.i(
+                    "JoinViewModel",
+                    "Nickname successfully saved to Firestore for UID: $uid"
+                )
                 prefs.setNickname(nickname)
                 onSuccess(nickname)
             } catch (e: Exception) {
-                Log.e("JoinViewModel", "Error saving nickname to Firestore for UID: $uid", e)
+                Log.e(
+                    "JoinViewModel",
+                    "Error saving nickname to Firestore for UID: $uid", e
+                )
                 onFailure()
             }
         }

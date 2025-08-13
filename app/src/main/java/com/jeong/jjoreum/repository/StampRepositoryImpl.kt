@@ -10,8 +10,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class StampRepositoryImpl(
+@Singleton
+class StampRepositoryImpl @Inject constructor(
     private val context: Context,
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
@@ -26,7 +29,9 @@ class StampRepositoryImpl(
         oreumLng: Double
     ): Result<Unit> {
         try {
-            val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            val permission = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            )
             if (permission != PackageManager.PERMISSION_GRANTED) {
                 return Result.failure(Exception("위치 권한이 필요합니다."))
             }
@@ -46,18 +51,29 @@ class StampRepositoryImpl(
 
             val distance = userLocation.distanceTo(oreumLocation)
             if (distance > 200) {
-                return Result.failure(Exception("오름과의 거리가 ${"%.2f".format(distance)}m 입니다. 200m 이내로 가까이 가주세요."))
+                return Result.failure(
+                    Exception(
+                        "오름과의 거리가 ${"%.2f".format(distance)}m 입니다. " +
+                                "200m 이내로 가까이 가주세요."
+                    )
+                )
             }
 
-            val uid = auth.currentUser?.uid ?: return Result.failure(Exception("로그인이 필요합니다."))
+            val uid = auth.currentUser?.uid ?: return Result.failure(
+                Exception("로그인이 필요합니다.")
+            )
 
             firestore.runBatch { batch ->
                 batch.update(
-                    firestore.collection("user_info_col").document(uid),
+                    firestore.collection(
+                        "user_info_col"
+                    ).document(uid),
                     "stampedOreums.$oreumIdx", oreumName
                 )
                 batch.update(
-                    firestore.collection("oreum_info_col").document(oreumIdx),
+                    firestore.collection(
+                        "oreum_info_col"
+                    ).document(oreumIdx),
                     "stamp", FieldValue.increment(1)
                 )
             }.await()

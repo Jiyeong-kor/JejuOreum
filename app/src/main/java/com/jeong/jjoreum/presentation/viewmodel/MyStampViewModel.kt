@@ -8,8 +8,11 @@ import com.jeong.jjoreum.repository.UserInteractionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MyStampViewModel(
+@HiltViewModel
+class MyStampViewModel @Inject constructor(
     private val oreumRepository: OreumRepository,
     private val interactionRepository: UserInteractionRepository
 ) : ViewModel() {
@@ -27,7 +30,9 @@ class MyStampViewModel(
     fun loadStampedList() {
         viewModelScope.launch {
             oreumRepository.loadOreumListIfNeeded()
-            val oreumList = oreumRepository.getCachedOreumList() // 캐시된 데이터 직접 사용
+
+            // 캐시된 데이터 직접 사용
+            val oreumList = oreumRepository.getCachedOreumList()
 
             val stamped = oreumList.filter { it.userStamped }.map {
                 MyStampItem(

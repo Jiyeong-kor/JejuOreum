@@ -3,9 +3,12 @@ package com.jeong.jjoreum.repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.data.model.entity.ReviewItem
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
-class ReviewRepositoryImpl(
+@Singleton
+class ReviewRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : ReviewRepository {
@@ -67,7 +70,8 @@ class ReviewRepositoryImpl(
                 transaction.update(
                     docRef, mapOf(
                         "isLiked" to !currentLiked,
-                        "reviewLikeNum" to (if (currentLiked) currentLikeNum - 1 else currentLikeNum + 1)
+                        "reviewLikeNum" to (
+                                if (currentLiked) currentLikeNum - 1 else currentLikeNum + 1)
                     )
                 )
             }.await()
@@ -90,5 +94,4 @@ class ReviewRepositoryImpl(
             Result.failure(e)
         }
     }
-
 }

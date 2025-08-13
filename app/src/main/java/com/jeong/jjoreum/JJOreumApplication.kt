@@ -1,6 +1,5 @@
 package com.jeong.jjoreum
 
-import com.jeong.jjoreum.data.model.api.RetrofitOkHttpManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
@@ -8,11 +7,14 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
-/**
- *  애플리케이션 전역에서 사용하는 Application 클래스
- */
+@HiltAndroidApp
 class JJOreumApplication : Application(), ImageLoaderFactory {
+    @Inject
+    lateinit var imageLoader: ImageLoader
+
     companion object {
         private lateinit var jjOreumApplication: JJOreumApplication
 
@@ -27,12 +29,7 @@ class JJOreumApplication : Application(), ImageLoaderFactory {
         settingScreenPortrait()
     }
 
-    override fun newImageLoader(): ImageLoader {
-        val client = RetrofitOkHttpManager.getUnsafeOkHttpClient()
-        return ImageLoader.Builder(this)
-            .okHttpClient(client)
-            .build()
-    }
+    override fun newImageLoader(): ImageLoader = imageLoader
 
     private fun settingScreenPortrait() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {

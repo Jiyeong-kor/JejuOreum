@@ -3,7 +3,7 @@ package com.jeong.jjoreum.presentation.ui.profile.review
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -11,16 +11,18 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.databinding.FragmentWriteReviewBinding
 import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
-import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
 import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
-import com.jeong.jjoreum.repository.ReviewRepositoryImpl
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class WriteReviewFragment :
-    ViewBindingBaseFragment<FragmentWriteReviewBinding>(FragmentWriteReviewBinding::inflate) {
+    ViewBindingBaseFragment<FragmentWriteReviewBinding>(
+        FragmentWriteReviewBinding::inflate
+    ) {
 
-    private lateinit var viewModel: WriteReviewViewModel
+    private val viewModel: WriteReviewViewModel by viewModels()
     private lateinit var reviewAdapter: ReviewRecyclerViewAdapter
 
     private var oreumIdx: Int = -1
@@ -32,15 +34,6 @@ class WriteReviewFragment :
             oreumIdx = it.getInt("oreumIdx", -1)
             oreumName = it.getString("oreumName") ?: ""
         }
-
-        val firestore = FirebaseFirestore.getInstance()
-        val auth = FirebaseAuth.getInstance()
-        val repo = ReviewRepositoryImpl(firestore, auth)
-
-        val factory = AppViewModelFactory(
-            reviewRepository = repo
-        )
-        viewModel = ViewModelProvider(this, factory)[WriteReviewViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +51,9 @@ class WriteReviewFragment :
                     reviewItem.userId
                 ) { success ->
                     val msg = if (success) "리뷰 삭제 완료!" else "리뷰 삭제 실패"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(), msg, Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )
@@ -74,7 +69,9 @@ class WriteReviewFragment :
         binding?.btnSaveReview?.setOnClickListener {
             val reviewText = binding?.editReview?.text?.toString()?.trim()
             if (reviewText.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), "후기를 입력하세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(), "후기를 입력하세요.", Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 

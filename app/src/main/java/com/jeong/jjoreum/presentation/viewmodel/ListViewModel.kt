@@ -6,11 +6,14 @@ import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.repository.OreumRepository
 import com.jeong.jjoreum.repository.StampRepository
 import com.jeong.jjoreum.repository.UserInteractionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ListViewModel(
+@HiltViewModel
+class ListViewModel @Inject constructor(
     private val oreumRepository: OreumRepository,
     private val userInteractionRepository: UserInteractionRepository,
     private val stampRepository: StampRepository

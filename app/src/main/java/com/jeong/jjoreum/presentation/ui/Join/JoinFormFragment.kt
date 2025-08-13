@@ -11,19 +11,18 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.edit
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PreferenceManager
 import com.jeong.jjoreum.databinding.FragmentJoinFormBinding
 import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
 import com.jeong.jjoreum.presentation.ui.main.MainActivity
-import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
 import com.jeong.jjoreum.presentation.viewmodel.JoinViewModel
 import com.jeong.jjoreum.util.toastMessage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,10 +31,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class JoinFormFragment :
     ViewBindingBaseFragment<FragmentJoinFormBinding>(FragmentJoinFormBinding::inflate) {
 
-    private lateinit var joinViewModel: JoinViewModel
+    private val joinViewModel: JoinViewModel by viewModels()
     private lateinit var firebaseAuth: FirebaseAuth
     private var buttonClickJob: Job? = null
 
@@ -54,19 +54,8 @@ class JoinFormFragment :
 
         rootView = binding?.root ?: return
 
-        val context = requireContext().applicationContext
-        val firestore = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
-        val prefs = PreferenceManager(context)
 
-        val factory = AppViewModelFactory(
-            prefs = prefs,
-            firestore = firestore,
-            auth = auth,
-            context = context
-        )
-
-        joinViewModel = ViewModelProvider(this, factory)[JoinViewModel::class.java]
         firebaseAuth = auth
 
         // 컬러 속성 초기화
@@ -127,7 +116,9 @@ class JoinFormFragment :
                     val nickname = joinFormEditNickname.text.toString().trim()
                     joinViewModel.updateNickname(nickname)
                     val imm =
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        requireContext().getSystemService(
+                            Context.INPUT_METHOD_SERVICE
+                        ) as InputMethodManager
                     imm.hideSoftInputFromWindow(v.windowToken, 0)
                     joinFormEditNickname.clearFocus()
                     true
@@ -146,7 +137,10 @@ class JoinFormFragment :
             joinBtnNext.setOnClickListener {
                 if (buttonClickJob?.isActive == true) return@setOnClickListener
                 buttonClickJob = viewLifecycleOwner.lifecycleScope.launch {
-                    if (joinBtnNext.isEnabled && !joinViewModel.isLoadingNicknameAvailability.value && _isTermCheckBoxChecked.value) {
+                    if (joinBtnNext.isEnabled
+                        && !joinViewModel.isLoadingNicknameAvailability.value
+                        && _isTermCheckBoxChecked.value
+                    ) {
                         saveNickname()
                     } else if (joinViewModel.isLoadingNicknameAvailability.value) {
                         toastMessage("닉네임 확인 중입니다. 잠시만 기다려주세요.")
@@ -192,9 +186,19 @@ class JoinFormFragment :
                 val nicknameNotEmpty = currentNickname.trim().isNotEmpty()
 
                 if (!hasTyped && !nicknameNotEmpty) {
-                    NicknameStatusUiState(View.VISIBLE, View.GONE, null, colorOnSurfaceVariantAttr)
+                    NicknameStatusUiState(
+                        View.VISIBLE,
+                        View.GONE,
+                        null,
+                        colorOnSurfaceVariantAttr
+                    )
                 } else if (isInvalid) {
-                    NicknameStatusUiState(View.VISIBLE, View.GONE, null, colorErrorAttr)
+                    NicknameStatusUiState(
+                        View.VISIBLE,
+                        View.GONE,
+                        null,
+                        colorErrorAttr
+                    )
                 } else if (!isAvailable) {
                     NicknameStatusUiState(
                         View.GONE,
@@ -210,7 +214,12 @@ class JoinFormFragment :
                         colorPrimaryAttr
                     )
                 } else {
-                    NicknameStatusUiState(View.VISIBLE, View.GONE, null, colorOnSurfaceVariantAttr)
+                    NicknameStatusUiState(
+                        View.VISIBLE,
+                        View.GONE,
+                        null,
+                        colorOnSurfaceVariantAttr
+                    )
                 }
             }.collectLatest { uiState ->
                 binding?.apply {
@@ -252,7 +261,9 @@ class JoinFormFragment :
                 requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     .edit { putBoolean("is_signed_up", true) }
 
-                startActivity(Intent(requireContext(), MainActivity::class.java))
+                startActivity(
+                    Intent(requireContext(), MainActivity::class.java)
+                )
                 requireActivity().finish()
             },
             onFailure = {

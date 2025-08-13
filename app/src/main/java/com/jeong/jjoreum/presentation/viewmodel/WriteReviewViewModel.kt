@@ -7,8 +7,11 @@ import com.jeong.jjoreum.repository.ReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WriteReviewViewModel(
+@HiltViewModel
+class WriteReviewViewModel @Inject constructor(
     private val reviewRepo: ReviewRepository
 ) : ViewModel() {
 

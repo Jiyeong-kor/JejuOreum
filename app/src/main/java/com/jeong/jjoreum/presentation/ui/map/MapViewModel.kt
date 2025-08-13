@@ -6,12 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.repository.OreumRepository
 import com.kakao.vectormap.LatLng
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.math.abs
 
-class MapViewModel(
+@HiltViewModel
+class MapViewModel @Inject constructor(
     private val repository: OreumRepository
 ) : ViewModel() {
 
@@ -30,7 +33,9 @@ class MapViewModel(
     fun onSearchQueryChanged(query: String) {
         viewModelScope.launch {
             val result = oreumList.value.filter {
-                query.isBlank() || it.oreumKname.contains(query, true) || it.oreumAddr.contains(
+                query.isBlank()
+                        || it.oreumKname.contains(query, true)
+                        || it.oreumAddr.contains(
                     query,
                     true
                 )

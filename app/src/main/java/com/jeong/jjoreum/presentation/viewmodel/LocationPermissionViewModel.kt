@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 sealed class PermissionEvent {
     data object RequestLocationPermission : PermissionEvent()
@@ -16,7 +18,9 @@ sealed class PermissionEvent {
     data object PermissionDeniedPermanently : PermissionEvent()
 }
 
-class LocationPermissionViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class LocationPermissionViewModel
+@Inject constructor(application: Application) : AndroidViewModel(application) {
 
     private val _permissionEvent = MutableLiveData<PermissionEvent>()
     val permissionEvent: LiveData<PermissionEvent> get() = _permissionEvent
@@ -43,7 +47,11 @@ class LocationPermissionViewModel(application: Application) : AndroidViewModel(a
 
     private fun areAllPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
-            if (ContextCompat.checkSelfPermission(getApplication<Application>().applicationContext, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    getApplication<Application>().applicationContext,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return false
             }
         }

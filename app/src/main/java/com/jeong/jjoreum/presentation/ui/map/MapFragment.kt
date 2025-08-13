@@ -10,45 +10,32 @@ import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.data.model.api.ResultSummary
-import com.jeong.jjoreum.data.model.api.RetrofitOkHttpManager
 import com.jeong.jjoreum.databinding.FragmentMapBinding
 import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
-import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
-import com.jeong.jjoreum.repository.OreumRepositoryImpl
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-class MapFragment : ViewBindingBaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate) {
+@AndroidEntryPoint
+class MapFragment :
+    ViewBindingBaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate) {
 
-    private lateinit var mapViewModel: MapViewModel
+    private val mapViewModel: MapViewModel by viewModels()
     private var mapController: MapController? = null
     private var ignoreTextChanges = false
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding!!) {
+    override fun onViewCreated(
+        view: View, savedInstanceState: Bundle?
+    ) = with(binding!!) {
         super.onViewCreated(view, savedInstanceState)
-
-        val firestore = FirebaseFirestore.getInstance()
-        val auth = FirebaseAuth.getInstance()
-        val api =
-            RetrofitOkHttpManager.oreumRetrofitBuilder.create(OreumRetrofitInterface::class.java)
-        val repository = OreumRepositoryImpl(firestore, auth, api)
-
-        val factory = AppViewModelFactory(
-            oreumRepository = repository
-        )
-
-        mapViewModel = ViewModelProvider(this@MapFragment, factory)[MapViewModel::class.java]
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (searchResultContainer.isVisible || textViewNoResults.isVisible) {
@@ -192,7 +179,9 @@ class MapFragment : ViewBindingBaseFragment<FragmentMapBinding>(FragmentMapBindi
     }
 
     private fun hideKeyboardAndClearFocus() = with(binding!!) {
-        val imm = ContextCompat.getSystemService(requireContext(), InputMethodManager::class.java)
+        val imm = ContextCompat.getSystemService(
+            requireContext(), InputMethodManager::class.java
+        )
         imm?.hideSoftInputFromWindow(searchEditText.windowToken, 0)
         searchEditText.clearFocus()
     }
