@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.kotlin.plugin.compose)
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
 }
@@ -62,9 +63,6 @@ android {
         viewBinding = true
         buildConfig = true
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1" // compileSdk 36에 맞는 버전
     }
 }
 

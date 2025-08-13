@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services) apply false
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.hilt.android) apply false
+    alias(libs.plugins.kotlin.plugin.compose)
 }
 buildscript {
     repositories {
