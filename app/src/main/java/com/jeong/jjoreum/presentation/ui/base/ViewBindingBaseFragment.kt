@@ -28,12 +28,6 @@ abstract class ViewBindingBaseFragment<B : ViewBinding>(
      */
     protected open val binding: B?
         get() {
-            if (_binding == null) {
-                Log.e(
-                    "ViewBindingBaseFragment",
-                    "경고: ViewBinding이 onDestroyView() 이후에 접근되었습니다."
-                )
-            }
             return _binding
         }
 
@@ -54,7 +48,7 @@ abstract class ViewBindingBaseFragment<B : ViewBinding>(
      * Fragment의 뷰가 사라질 때 ViewBinding 객체를 해제
      */
     override fun onDestroyView() {
-        _binding = null
         super.onDestroyView()
+        _binding = null
     }
 }

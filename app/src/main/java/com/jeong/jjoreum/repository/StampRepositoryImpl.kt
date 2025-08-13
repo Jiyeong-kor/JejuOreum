@@ -46,7 +46,7 @@ class StampRepositoryImpl(
 
             val distance = userLocation.distanceTo(oreumLocation)
             if (distance > 200) {
-                return Result.failure(Exception("오름과의 거리가 ${"%.2f".format(distance)}m 입니다. 5m 이내로 가까이 가주세요."))
+                return Result.failure(Exception("오름과의 거리가 ${"%.2f".format(distance)}m 입니다. 200m 이내로 가까이 가주세요."))
             }
 
             val uid = auth.currentUser?.uid ?: return Result.failure(Exception("로그인이 필요합니다."))

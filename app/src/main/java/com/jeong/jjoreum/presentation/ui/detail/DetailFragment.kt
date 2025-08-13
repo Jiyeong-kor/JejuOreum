@@ -62,8 +62,10 @@ class DetailFragment :
         viewModel = ViewModelProvider(this, factory)[DetailViewModel::class.java]
 
         val oreumData = DetailFragmentArgs.fromBundle(requireArguments()).oreumData
-        viewModel.setOreumDetail(oreumData)
-        viewModel.loadReviews(oreumData.idx.toString())
+        with(viewModel) {
+            setOreumDetail(oreumData)
+            loadReviews(oreumData.idx.toString())
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
