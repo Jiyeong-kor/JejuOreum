@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.fragment)
 
     //compose기반
     implementation(platform(libs.androidx.compose.bom))
