@@ -26,6 +26,7 @@ firebaseFirestore = "26.0.0"
 firebaseBom = "34.1.0"
 rxbinding = "4.0.0"
 lottie = "6.6.7"
+lottieCompose = "6.6.7"
 navigationCompose = "2.9.3"
 navigationFragment = "2.9.3"
 navigationUiKtx = "2.9.3"
@@ -87,6 +88,7 @@ tedpermission-normal = { module = "io.github.ParkSangGwon:tedpermission-normal",
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" } # <- 이 부분을 추가하세요
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
