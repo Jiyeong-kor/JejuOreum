@@ -166,6 +166,7 @@ class MapFragment :
 
     override fun onResume() {
         super.onResume()
+        binding?.mapView?.resume()
         lifecycleScope.launch {
             mapViewModel.oreumList.collect {
                 mapController?.drawOreumMarkers(it)
@@ -173,9 +174,19 @@ class MapFragment :
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        binding?.mapView?.pause()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         mapController = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding?.mapView?.finish()
     }
 
     private fun hideKeyboardAndClearFocus() = with(binding!!) {
