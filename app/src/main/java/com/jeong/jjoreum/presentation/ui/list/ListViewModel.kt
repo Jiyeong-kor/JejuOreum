@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.jjoreum.presentation.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +9,7 @@ import com.jeong.jjoreum.repository.UserInteractionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,9 +19,11 @@ class ListViewModel @Inject constructor(
     private val userInteractionRepository: UserInteractionRepository,
     private val stampRepository: StampRepository
 ) : ViewModel() {
-
     private val _oreumList = MutableStateFlow<List<ResultSummary>>(emptyList())
     val oreumList: StateFlow<List<ResultSummary>> get() = _oreumList
+
+    private val _stampResult = MutableStateFlow<Result<Unit>?>(null)
+    val stampResult: StateFlow<Result<Unit>?> = _stampResult.asStateFlow()
 
     init {
         loadOreumList()
@@ -51,10 +54,10 @@ class ListViewModel @Inject constructor(
             val currentList = _oreumList.value
             val target = currentList.find { it.idx.toString() == oreumIdx } ?: return@launch
             val newIsFavorite = !target.userLiked
-
             val newTotal = userInteractionRepository.toggleFavorite(oreumIdx, newIsFavorite)
+
             oreumRepository.refreshAllOreumsWithNewUserData()
-            // 변경된 항목만 반영한 새로운 리스트 생성
+
             val updatedList = currentList.map {
                 if (it.idx.toString() == oreumIdx) {
                     it.copy(userLiked = newIsFavorite, totalFavorites = newTotal)
@@ -66,22 +69,17 @@ class ListViewModel @Inject constructor(
         }
     }
 
-
     fun tryStamp(
         oreumIdx: String,
         oreumName: String,
         oreumLat: Double,
-        oreumLng: Double,
-        onSuccess: () -> Unit,
-        onFailure: (String) -> Unit
+        oreumLng: Double
     ) {
         viewModelScope.launch {
             val result = stampRepository.tryStamp(oreumIdx, oreumName, oreumLat, oreumLng)
+            _stampResult.value = result
             if (result.isSuccess) {
                 updateStampStatus()
-                onSuccess()
-            } else {
-                onFailure(result.exceptionOrNull()?.message ?: "알 수 없는 오류")
             }
         }
     }
@@ -94,16 +92,6 @@ class ListViewModel @Inject constructor(
                 it.copy(userStamped = userStamps[oreumId] ?: false)
             }
             _oreumList.value = updated
-        }
-    }
-
-    fun refreshOreumById(oreumIdx: String) {
-        viewModelScope.launch {
-            val updated = oreumRepository.fetchSingleOreumById(oreumIdx)
-            val newList = _oreumList.value.map {
-                if (it.idx.toString() == oreumIdx) updated else it
-            }
-            _oreumList.value = newList.toList()
         }
     }
 }
