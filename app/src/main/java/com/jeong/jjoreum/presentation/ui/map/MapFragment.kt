@@ -20,7 +20,9 @@ import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
+import com.kakao.vectormap.LatLngBounds
 import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.camera.CameraUpdateFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -119,6 +121,7 @@ class MapFragment :
                 override fun onMapReady(map: KakaoMap) {
                     mapController = MapController(map) { latLng ->
                         mapController?.highlightMarker(latLng)
+                        mapController?.moveCameraTo(latLng)
                         mapViewModel.onPoiClicked(latLng)?.let {
                             OreumInfoBottomSheetDialogFragment.newInstance(it)
                                 .show(childFragmentManager, "oreum_info")
@@ -127,18 +130,34 @@ class MapFragment :
 
                     lifecycleScope.launch {
                         repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
-                            mapViewModel.oreumList.collect {
+                            mapViewModel.visibleOreumList.collect {
                                 mapController?.drawOreumMarkers(it)
                             }
                         }
                     }
 
-                    mapController?.drawOreumMarkers(mapViewModel.oreumList.value)
-
                     map.setOnViewportClickListener { _, _, _ ->
                         hideSearchResults()
                         mapViewModel.onMapTouched()
                     }
+
+                    map.setOnCameraMoveEndListener { currentMap, _, _ ->
+                        val viewport = currentMap.viewport
+                        val southwest =
+                            currentMap.fromScreenPoint(viewport.left, viewport.bottom)
+                        val northeast =
+                            currentMap.fromScreenPoint(viewport.right, viewport.top)
+                        if (southwest != null && northeast != null) {
+                            mapViewModel.loadOreumForVisibleArea(
+                                LatLngBounds(northeast, southwest)
+                            )
+                        }
+                    }
+
+                    val hallasan = LatLng.from(33.3616, 126.5312)
+                    map.moveCamera(
+                        CameraUpdateFactory.newCenterPosition(hallasan, 10)
+                    )
                 }
             }
         )
@@ -167,11 +186,6 @@ class MapFragment :
     override fun onResume() {
         super.onResume()
         binding?.mapView?.resume()
-        lifecycleScope.launch {
-            mapViewModel.oreumList.collect {
-                mapController?.drawOreumMarkers(it)
-            }
-        }
     }
 
     override fun onPause() {
