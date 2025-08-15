@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -56,7 +57,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
                     favorites[oreumIdx] = true
                     count++
                 } else {
-                    favorites.remove(oreumIdx)
+                    favorites[oreumIdx] = false
                     if (count > 0) count--
                 }
 
@@ -68,12 +69,14 @@ class UserInteractionRepositoryImpl @Inject constructor(
                     oreumDoc,
                     mapOf("favorite" to count), SetOptions.merge()
                 )
-                Log.d("FavoriteDebug", "✅ [쓰기 성공] Oreum $oreumIdx -> $newIsFavorite")
+                Log.d(
+                    "FavoriteDebug",
+                    "✅ [쓰기 성공] Oreum $oreumIdx -> $newIsFavorite"
+                )
                 count
             }.await()
         } catch (e: Exception) {
-            Log.e("FavoriteDebug", "❌ [쓰기 실패] 원인: ", e) // 실패 로그
-            // 트랜잭션 실패 시 현재 카운트를 그대로 반환하거나 기본값 처리
+            Log.e("FavoriteDebug", "❌ [쓰기 실패] 원인: ", e)
             val oreumSnap = oreumDoc.get().await()
             oreumSnap.getLong("favorite")?.toInt() ?: 0
         }
@@ -83,7 +86,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
         val uid = getUserId() ?: return emptyMap()
         val doc = firestore.collection(
             "user_info_col"
-        ).document(uid).get().await()
+        ).document(uid).get(Source.SERVER).await()
         return doc.get("favorites") as? Map<String, Boolean> ?: emptyMap()
     }
 

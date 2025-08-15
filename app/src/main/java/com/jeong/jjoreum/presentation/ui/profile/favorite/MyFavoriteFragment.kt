@@ -35,7 +35,11 @@ class MyFavoriteFragment :
     private fun setupRecyclerView() {
         listAdapter = ListAdapter(
             onItemClick = { oreum -> navigateToDetailFragment(oreum) },
-            onFavoriteClick = {},
+            onFavoriteClick = { oreum ->
+                viewModel.toggleFavorite(
+                    oreum.idx.toString(), !oreum.userLiked
+                )
+            },
             onStampClick = {}
         )
 

@@ -1,6 +1,7 @@
 package com.jeong.jjoreum.presentation.ui.list
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -17,7 +18,8 @@ class ListAdapter(
     private val onItemClick: (ResultSummary) -> Unit,
     private val onFavoriteClick: (ResultSummary) -> Unit,
     private val onStampClick: (ResultSummary) -> Unit
-) : ListAdapter<ResultSummary, com.jeong.jjoreum.presentation.ui.list.ListAdapter.OreumListViewHolder>(
+) : ListAdapter<ResultSummary,
+        com.jeong.jjoreum.presentation.ui.list.ListAdapter.OreumListViewHolder>(
     diffUtil
 ) {
 
@@ -43,7 +45,9 @@ class ListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OreumListViewHolder {
-        val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemListBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
         return OreumListViewHolder(binding, onItemClick, onFavoriteClick, onStampClick)
     }
 
@@ -80,7 +84,8 @@ class ListAdapter(
             }
 
             favoriteIcon.setImageResource(
-                if (item.userLiked) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
+                if (item.userLiked) R.drawable.ic_favorite_selected
+                else R.drawable.ic_favorite_unselected
             )
 
             stampIcon.setImageResource(

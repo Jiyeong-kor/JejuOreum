@@ -3,6 +3,7 @@ package com.jeong.jjoreum.repository
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import javax.inject.Inject
@@ -81,11 +82,10 @@ class OreumRepositoryImpl @Inject constructor(
 
     override suspend fun refreshAllOreumsWithNewUserData() {
         val cachedList = getCachedOreumList()
+
         if (cachedList.isEmpty()) {
-            // 캐시된 목록이 없으면 그냥 새로 로드
-            loadOreumListIfNeeded()
+            _oreumListFlow.value = fetchOreumList()
         } else {
-            // 캐시된 목록이 있으면 사용자 정보만 덧씌워서 Flow를 업데이트
             _oreumListFlow.value = mergeWithFirestoreData(cachedList)
         }
     }
@@ -104,14 +104,12 @@ class OreumRepositoryImpl @Inject constructor(
             }
 
             val userSnapshot = userId?.let {
-                firestore.collection(
-                    "user_info_col"
-                ).document(it).get().await()
+                firestore.collection("user_info_col")
+                    .document(it).get(Source.SERVER).await()
             }
 
             val userFavorites =
                 userSnapshot?.get("favorites") as? Map<String, Boolean> ?: emptyMap()
-            Log.d("FavoriteDebug", "✅ [읽기 성공] 불러온 즐겨찾기 정보: $userFavorites")
 
             val userStamps =
                 userSnapshot?.get("stampedOreums") as? Map<String, String> ?: emptyMap()
