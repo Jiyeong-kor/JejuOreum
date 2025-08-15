@@ -71,8 +71,6 @@ class MyFavoriteFragment :
         val bundle = Bundle().apply {
             putParcelable("oreumData", oreum)
         }
-        findNavController().navigate(
-            R.id.action_listFragment_to_detailFragment, bundle
-        )
+        findNavController().navigate(R.id.detailFragment, bundle)
     }
 }
