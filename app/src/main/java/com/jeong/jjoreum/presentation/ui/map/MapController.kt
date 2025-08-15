@@ -36,7 +36,6 @@ class MapController(
 
     init {
         map.setOnPoiClickListener { _, latLng, _, _ -> onPoiClicked(latLng) }
-        map.setOnViewportClickListener { _, _, _ -> /* 빈 영역 클릭은 외부에서 처리 */ }
     }
 
     fun drawOreumMarkers(list: List<ResultSummary>, iconResId: Int = R.drawable.oreum_unselected) {
@@ -87,5 +86,4 @@ class MapController(
     private fun isSameLocation(a: LatLng, b: LatLng): Boolean =
         kotlin.math.abs(a.latitude - b.latitude) < 0.0001 &&
                 kotlin.math.abs(a.longitude - b.longitude) < 0.0001
-
 }
