@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -50,6 +53,10 @@ fun MapScreen(
     var showSheet by remember { mutableStateOf(false) }
     var mapController by remember { mutableStateOf<MapController?>(null) }
 
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val mapView = remember(context) { MapView(context) }
+
     BackHandler(enabled = uiState is MapUiState.SearchResults || uiState is MapUiState.NoResults) {
         viewModel.hideSearch(); query = ""; focus.clearFocus()
     }
@@ -62,51 +69,52 @@ fun MapScreen(
 
         AndroidView(
             modifier = Modifier.fillMaxSize(),
-            factory = { ctx ->
-                val mapView = MapView(ctx)
-                mapView.start(
-                    object : MapLifeCycleCallback() {
-                        override fun onMapDestroy() {}
-                        override fun onMapError(error: Exception) {
-                            Log.e("MapScreen", "Map error: ${error.message}")
-                        }
-                    },
-                    object : KakaoMapReadyCallback() {
-                        override fun onMapReady(map: KakaoMap) {
-                            mapController = MapController(map) { latLng ->
-                                mapController?.highlightMarker(latLng)
-                                mapController?.moveCameraTo(latLng)
-                                val oreum = viewModel.onPoiClicked(latLng)
-                                if (oreum != null) {
-                                    sheetOreum = oreum; showSheet = true
+            factory = {
+                mapView.apply {
+                    isFinishManually = true
+                    start(
+                        object : MapLifeCycleCallback() {
+                            override fun onMapDestroy() {}
+                            override fun onMapError(error: Exception) {
+                                Log.e("MapScreen", "Map error: ${error.message}")
+                            }
+                        },
+                        object : KakaoMapReadyCallback() {
+                            override fun onMapReady(map: KakaoMap) {
+                                mapController = MapController(map) { latLng ->
+                                    mapController?.highlightMarker(latLng)
+                                    mapController?.moveCameraTo(latLng)
+                                    val oreum = viewModel.onPoiClicked(latLng)
+                                    if (oreum != null) {
+                                        sheetOreum = oreum; showSheet = true
+                                    }
+                                    viewModel.onMapTouched()
                                 }
-                                viewModel.onMapTouched()
-                            }
 
-                            map.setOnViewportClickListener { _, _, _ ->
-                                viewModel.hideSearch(); query = ""; focus.clearFocus()
-                            }
-
-                            map.setOnCameraMoveEndListener { currentMap, _, _ ->
-                                val vp = currentMap.viewport
-                                val sw = currentMap.fromScreenPoint(vp.left, vp.bottom)
-                                val ne = currentMap.fromScreenPoint(vp.right, vp.top)
-                                if (sw != null && ne != null) {
-                                    viewModel.loadOreumForVisibleArea(
-                                        LatLngBounds(ne, sw)
-                                    )
+                                map.setOnViewportClickListener { _, _, _ ->
+                                    viewModel.hideSearch(); query = ""; focus.clearFocus()
                                 }
-                            }
 
-                            val hallasan = LatLng.from(33.3616, 126.5312)
-                            map.moveCamera(
-                                CameraUpdateFactory
-                                    .newCenterPosition(hallasan, 10)
-                            )
+                                map.setOnCameraMoveEndListener { currentMap, _, _ ->
+                                    val vp = currentMap.viewport
+                                    val sw = currentMap.fromScreenPoint(vp.left, vp.bottom)
+                                    val ne = currentMap.fromScreenPoint(vp.right, vp.top)
+                                    if (sw != null && ne != null) {
+                                        viewModel.loadOreumForVisibleArea(
+                                            LatLngBounds(ne, sw)
+                                        )
+                                    }
+                                }
+
+                                val hallasan = LatLng.from(33.3616, 126.5312)
+                                map.moveCamera(
+                                    CameraUpdateFactory
+                                        .newCenterPosition(hallasan, 10)
+                                )
+                            }
                         }
-                    }
-                )
-                mapView
+                    )
+                }
             }
         )
 
@@ -115,10 +123,7 @@ fun MapScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .displayCutoutPadding()
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 12.dp
-                )
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             OutlinedTextField(
                 value = query,
@@ -128,7 +133,7 @@ fun MapScreen(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                placeholder = { Text("오름 이름이나 주소로 검색") },
+                placeholder = { Text("오름의 이름이나 주소로 검색해 주세요") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
                     onSearch = {
@@ -197,6 +202,23 @@ fun MapScreen(
                     }
                 )
             }
+        }
+    }
+
+    DisposableEffect(lifecycleOwner, mapView) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> mapView.resume()
+                Lifecycle.Event.ON_PAUSE -> mapView.pause()
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            mapController = null
+            mapView.finish()
         }
     }
 }
@@ -291,7 +313,7 @@ private fun OreumSheetContent(
                 .build(),
             placeholder = painterResource(R.drawable.placeholder_image),
             error = painterResource(R.drawable.error_image),
-            contentDescription = context.getString(R.string.app_name),
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp),
@@ -308,7 +330,7 @@ private fun OreumSheetContent(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(Modifier.height(6.dp)) // ⬅ 제목과 주소 간격 축소
+            Spacer(Modifier.height(6.dp))
             Text(
                 text = oreum.oreumAddr,
                 style = MaterialTheme.typography.bodyMedium,
