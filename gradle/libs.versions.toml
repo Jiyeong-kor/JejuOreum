@@ -2,9 +2,8 @@
 activityCompose = "1.10.1"
 agp = "8.12.0"
 android = "2.12.8"
-coilCompose = "2.7.0"
+coilBom = "3.3.0"
 composeBom = "2025.08.00"
-coilVersion = "2.7.0"
 coreSplashscreen = "1.0.1"
 hilt = "2.57"
 hiltNavigationCompose = "1.2.0"
@@ -53,7 +52,10 @@ androidx-hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fr
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-ui = { module = "androidx.compose.ui:ui" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coilBom" }
+coil3-coil = { module = "io.coil-kt.coil3:coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp"}
+coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -70,7 +72,6 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 android = { module = "com.kakao.maps.open:android", version.ref = "android" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationFragment" }
-coil-kt-coil = { module = "io.coil-kt:coil", version.ref = "coilVersion" }
 kakao-v2-all = { module = "com.kakao.sdk:v2-all", version.ref = "kakaoV2All" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
@@ -88,7 +89,7 @@ tedpermission-normal = { module = "io.github.ParkSangGwon:tedpermission-normal",
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
-lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" } # <- 이 부분을 추가하세요
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

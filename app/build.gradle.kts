@@ -82,14 +82,19 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.hilt.navigation.fragment)
 
-    //compose기반
+    //compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.coil.compose)
     implementation(libs.lottie.compose)
+
+    //coil3
+    implementation(platform(libs.coil.bom))
+    implementation(libs.coil3.coil)
+    implementation(libs.coil3.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -114,7 +119,6 @@ dependencies {
     implementation(libs.tedpermission.coroutine)
     implementation(libs.tedpermission.normal)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.coil.kt.coil)
     implementation(libs.okhttp)
     implementation(libs.play.services.maps)
     implementation(libs.firebase.auth.ktx)
