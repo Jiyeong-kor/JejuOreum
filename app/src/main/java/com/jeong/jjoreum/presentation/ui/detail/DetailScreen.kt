@@ -44,7 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PermissionManager
 import com.jeong.jjoreum.data.model.entity.ReviewItem

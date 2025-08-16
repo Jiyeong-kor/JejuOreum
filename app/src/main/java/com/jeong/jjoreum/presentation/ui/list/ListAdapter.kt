@@ -1,13 +1,13 @@
 package com.jeong.jjoreum.presentation.ui.list
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import coil3.load
+import coil3.request.crossfade
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.databinding.ItemListBinding
@@ -67,8 +67,6 @@ class ListAdapter(
         fun bind(item: ResultSummary) = with(binding) {
             rvItemImage.load(item.imgPath) {
                 crossfade(true)
-                placeholder(R.drawable.placeholder_image)
-                error(R.drawable.error_image)
             }
 
             rvItemOreumName.text = item.oreumKname

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import coil3.load
 import com.google.firebase.auth.FirebaseAuth
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.entity.ReviewItem
@@ -39,13 +39,15 @@ class ReviewRecyclerViewAdapter(
             with(binding) {
                 reviewUserName.text = item.userNickname
                 reviewContent.text = item.userReview
-                val formattedTime = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
-                    .format(Date(item.userTime))
+                val formattedTime =
+                    SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
+                        .format(Date(item.userTime))
                 reviewDate.text = formattedTime
                 reviewLikeText.text = item.reviewLikeNum.toString()
                 reviewProfileImage.load(R.drawable.ic_my_selected)
                 reviewLikeIcon.setImageResource(
-                    if (item.isLiked) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
+                    if (item.isLiked) R.drawable.ic_favorite_selected
+                    else R.drawable.ic_favorite_unselected
                 )
                 reviewLikeLayout.setOnClickListener {
                     onLikeClick(item)
