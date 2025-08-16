@@ -3,21 +3,35 @@ package com.jeong.jjoreum
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
+import dagger.hilt.components.SingletonComponent
 
 @HiltAndroidApp
-class JJOreumApplication : Application(), ImageLoaderFactory {
-    @Inject
-    lateinit var imageLoader: ImageLoader
+class JJOreumApplication : Application(), SingletonImageLoader.Factory {
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface ImageLoaderEntryPoint {
+        fun imageLoader(): ImageLoader
+    }
+
+    override fun newImageLoader(context: Context): ImageLoader {
+        val ep = EntryPointAccessors.fromApplication(
+            this, ImageLoaderEntryPoint::class.java
+        )
+        return ep.imageLoader()
+    }
 
     companion object {
         private lateinit var jjOreumApplication: JJOreumApplication
-
         fun getInstance(): JJOreumApplication = jjOreumApplication
     }
 
@@ -28,8 +42,6 @@ class JJOreumApplication : Application(), ImageLoaderFactory {
         // 화면을 세로 모드로 고정
         settingScreenPortrait()
     }
-
-    override fun newImageLoader(): ImageLoader = imageLoader
 
     private fun settingScreenPortrait() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {

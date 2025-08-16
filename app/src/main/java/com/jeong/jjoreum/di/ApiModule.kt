@@ -2,8 +2,13 @@ package com.jeong.jjoreum.di
 
 import android.annotation.SuppressLint
 import android.content.Context
-import coil.ImageLoader
+import androidx.appcompat.content.res.AppCompatResources
+import coil3.ImageLoader
+import coil3.asImage
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.crossfade
 import com.jeong.jjoreum.BuildConfig
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import dagger.Module
 import dagger.Provides
@@ -85,10 +90,21 @@ object ApiModule {
     @Provides
     fun provideImageLoader(
         @ApplicationContext context: Context,
-        okHttpClient: OkHttpClient // 이미 위에서 만든 OkHttpClient를 재사용합니다.
+        okHttpClient: OkHttpClient
     ): ImageLoader {
+        val placeholder =
+            AppCompatResources.getDrawable(context, R.drawable.placeholder_image)!!.asImage()
+        val error =
+            AppCompatResources.getDrawable(context, R.drawable.error_image)!!.asImage()
+
         return ImageLoader.Builder(context)
-            .okHttpClient(okHttpClient)
+            .placeholder(placeholder)
+            .error(error)
+            .fallback(placeholder)
+            .crossfade(true)
+            .components {
+                add(OkHttpNetworkFetcherFactory(okHttpClient))
+            }
             .build()
     }
 }
