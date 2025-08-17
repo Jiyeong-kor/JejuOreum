@@ -1,87 +1,112 @@
 package com.jeong.jjoreum.presentation.ui.map
 
-import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.jjoreum.data.model.api.ResultSummary
+import com.jeong.jjoreum.domain.geo.GeoBounds
+import com.jeong.jjoreum.domain.geo.GeoPoint
+import com.jeong.jjoreum.domain.geo.quantized
 import com.jeong.jjoreum.repository.OreumRepository
-import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.LatLngBounds
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+
+data class CameraSnapshot(val center: GeoPoint, val zoomLevel: Int)
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    repository: OreumRepository
+    repository: OreumRepository,
+    private val savedStateHandle: SavedStateHandle
+
 ) : ViewModel() {
 
-    private val _oreumList = repository.oreumListFlow
+    private companion object {
+        const val KEY_CAM_LAT = "cam_lat"
+        const val KEY_CAM_LON = "cam_lon"
+        const val KEY_CAM_ZOOM = "cam_zoom"
+    }
+
+    private val oreumList: StateFlow<List<ResultSummary>> = repository.oreumListFlow
 
     private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Idle)
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
 
-    private val _visibleOreumList = MutableStateFlow<List<ResultSummary>>(emptyList())
-    val visibleOreumList: StateFlow<List<ResultSummary>> = _visibleOreumList.asStateFlow()
+    private val _visiblePins = MutableStateFlow<List<MapPinUi>>(emptyList())
+    val visiblePins: StateFlow<List<MapPinUi>> = _visiblePins.asStateFlow()
 
     private val _selectedOreum = MutableStateFlow<ResultSummary?>(null)
+    val selectedOreum: StateFlow<ResultSummary?> = _selectedOreum.asStateFlow()
+
+    private val _cameraState = MutableStateFlow(restoreCameraFromSavedState())
+    val cameraState: StateFlow<CameraSnapshot?> = _cameraState.asStateFlow()
 
     fun onSearchQueryChanged(query: String) {
         viewModelScope.launch {
-            val result = _oreumList.value.filter {
-                query.isBlank()
-                        || it.oreumKname.contains(query, true)
-                        || it.oreumAddr.contains(
-                    query,
-                    true
-                )
+            val q = query.trim()
+            val result = oreumList.value.filter { item ->
+                q.isBlank()
+                        || item.oreumKname.contains(q)
+                        || item.oreumAddr.contains(q)
             }
-            _uiState.value = if (result.isEmpty() && query.isNotBlank()) MapUiState.NoResults
-            else MapUiState.SearchResults(result)
+            _uiState.value =
+                if (result.isEmpty() && q.isNotBlank()) MapUiState.NoResults
+                else MapUiState.SearchResults(result)
         }
     }
 
-    fun loadOreumForVisibleArea(bounds: LatLngBounds) {
+    fun updateVisibleOreumWithin(bounds: GeoBounds) {
         viewModelScope.launch {
-            val fullList = _oreumList.value
-            val filteredList = fullList.filter { oreum ->
-                val point = LatLng.from(oreum.y, oreum.x)
-                point.latitude in bounds.southwest.latitude..bounds.northeast.latitude &&
-                        point.longitude in
-                        bounds.southwest.longitude..bounds.northeast.longitude
+            val full = oreumList.value
+            val minLat = min(bounds.sw.lat, bounds.ne.lat)
+            val maxLat = max(bounds.sw.lat, bounds.ne.lat)
+            val minLon = min(bounds.sw.lon, bounds.ne.lon)
+            val maxLon = max(bounds.sw.lon, bounds.ne.lon)
+
+            val newPins = full.filter { o ->
+                o.y in minLat..maxLat && o.x in minLon..maxLon
             }
-            _visibleOreumList.value = filteredList
-            Log.d("MapViewModel", "Visible Oreum count: ${filteredList.size}")
+                .map { o -> MapPinUi(title = o.oreumKname, lat = o.y, lon = o.x) }
+
+            if (newPins == _visiblePins.value) return@launch
+            _visiblePins.value = newPins
         }
     }
 
-    fun selectOreum(latLng: LatLng) {
-        _selectedOreum.value = _oreumList.value.find {
-            isSameOreumLocation(it, latLng)
-        } ?: run {
-            Log.w("MapViewModel", "해당 위치에 오름 정보가 없습니다: $latLng")
-            null
-        }
-    }
+    private fun ResultSummary.quantKey(): GeoPoint = GeoPoint(y, x).quantized()
 
-    fun onPoiClicked(latLng: LatLng): ResultSummary? {
-        selectOreum(latLng)
+    fun selectOreumAt(point: GeoPoint): ResultSummary? {
+        val key = point.quantized()
+        _selectedOreum.value = oreumList.value.find { it.quantKey() == key }
         return _selectedOreum.value
     }
 
-    fun onMapTouched() {
+    fun clearSelection() {
         _selectedOreum.value = null
     }
 
-    fun hideSearch() {
+    fun closeSearchPanel() {
         _uiState.value = MapUiState.Hidden
     }
 
-    private fun isSameOreumLocation(oreum: ResultSummary, latLng: LatLng): Boolean =
-        abs(oreum.y - latLng.latitude) < 0.0005 &&
-                abs(oreum.x - latLng.longitude) < 0.0005
+    fun saveCamera(center: GeoPoint, zoomLevel: Int) {
+        _cameraState.value = CameraSnapshot(center, zoomLevel)
+        savedStateHandle[KEY_CAM_LAT] = center.lat
+        savedStateHandle[KEY_CAM_LON] = center.lon
+        savedStateHandle[KEY_CAM_ZOOM] = zoomLevel
+    }
+
+    private fun restoreCameraFromSavedState(): CameraSnapshot? {
+        val lat = savedStateHandle.get<Double>(KEY_CAM_LAT)
+        val lon = savedStateHandle.get<Double>(KEY_CAM_LON)
+        val zoom = savedStateHandle.get<Int>(KEY_CAM_ZOOM)
+        return if (lat != null && lon != null && zoom != null) {
+            CameraSnapshot(GeoPoint(lat, lon), zoom)
+        } else null
+    }
 }
