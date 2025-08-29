@@ -11,7 +11,12 @@ const val GEO_QUANT_DECIMALS: Int = 5
  */
 fun Double.quantize(decimals: Int = GEO_QUANT_DECIMALS): Double {
     val s = 10.0.pow(decimals)
-    return round(this * s) / s
+    val q = round(this * s) / s
+    // Kotlin/Java는 -0.0에 대해 부호 비트를 유지하여
+    // (0.0 == -0.0)임에도 해시코드가 달라지는 문제가 발생합니다.
+    // GeoPoint를 해시 기반 컬렉션에서 사용할 때 예기치 않은 동작을 막기 위해
+    // 값을 양수 0.0으로 정규화합니다.
+    return if (q == -0.0) 0.0 else q
 }
 
 /**
