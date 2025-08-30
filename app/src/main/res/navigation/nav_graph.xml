@@ -8,8 +8,7 @@
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.jeong.jjoreum.presentation.ui.splash.SplashFragment"
-        android:label="Splash"
-        >
+        android:label="Splash">
         <action
             android:id="@+id/action_splash_to_join"
             app:destination="@id/joinFormFragment" />
@@ -97,8 +96,7 @@
     <fragment
         android:id="@+id/navigation_my_favorite"
         android:name="com.jeong.jjoreum.presentation.ui.profile.favorite.MyFavoriteFragment"
-        android:label="MyFavoriteFragment"
-        tools:layout="@layout/fragment_my_favorite" />
+        android:label="MyFavoriteFragment" />
 
     <fragment
         android:id="@+id/navigation_my_stamp"
