@@ -28,8 +28,7 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.jeong.jjoreum.presentation.ui.map.MapFragment"
-        android:label="MapFragment"
-        tools:layout="@layout/fragment_map">
+        android:label="MapFragment">
 
         <action
             android:id="@+id/action_mapFragment_to_listFragment"
@@ -47,8 +46,7 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.jeong.jjoreum.presentation.ui.detail.DetailFragment"
-        android:label="DetailFragment"
-        tools:layout="@layout/fragment_detail">
+        android:label="DetailFragment">
         <argument
             android:name="oreumData"
             app:argType="com.jeong.jjoreum.data.model.api.ResultSummary"
@@ -66,8 +64,7 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.jeong.jjoreum.presentation.ui.list.ListFragment"
-        android:label="ListFragment"
-        tools:layout="@layout/fragment_list">
+        android:label="ListFragment">
         <action
             android:id="@+id/action_listFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
@@ -106,8 +103,7 @@
     <fragment
         android:id="@+id/navigation_my_stamp"
         android:name="com.jeong.jjoreum.presentation.ui.profile.stamp.MyStampFragment"
-        android:label="MyStampFragment"
-        tools:layout="@layout/fragment_my_stamp">
+        android:label="MyStampFragment">
         <action
             android:id="@+id/action_navigation_my_stamp_to_writeReviewFragment"
             app:destination="@id/writeReviewFragment" />
@@ -116,8 +112,7 @@
     <fragment
         android:id="@+id/writeReviewFragment"
         android:name="com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewFragment"
-        android:label="WriteReviewFragment"
-        tools:layout="@layout/fragment_write_review">
+        android:label="WriteReviewFragment">
         <argument
             android:name="oreumIdx"
             app:argType="integer" />
