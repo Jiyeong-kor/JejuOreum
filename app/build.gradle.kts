@@ -26,7 +26,6 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.kotlin.plugin.compose)
     id("kotlin-parcelize")
-    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -58,7 +57,6 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         buildConfig = true
         compose = true
     }
@@ -75,12 +73,11 @@ kotlin {
 dependencies {
 
     //hilt
+    ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
     implementation(libs.foundation)
     implementation(libs.androidx.runtime.livedata)
-    ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.fragment)
 
     //compose
     implementation(platform(libs.androidx.compose.bom))
@@ -98,17 +95,12 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.preference.ktx)
     implementation(libs.firebase.firestore)
     implementation(platform(libs.firebase.bom))
     implementation(libs.rxbinding)
     implementation(libs.lottie)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.play.services.location)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
@@ -124,7 +116,6 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     testImplementation(libs.junit)

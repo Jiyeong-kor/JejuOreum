@@ -8,17 +8,13 @@ coreSplashscreen = "1.0.1"
 hilt = "2.57.1"
 hiltNavigationCompose = "1.2.0"
 hiltAndroid = "2.57.1"
-hiltNavigationFragment = "1.2.0"
 kakaoV2All = "2.20.6"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-appcompat = "1.7.1"
 lifecycleViewmodelKtx = "2.9.3"
 material = "1.12.0"
-activity = "1.10.1"
-constraintlayout = "2.2.1"
 preferenceKtx = "1.2.1"
 googleGmsGoogleServices = "4.4.3"
 firebaseFirestore = "26.0.0"
@@ -27,8 +23,6 @@ rxbinding = "4.0.0"
 lottie = "6.6.7"
 lottieCompose = "6.6.7"
 navigationCompose = "2.9.3"
-navigationFragment = "2.9.3"
-navigationUiKtx = "2.9.3"
 okhttp = "5.1.0"
 loggingInterceptor = "5.1.0"
 converterGson = "3.0.0"
@@ -41,7 +35,6 @@ playServicesMaps = "19.2.0"
 firebaseAuthKtx = "23.2.1"
 kotlin = "2.2.10"
 kotlin-ksp = "2.2.0-2.0.2"
-navigationFragmentKtx = "2.9.3"
 compose-compiler = "2.2.10"
 foundation = "1.9.0"
 lifecycleRuntimeCompose = "2.9.3"
@@ -52,38 +45,30 @@ androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lif
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "hiltNavigationFragment" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-ui = { module = "androidx.compose.ui:ui" }
 coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coilBom" }
 coil3-coil = { module = "io.coil-kt.coil3:coil" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp"}
-coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose"}
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp" }
+coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
-androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 android = { module = "com.kakao.maps.open:android", version.ref = "android" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationFragment" }
 kakao-v2-all = { module = "com.kakao.sdk:v2-all", version.ref = "kakaoV2All" }
-androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 rxbinding = { group = "com.jakewharton.rxbinding4", name = "rxbinding", version.ref = "rxbinding" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
-androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
