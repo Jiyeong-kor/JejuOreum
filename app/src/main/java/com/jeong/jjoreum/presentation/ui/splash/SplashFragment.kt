@@ -1,22 +1,37 @@
 package com.jeong.jjoreum.presentation.ui.splash
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.databinding.FragmentSplashBinding
-import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
+import com.jeong.jjoreum.presentation.ui.theme.JJOreumTheme
 import com.jeong.jjoreum.presentation.viewmodel.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SplashFragment :
-    ViewBindingBaseFragment<FragmentSplashBinding>(FragmentSplashBinding::inflate) {
+class SplashFragment : Fragment() {
 
     private val viewModel: SplashViewModel by viewModels()
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                JJOreumTheme {
+                    SplashScreen()
+                }
+            }
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -27,7 +42,7 @@ class SplashFragment :
                     null,
                     NavOptions.Builder()
                         .setPopUpTo(R.id.splashFragment, true)
-                        .build()
+                        .build(),
                 )
 
                 is SplashUiState.GoToJoin ->
