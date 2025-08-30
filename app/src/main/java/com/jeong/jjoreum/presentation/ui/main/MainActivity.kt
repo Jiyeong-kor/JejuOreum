@@ -1,5 +1,8 @@
 package com.jeong.jjoreum.presentation.ui.main
 
+import com.jeong.jjoreum.presentation.ui.splash.SplashUiState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
@@ -52,7 +55,14 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             JJOreumTheme {
-                MainNavHost()
+                val uiState by viewModel.uiState.observeAsState()
+                uiState?.let { state ->
+                    val startDestination = when (state) {
+                        SplashUiState.GoToJoin -> "join"
+                        SplashUiState.GoToMap -> "map"
+                    }
+                    MainNavHost(startDestination)
+                }
             }
         }
     }

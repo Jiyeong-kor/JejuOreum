@@ -31,76 +31,92 @@ import com.jeong.jjoreum.presentation.ui.profile.MyScreen
 import com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewRoute
 import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.getValue
+import com.jeong.jjoreum.presentation.ui.Join.JoinRoute
 
 @Composable
-fun MainNavHost() {
+fun MainNavHost(startDestination: String) {
     val navController = rememberNavController()
-    val navBackStackEntry = navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry.value?.destination?.route
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val showBottomBar = currentRoute in listOf("map", "list", "my")
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = currentRoute == "map",
-                    onClick = {
-                        navController.navigate("map") {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            painterResource(R.drawable.ic_map),
-                            contentDescription = stringResource(R.string.map_title)
-                        )
-                    },
-                    label = { Text(stringResource(R.string.map_title)) }
-                )
-                NavigationBarItem(
-                    selected = currentRoute == "list",
-                    onClick = {
-                        navController.navigate("list") {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            painterResource(R.drawable.ic_list),
-                            contentDescription = stringResource(R.string.list_title)
-                        )
-                    },
-                    label = { Text(stringResource(R.string.list_title)) }
-                )
-                NavigationBarItem(
-                    selected = currentRoute == "my",
-                    onClick = {
-                        navController.navigate("my") {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    icon = {
-                        val iconRes = if (currentRoute == "my") R.drawable.ic_my_selected else R.drawable.ic_my_unselected
-                        Icon(
-                            painterResource(iconRes),
-                            contentDescription = stringResource(R.string.my_title)
-                        )
-                    },
-                    label = { Text(stringResource(R.string.my_title)) }
-                )
+            if (showBottomBar) {
+                NavigationBar {
+                    NavigationBarItem(
+                        selected = currentRoute == "map",
+                        onClick = {
+                            navController.navigate("map") {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                painterResource(R.drawable.ic_map),
+                                contentDescription = stringResource(R.string.map_title)
+                            )
+                        },
+                        label = { Text(stringResource(R.string.map_title)) }
+                    )
+                    NavigationBarItem(
+                        selected = currentRoute == "list",
+                        onClick = {
+                            navController.navigate("list") {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                painterResource(R.drawable.ic_list),
+                                contentDescription = stringResource(R.string.list_title)
+                            )
+                        },
+                        label = { Text(stringResource(R.string.list_title)) }
+                    )
+                    NavigationBarItem(
+                        selected = currentRoute == "my",
+                        onClick = {
+                            navController.navigate("my") {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                            val iconRes =
+                                if (currentRoute == "my") R.drawable.ic_my_selected else R.drawable.ic_my_unselected
+                            Icon(
+                                painterResource(iconRes),
+                                contentDescription = stringResource(R.string.my_title)
+                            )
+                        },
+                        label = { Text(stringResource(R.string.my_title)) }
+                    )
+                }
             }
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "map",
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("join") {
+                JoinRoute(
+                    onNavigateToMain = {
+                        navController.navigate("map") {
+                            popUpTo("join") { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
             composable("map") {
                 MapScreen(
                     onNavigateToWriteReview = { idx, name ->
