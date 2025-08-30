@@ -25,8 +25,8 @@ import com.jeong.jjoreum.presentation.viewmodel.MyStampViewModel
 
 @Composable
 fun MyStampScreen(
+    viewModel: MyStampViewModel = hiltViewModel(),
     onNavigateToWriteReview: (Int, String) -> Unit,
-    viewModel: MyStampViewModel = hiltViewModel()
 ) {
     val nickname by viewModel.nickname.collectAsStateWithLifecycle()
     val stampedList by viewModel.stampedList.collectAsStateWithLifecycle()
