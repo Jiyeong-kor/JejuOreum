@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     app:startDestination="@id/splashFragment">
 
@@ -21,8 +20,7 @@
     <fragment
         android:id="@+id/joinFormFragment"
         android:name="com.jeong.jjoreum.presentation.ui.Join.JoinFormFragment"
-        android:label="fragment_join_form"
-        tools:layout="@layout/fragment_join_form" />
+        android:label="fragment_join_form"/>
 
     <fragment
         android:id="@+id/mapFragment"
