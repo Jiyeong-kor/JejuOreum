@@ -1,8 +1,5 @@
 package com.jeong.jjoreum.presentation.ui.main
 
-import com.jeong.jjoreum.presentation.ui.splash.SplashUiState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
@@ -12,8 +9,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jeong.jjoreum.presentation.ui.dialog.NetworkDialog
+import com.jeong.jjoreum.presentation.ui.splash.SplashUiState
 import com.jeong.jjoreum.presentation.ui.theme.JJOreumTheme
 import com.jeong.jjoreum.presentation.viewmodel.SplashViewModel
 import com.jeong.jjoreum.util.NetworkManager
@@ -25,15 +27,15 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: SplashViewModel by viewModels()
     private lateinit var connectivityManager: ConnectivityManager
     private val networkManager by lazy { NetworkManager(this) }
-    private var networkDialog: NetworkDialog? = null
+    private var showNetworkDialog by mutableStateOf(false)
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            networkDialog?.dismissAllowingStateLoss()
+            showNetworkDialog = false
         }
 
         override fun onLost(network: Network) {
-            showNetworkDialog()
+            showNetworkDialog = true
         }
     }
 
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         connectivityManager = getSystemService(ConnectivityManager::class.java)
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
         if (!networkManager.checkNetworkState()) {
-            showNetworkDialog()
+            showNetworkDialog = true
         }
 
         viewModel.checkUserStatus()
@@ -62,6 +64,15 @@ class MainActivity : AppCompatActivity() {
                         SplashUiState.GoToMap -> "map"
                     }
                     MainNavHost(startDestination)
+                    if (showNetworkDialog) {
+                        NetworkDialog(
+                            onRetryClick = {
+                                if (networkManager.checkNetworkState()) {
+                                    showNetworkDialog = false
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -70,17 +81,5 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         connectivityManager.unregisterNetworkCallback(networkCallback)
-    }
-
-    private fun showNetworkDialog() {
-        if (networkDialog?.isAdded == true) return
-        networkDialog = NetworkDialog().apply {
-            setOnRetryClickListener {
-                if (networkManager.checkNetworkState()) {
-                    dismiss()
-                }
-            }
-        }
-        networkDialog?.show(supportFragmentManager, "network_dialog")
     }
 }
