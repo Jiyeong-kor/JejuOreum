@@ -1,27 +1,41 @@
 package com.jeong.jjoreum.presentation.ui.profile
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import com.google.android.material.tabs.TabLayoutMediator
-import com.jeong.jjoreum.databinding.FragmentMyBinding
-import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.jeong.jjoreum.R
+import com.jeong.jjoreum.presentation.ui.theme.JJOreumTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyFragment : ViewBindingBaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
+class MyFragment : Fragment() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViewPagerAndTabs()
-    }
-
-    private fun setupViewPagerAndTabs() = binding?.apply {
-        val adapter = MyViewPagerAdapter(this@MyFragment)
-        viewPagerMy.adapter = adapter
-
-        TabLayoutMediator(tabLayoutMy, viewPagerMy) { tab, position ->
-            // 각 탭의 제목 설정
-            tab.text = adapter.getPageTitle(position)
-        }.attach()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setContent {
+            JJOreumTheme {
+                MyScreen(
+                    onFavoriteItemClick = { oreum ->
+                        val bundle = bundleOf("oreumData" to oreum)
+                        findNavController().navigate(R.id.detailFragment, bundle)
+                    },
+                    onNavigateToWriteReview = { oreumIdx, oreumName ->
+                        val bundle = bundleOf(
+                            "oreumIdx" to oreumIdx,
+                            "oreumName" to oreumName
+                        )
+                        findNavController().navigate(R.id.writeReviewFragment, bundle)
+                    }
+                )
+            }
+        }
     }
 }

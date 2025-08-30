@@ -78,8 +78,7 @@
     <fragment
         android:id="@+id/navigation_my"
         android:name="com.jeong.jjoreum.presentation.ui.profile.MyFragment"
-        android:label="MyFragment"
-        tools:layout="@layout/fragment_my">
+        android:label="MyFragment">
         <action
             android:id="@+id/action_navigation_my_to_mapFragment"
             app:destination="@id/mapFragment" />
@@ -89,21 +88,6 @@
 
         <action
             android:id="@+id/action_navigation_my_to_writeReviewFragment"
-            app:destination="@id/writeReviewFragment" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_my_favorite"
-        android:name="com.jeong.jjoreum.presentation.ui.profile.favorite.MyFavoriteFragment"
-        android:label="MyFavoriteFragment" />
-
-    <fragment
-        android:id="@+id/navigation_my_stamp"
-        android:name="com.jeong.jjoreum.presentation.ui.profile.stamp.MyStampFragment"
-        android:label="MyStampFragment">
-        <action
-            android:id="@+id/action_navigation_my_stamp_to_writeReviewFragment"
             app:destination="@id/writeReviewFragment" />
     </fragment>
 
