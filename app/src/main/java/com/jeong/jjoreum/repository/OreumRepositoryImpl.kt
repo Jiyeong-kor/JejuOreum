@@ -49,8 +49,8 @@ class OreumRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary {
-        val apiList = fetchOreumList()
-        val oreum = apiList.find { it.idx.toString() == oreumIdx }
+        loadOreumListIfNeeded()
+        val oreum = _oreumListFlow.value.find { it.idx.toString() == oreumIdx }
             ?: throw IllegalStateException("해당 오름을 찾을 수 없습니다.")
 
         val userId = auth.currentUser?.uid
