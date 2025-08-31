@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.Join
+package com.jeong.jjoreum.presentation.ui.join
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

@@ -32,7 +32,7 @@ import com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewRoute
 import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.getValue
-import com.jeong.jjoreum.presentation.ui.Join.JoinRoute
+import com.jeong.jjoreum.presentation.ui.join.JoinRoute
 
 @Composable
 fun MainNavHost(startDestination: String) {

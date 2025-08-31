@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.Join
+package com.jeong.jjoreum.presentation.ui.join
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
