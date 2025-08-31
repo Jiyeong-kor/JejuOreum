@@ -1,6 +1,6 @@
 package com.jeong.jjoreum.presentation.viewmodel
 
-import android.content.Context
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val prefs: PreferenceManager,
     private val oreumRepository: OreumRepository,
-    private val context: Context
+    private val application: Application
 ) : ViewModel() {
 
     val isLoading = MutableStateFlow(true)
@@ -40,7 +40,7 @@ class SplashViewModel @Inject constructor(
 
     private fun installSecurityProvider() {
         try {
-            ProviderInstaller.installIfNeeded(context)
+            ProviderInstaller.installIfNeeded(application)
             Log.i("SplashViewModel", "✅ Security Provider installed")
         } catch (e: Exception) {
             Log.e("SplashViewModel", "❌ Provider install failed: ${e.message}")
@@ -48,7 +48,7 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun initKakaoMap() {
-        KakaoMapSdk.init(context, BuildConfig.APP_KEY)
+        KakaoMapSdk.init(application, BuildConfig.APP_KEY)
     }
 
     private suspend fun preloadOreumList() {
