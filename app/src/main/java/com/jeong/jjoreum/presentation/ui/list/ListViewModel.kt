@@ -26,26 +26,11 @@ class ListViewModel @Inject constructor(
     val stampResult: StateFlow<Result<Unit>?> = _stampResult.asStateFlow()
 
     init {
-        loadOreumList()
-    }
-
-    fun loadOreumList() {
         viewModelScope.launch {
             oreumRepository.loadOreumListIfNeeded()
-            val oreums = oreumRepository.getCachedOreumList()
-
-            val userFavorites = userInteractionRepository.getAllFavoriteStatus()
-            val userStamps = userInteractionRepository.getAllStampStatus()
-
-            val updated = oreums.map { oreum ->
-                val oreumId = oreum.idx.toString()
-                oreum.copy(
-                    userLiked = userFavorites[oreumId] ?: false,
-                    userStamped = userStamps[oreumId] ?: false
-                )
+            oreumRepository.oreumListFlow.collect { oreums ->
+                _oreumList.value = oreums
             }
-
-            _oreumList.value = updated.toList()
         }
     }
 

@@ -34,8 +34,19 @@ class MyFavoriteViewModel @Inject constructor(
 
     fun toggleFavorite(oreumIdx: String, newStatus: Boolean) {
         viewModelScope.launch {
-            userInteractionRepo.toggleFavorite(oreumIdx, newStatus)
+            val newTotal = userInteractionRepo.toggleFavorite(oreumIdx, newStatus)
             oreumRepository.refreshAllOreumsWithNewUserData()
+
+            val updated = _favoriteList.value.mapNotNull { oreum ->
+                if (oreum.idx.toString() == oreumIdx) {
+                    val updatedOreum =
+                        oreum.copy(userLiked = newStatus, totalFavorites = newTotal)
+                    if (newStatus) updatedOreum else null
+                } else {
+                    oreum
+                }
+            }
+            _favoriteList.value = updated
         }
     }
 }
