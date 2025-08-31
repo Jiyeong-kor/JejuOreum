@@ -29,7 +29,8 @@ class MyStampViewModel @Inject constructor(
 
     fun loadStampedList() {
         viewModelScope.launch {
-            oreumRepository.loadOreumListIfNeeded()
+            val result = oreumRepository.loadOreumListIfNeeded()
+            if (result.isFailure) return@launch
 
             // 캐시된 데이터 직접 사용
             val oreumList = oreumRepository.getCachedOreumList()

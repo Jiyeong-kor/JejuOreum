@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface OreumRepository {
     val oreumListFlow: StateFlow<List<ResultSummary>>
-    suspend fun loadOreumListIfNeeded()
+    suspend fun loadOreumListIfNeeded(): Result<Unit>
     fun getCachedOreumList(): List<ResultSummary>
     suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary
     suspend fun refreshAllOreumsWithNewUserData()

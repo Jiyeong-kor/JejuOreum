@@ -22,34 +22,29 @@ class OreumRepositoryImpl @Inject constructor(
     private val _oreumListFlow = MutableStateFlow<List<ResultSummary>>(emptyList())
     override val oreumListFlow: StateFlow<List<ResultSummary>> = _oreumListFlow
 
-    override suspend fun loadOreumListIfNeeded() {
-        if (_oreumListFlow.value.isNotEmpty()) return
-        _oreumListFlow.value = fetchOreumList()
+    override suspend fun loadOreumListIfNeeded(): Result<Unit> {
+        if (_oreumListFlow.value.isNotEmpty()) return Result.success(Unit)
+        return fetchOreumList()
+            .onSuccess { _oreumListFlow.value = it }
+            .map { }
     }
 
     override fun getCachedOreumList(): List<ResultSummary> = _oreumListFlow.value
 
-    private suspend fun fetchOreumList(): List<ResultSummary> {
-        return try {
+    private suspend fun fetchOreumList(): Result<List<ResultSummary>> {
+        return runCatching {
             val response = apiService.getOreumList()
-            if (response.isSuccessful) {
-                val apiData = response.body()?.resultSummary ?: emptyList()
-                val enumerated = apiData.mapIndexed { idx, oreum -> oreum.copy(idx = idx) }
-                mergeWithFirestoreData(enumerated)
-            } else {
-                Log.e(
-                    "OreumRepository", "❌ API 실패: ${response.errorBody()?.string()}"
-                )
-                emptyList()
+            if (!response.isSuccessful) {
+                throw IllegalStateException("API 실패: ${response.errorBody()?.string()}")
             }
-        } catch (e: Exception) {
-            Log.e("OreumRepository", "❌ API 예외", e)
-            emptyList()
+            val apiData = response.body()?.resultSummary ?: emptyList()
+            val enumerated = apiData.mapIndexed { idx, oreum -> oreum.copy(idx = idx) }
+            mergeWithFirestoreData(enumerated)
         }
     }
 
     override suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary {
-        loadOreumListIfNeeded()
+        loadOreumListIfNeeded().getOrThrow()
         val oreum = _oreumListFlow.value.find { it.idx.toString() == oreumIdx }
             ?: throw IllegalStateException("해당 오름을 찾을 수 없습니다.")
 
@@ -66,8 +61,8 @@ class OreumRepositoryImpl @Inject constructor(
         val totalFavorites = oreumDoc.getLong("favorite")?.toInt() ?: 0
         val totalStamps = oreumDoc.getLong("stamp")?.toInt() ?: 0
 
-        val userFavorites = userDoc?.get("favorites") as? Map<String, Boolean> ?: emptyMap()
-        val userStamps = userDoc?.get("stampedOreums") as? Map<String, String> ?: emptyMap()
+        val userFavorites = userDoc?.get("favorites").toStringBooleanMap()
+        val userStamps = userDoc?.get("stampedOreums").toStringStringMap()
 
         val userLiked = userFavorites[oreumIdx] == true
         val userStamped = userStamps.containsKey(oreumIdx)
@@ -84,7 +79,7 @@ class OreumRepositoryImpl @Inject constructor(
         val cachedList = getCachedOreumList()
 
         if (cachedList.isEmpty()) {
-            _oreumListFlow.value = fetchOreumList()
+            fetchOreumList().onSuccess { _oreumListFlow.value = it }
         } else {
             _oreumListFlow.value = mergeWithFirestoreData(cachedList)
         }
@@ -109,10 +104,10 @@ class OreumRepositoryImpl @Inject constructor(
             }
 
             val userFavorites =
-                userSnapshot?.get("favorites") as? Map<String, Boolean> ?: emptyMap()
+                userSnapshot?.get("favorites").toStringBooleanMap()
 
             val userStamps =
-                userSnapshot?.get("stampedOreums") as? Map<String, String> ?: emptyMap()
+                userSnapshot?.get("stampedOreums").toStringStringMap()
 
             apiData.map { oreum ->
                 val idStr = oreum.idx.toString()

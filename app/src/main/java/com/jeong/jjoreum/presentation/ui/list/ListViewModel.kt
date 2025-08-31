@@ -25,9 +25,16 @@ class ListViewModel @Inject constructor(
     private val _stampResult = MutableStateFlow<Result<Unit>?>(null)
     val stampResult: StateFlow<Result<Unit>?> = _stampResult.asStateFlow()
 
+    private val _loadError = MutableStateFlow<String?>(null)
+    val loadError: StateFlow<String?> = _loadError.asStateFlow()
+
     init {
         viewModelScope.launch {
-            oreumRepository.loadOreumListIfNeeded()
+            val result = oreumRepository.loadOreumListIfNeeded()
+            if (result.isFailure) {
+                _loadError.value = result.exceptionOrNull()?.message
+                return@launch
+            }
             oreumRepository.oreumListFlow.collect { oreums ->
                 _oreumList.value = oreums
             }
@@ -82,5 +89,9 @@ class ListViewModel @Inject constructor(
 
     fun clearStampResult() {
         _stampResult.value = null
+    }
+
+    fun clearLoadError() {
+        _loadError.value = null
     }
 }

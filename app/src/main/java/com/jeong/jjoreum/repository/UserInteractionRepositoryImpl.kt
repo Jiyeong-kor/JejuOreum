@@ -22,8 +22,8 @@ class UserInteractionRepositoryImpl @Inject constructor(
         val doc = firestore.collection(
             "user_info_col"
         ).document(uid).get().await()
-        val map = doc.get("favorites") as? Map<*, *> ?: return false
-        return map[oreumIdx] as? Boolean ?: false
+        val map = doc.get("favorites").toStringBooleanMap()
+        return map[oreumIdx] == true
     }
 
     override suspend fun getStampStatus(oreumIdx: String): Boolean {
@@ -31,7 +31,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
         val doc = firestore.collection(
             "user_info_col"
         ).document(uid).get().await()
-        val map = doc.get("stampedOreums") as? Map<*, *> ?: return false
+        val map = doc.get("stampedOreums").toStringStringMap()
         return map.containsKey(oreumIdx)
     }
 
@@ -49,8 +49,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
                 val userSnap = tx.get(userDoc)
                 val oreumSnap = tx.get(oreumDoc)
 
-                val favorites = (userSnap.get("favorites") as? Map<String, Boolean>)?.toMutableMap()
-                    ?: mutableMapOf()
+                val favorites = userSnap.get("favorites").toStringBooleanMap().toMutableMap()
                 var count = oreumSnap.getLong("favorite")?.toInt() ?: 0
 
                 if (newIsFavorite) {
@@ -87,7 +86,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
         val doc = firestore.collection(
             "user_info_col"
         ).document(uid).get(Source.SERVER).await()
-        return doc.get("favorites") as? Map<String, Boolean> ?: emptyMap()
+        return doc.get("favorites").toStringBooleanMap()
     }
 
     override suspend fun getAllStampStatus(): Map<String, Boolean> {
@@ -95,7 +94,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
         val doc = firestore.collection(
             "user_info_col"
         ).document(uid).get().await()
-        return (doc.get("stampedOreums") as? Map<String, String>)?.mapValues { true } ?: emptyMap()
+        return doc.get("stampedOreums").toStringStringMap().mapValues { true }
     }
 
     override suspend fun getCurrentUserNickname(): String {

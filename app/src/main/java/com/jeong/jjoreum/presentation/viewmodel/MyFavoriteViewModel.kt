@@ -23,7 +23,8 @@ class MyFavoriteViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            oreumRepository.loadOreumListIfNeeded()
+            val result = oreumRepository.loadOreumListIfNeeded()
+            if (result.isFailure) return@launch
             oreumRepository.oreumListFlow
                 .map { list -> list.filter { it.userLiked } }
                 .collect { filteredList ->

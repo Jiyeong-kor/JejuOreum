@@ -46,6 +46,8 @@ fun ListScreen(
     val oreumList by viewModel.oreumList.collectAsState()
 
     val stampResult by remember { viewModel.stampResult }.collectAsState()
+    val loadError by viewModel.loadError.collectAsState()
+
     LaunchedEffect(stampResult) {
         stampResult?.let { result ->
             if (result.isSuccess) {
@@ -54,6 +56,13 @@ fun ListScreen(
                 showToast(result.exceptionOrNull()?.message ?: "알 수 없는 오류")
             }
             viewModel.clearStampResult()
+        }
+    }
+
+    LaunchedEffect(loadError) {
+        loadError?.let {
+            showToast(it)
+            viewModel.clearLoadError()
         }
     }
 
