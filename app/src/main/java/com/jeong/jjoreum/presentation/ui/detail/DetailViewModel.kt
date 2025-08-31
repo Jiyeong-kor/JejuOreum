@@ -107,4 +107,8 @@ class DetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun clearEvent() {
+        _event.value = null
+    }
 }

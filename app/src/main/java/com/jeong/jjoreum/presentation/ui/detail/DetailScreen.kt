@@ -79,7 +79,8 @@ fun DetailScreen(
     }
 
     LaunchedEffect(event) {
-        when (val currentEvent = event) {
+        val currentEvent = event
+        when (currentEvent) {
             is DetailViewModel.DetailEvent.StampSuccess -> {
                 showToast("스탬프가 인증되었습니다!")
                 onFavoriteToggled(viewModel.oreumDetail.value?.idx.toString())
@@ -90,6 +91,9 @@ fun DetailScreen(
             }
 
             null -> {}
+        }
+        if (currentEvent != null) {
+            viewModel.clearEvent()
         }
     }
 

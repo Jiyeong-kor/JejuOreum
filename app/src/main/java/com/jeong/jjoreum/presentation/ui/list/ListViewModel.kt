@@ -94,4 +94,8 @@ class ListViewModel @Inject constructor(
             _oreumList.value = updated
         }
     }
+
+    fun clearStampResult() {
+        _stampResult.value = null
+    }
 }

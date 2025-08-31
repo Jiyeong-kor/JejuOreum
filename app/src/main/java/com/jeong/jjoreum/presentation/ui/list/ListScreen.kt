@@ -53,6 +53,7 @@ fun ListScreen(
             } else {
                 showToast(result.exceptionOrNull()?.message ?: "알 수 없는 오류")
             }
+            viewModel.clearStampResult()
         }
     }
 
