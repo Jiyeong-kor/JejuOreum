@@ -112,13 +112,16 @@ dependencies {
     implementation(libs.tedpermission.coroutine)
     implementation(libs.tedpermission.normal)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.okhttp)
     implementation(libs.play.services.maps)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.play.services)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(kotlin("test"))
 }

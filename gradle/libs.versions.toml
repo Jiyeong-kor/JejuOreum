@@ -39,6 +39,9 @@ compose-compiler = "2.2.10"
 foundation = "1.9.0"
 lifecycleRuntimeCompose = "2.9.3"
 runtimeLivedata = "1.9.0"
+mockk = "1.14.5"
+kotlinxCoroutinesTest = "1.10.2"
+kotlinxCoroutinesPlayServices = "1.10.2"
 
 [libraries]
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
@@ -82,6 +85,9 @@ lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", versio
 androidx-foundation = { module = "androidx.compose.foundation:foundation" }
 foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
