@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.util
+package com.jeong.jjoreum.util.extensions
 
 import android.content.Context
 import android.widget.Toast
