@@ -1,18 +1,15 @@
 package com.jeong.jjoreum.data.local
 
 import android.content.Context
-import androidx.core.content.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
+
+private val Context.dataStore by preferencesDataStore(name = "permissions")
 
 object PermissionManager {
-    private const val PREF_KEY_LOCATION_GRANTED = "location_granted"
-
-    fun isLocationGranted(context: Context): Boolean {
-        val prefs = context.getSharedPreferences("permissions", Context.MODE_PRIVATE)
-        return prefs.getBoolean(PREF_KEY_LOCATION_GRANTED, false)
-    }
-
-    fun setLocationGranted(context: Context, granted: Boolean) {
-        val prefs = context.getSharedPreferences("permissions", Context.MODE_PRIVATE)
-        prefs.edit { putBoolean(PREF_KEY_LOCATION_GRANTED, granted) }
+    private val locationGrantedKey = booleanPreferencesKey("location_granted")
+    suspend fun setLocationGranted(context: Context, granted: Boolean) {
+        context.dataStore.edit { it[locationGrantedKey] = granted }
     }
 }

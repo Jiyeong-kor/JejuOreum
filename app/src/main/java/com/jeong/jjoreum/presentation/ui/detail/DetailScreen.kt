@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,6 +49,7 @@ import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PermissionManager
 import com.jeong.jjoreum.data.model.entity.ReviewItem
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -65,15 +67,15 @@ fun DetailScreen(
     val reviewList by viewModel.reviewList.collectAsState()
     val event by viewModel.event.collectAsState()
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
+        coroutineScope.launch { PermissionManager.setLocationGranted(context, isGranted) }
         if (isGranted) {
-            PermissionManager.setLocationGranted(context, true)
             viewModel.stampOreum()
         } else {
-            PermissionManager.setLocationGranted(context, false)
             showToast(context.getString(R.string.permission_required_message))
         }
     }
