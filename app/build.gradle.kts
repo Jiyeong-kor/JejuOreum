@@ -89,7 +89,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
-    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.firebase.firestore)
     implementation(platform(libs.firebase.bom))
     implementation(libs.rxbinding)

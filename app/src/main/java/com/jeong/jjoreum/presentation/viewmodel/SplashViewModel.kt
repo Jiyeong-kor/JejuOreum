@@ -56,7 +56,7 @@ class SplashViewModel @Inject constructor(
             .onFailure { Log.e("SplashViewModel", "❌ Preload failed", it) }
     }
 
-    private fun decideNavigation() {
+    private suspend fun decideNavigation() {
         val isSignedUp = prefs.isUserRegistered()
         _uiState.value = if (isSignedUp) SplashUiState.GoToMap else SplashUiState.GoToJoin
     }

@@ -1,29 +1,29 @@
 package com.jeong.jjoreum.data.local
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import com.jeong.jjoreum.util.PREF_KEY_NICKNAME
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
-/**
- * 앱의 SharedPreferences를 관리하는 클래스
- */
+private val Context.dataStore by preferencesDataStore(name = "settings")
+
 class PreferenceManager(context: Context) {
+    private val dataStore = context.dataStore
+    private val nicknameKey = stringPreferencesKey(PREF_KEY_NICKNAME)
+    val nicknameFlow = dataStore.data.map { it[nicknameKey] ?: "" }
 
-    private val sp: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val spEditor: SharedPreferences.Editor = sp.edit()
+    suspend fun getNickname(): String = nicknameFlow.first()
 
-    fun getNickname(): String = sp.getString(PREF_KEY_NICKNAME, "") ?: ""
-
-    fun setNickname(nickname: String) {
-        spEditor.putString(PREF_KEY_NICKNAME, nickname).apply()
+    suspend fun setNickname(nickname: String) {
+        dataStore.edit { it[nicknameKey] = nickname }
     }
 
-    fun isUserRegistered(): Boolean {
-        return getNickname().isNotBlank()
-    }
+    suspend fun isUserRegistered(): Boolean = getNickname().isNotBlank()
 
-    fun clearUserData() {
-        spEditor.remove(PREF_KEY_NICKNAME).apply()
+    suspend fun clearUserData() {
+        dataStore.edit { it.remove(nicknameKey) }
     }
 }
