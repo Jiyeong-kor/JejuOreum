@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,16 +45,19 @@ fun ListScreen(
     showToast: (String) -> Unit
 ) {
     val oreumList by viewModel.oreumList.collectAsState()
-
+    val context = LocalContext.current
     val stampResult by remember { viewModel.stampResult }.collectAsState()
     val loadError by viewModel.loadError.collectAsState()
 
     LaunchedEffect(stampResult) {
         stampResult?.let { result ->
             if (result.isSuccess) {
-                showToast("스탬프 완료!")
+                showToast(context.getString(R.string.stamp_completed_message))
             } else {
-                showToast(result.exceptionOrNull()?.message ?: "알 수 없는 오류")
+                showToast(
+                    result.exceptionOrNull()?.message
+                        ?: context.getString(R.string.unknown_error_message)
+                )
             }
             viewModel.clearStampResult()
         }

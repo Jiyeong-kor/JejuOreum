@@ -74,7 +74,7 @@ fun DetailScreen(
             viewModel.stampOreum()
         } else {
             PermissionManager.setLocationGranted(context, false)
-            showToast("위치 권한이 필요합니다.")
+            showToast(context.getString(R.string.permission_required_message))
         }
     }
 
@@ -82,7 +82,7 @@ fun DetailScreen(
         val currentEvent = event
         when (currentEvent) {
             is DetailViewModel.DetailEvent.StampSuccess -> {
-                showToast("스탬프가 인증되었습니다!")
+                showToast(context.getString(R.string.stamp_verified_message))
                 onFavoriteToggled(viewModel.oreumDetail.value?.idx.toString())
             }
 
@@ -106,8 +106,10 @@ fun DetailScreen(
                     val oreumIdx = oreumDetail?.idx?.toString() ?: return@BottomButtonSection
                     viewModel.toggleFavorite(oreumIdx)
                     showToast(
-                        if (!isFavorite) "관심 오름에 추가되었습니다"
-                        else "관심 오름에서 제외되었습니다"
+                        context.getString(
+                            if (!isFavorite) R.string.favorite_added_message
+                            else R.string.favorite_removed_message
+                        )
                     )
                     onFavoriteToggled(oreumIdx)
                 },
