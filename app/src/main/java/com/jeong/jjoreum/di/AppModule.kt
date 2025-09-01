@@ -16,11 +16,8 @@ import javax.inject.Singleton
 object AppModule {
     @Singleton
     @Provides
-    fun provideApplicationContext(@ApplicationContext context: Context): Context = context
-
-    @Singleton
-    @Provides
-    fun providePreferenceManager(context: Context): PreferenceManager = PreferenceManager(context)
+    fun providePreferenceManager(@ApplicationContext context: Context): PreferenceManager =
+        PreferenceManager(context)
 
     @Singleton
     @Provides
