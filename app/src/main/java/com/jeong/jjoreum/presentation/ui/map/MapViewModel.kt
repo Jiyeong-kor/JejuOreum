@@ -46,16 +46,22 @@ class MapViewModel @Inject constructor(
     private val _cameraState = MutableStateFlow(restoreCameraFromSavedState())
     val cameraState: StateFlow<CameraSnapshot?> = _cameraState.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
     fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
         viewModelScope.launch {
             val q = query.trim()
+            if (q.isBlank()) {
+                _uiState.value = MapUiState.Hidden
+                return@launch
+            }
             val result = oreumList.value.filter { item ->
-                q.isBlank()
-                        || item.oreumKname.contains(q)
-                        || item.oreumAddr.contains(q)
+                item.oreumKname.contains(q) || item.oreumAddr.contains(q)
             }
             _uiState.value =
-                if (result.isEmpty() && q.isNotBlank()) MapUiState.NoResults
+                if (result.isEmpty()) MapUiState.NoResults
                 else MapUiState.SearchResults(result)
         }
     }
