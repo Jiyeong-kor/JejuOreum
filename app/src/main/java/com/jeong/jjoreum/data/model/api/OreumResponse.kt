@@ -1,15 +1,9 @@
 package com.jeong.jjoreum.data.model.api
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-/**
- * 오름 리스트 API 응답을 처리하는 데이터 클래스
- * @param resultCode 응답 코드
- * @param resultMsg 응답 메시지
- * @param resultSummary 오름 정보 리스트
- */
 data class OreumData(
     val resultCode: String,
     @SerializedName("resultMsg")
@@ -34,7 +28,6 @@ data class ResultSummary(
     @SerializedName("stamp") val totalStamps: Int = 0,
 
     // 사용자의 상태 (Firestore에서 매핑해서 따로 설정할 값)
-    var userLiked: Boolean = false,
-    var userStamped: Boolean = false
-
+    val userLiked: Boolean = false,
+    val userStamped: Boolean = false
 ) : Parcelable
