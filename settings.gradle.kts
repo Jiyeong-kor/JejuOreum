@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google {
@@ -18,11 +20,11 @@ dependencyResolutionManagement {
         mavenCentral()
         maven {
             url = java.net.URI("https://devrepo.kakao.com/nexus/repository/kakaomap-releases/")
+        }
+        maven {
             url = java.net.URI("https://devrepo.kakao.com/nexus/content/groups/public/")
         }
     }
 }
-
-rootProject.name = "Jiyeong_JJOreum"
+rootProject.name = "JejuOreum"
 include(":app")
- 
