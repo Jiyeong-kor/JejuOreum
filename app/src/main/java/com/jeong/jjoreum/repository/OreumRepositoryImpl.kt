@@ -6,11 +6,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.data.model.api.ResultSummary
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class OreumRepositoryImpl @Inject constructor(
@@ -85,39 +85,57 @@ class OreumRepositoryImpl @Inject constructor(
         }
     }
 
+    private data class OreumFirestoreData(
+        val favoriteCounts: Map<String, Int>,
+        val stampCounts: Map<String, Int>
+    )
+
+    private data class UserFirestoreData(
+        val favorites: Map<String, Boolean>,
+        val stampedOreums: Map<String, String>
+    )
+
+    private suspend fun fetchOreumFirestoreData(): OreumFirestoreData {
+        val oreumSnapshot = firestore.collection("oreum_info_col").get().await()
+        val stampMap = oreumSnapshot.documents.associate {
+            it.id to (it.getLong("stamp")?.toInt() ?: 0)
+        }
+        val favMap = oreumSnapshot.documents.associate {
+            it.id to (it.getLong("favorite")?.toInt() ?: 0)
+        }
+        return OreumFirestoreData(favMap, stampMap)
+    }
+
+    private suspend fun fetchUserFirestoreData(userId: String?): UserFirestoreData {
+        if (userId == null) return UserFirestoreData(emptyMap(), emptyMap())
+        val userSnapshot = firestore.collection("user_info_col")
+            .document(userId).get(Source.SERVER).await()
+        val userFavorites = userSnapshot.get("favorites").toStringBooleanMap()
+        val userStamps = userSnapshot.get("stampedOreums").toStringStringMap()
+        return UserFirestoreData(userFavorites, userStamps)
+    }
+
+    private fun applyFirestoreData(
+        apiData: List<ResultSummary>,
+        oreumData: OreumFirestoreData,
+        userData: UserFirestoreData
+    ): List<ResultSummary> {
+        return apiData.map { oreum ->
+            val idStr = oreum.idx.toString()
+            oreum.copy(
+                totalFavorites = oreumData.favoriteCounts[idStr] ?: 0,
+                totalStamps = oreumData.stampCounts[idStr] ?: 0,
+                userLiked = userData.favorites[idStr] == true,
+                userStamped = userData.stampedOreums.containsKey(idStr)
+            )
+        }
+    }
+
     private suspend fun mergeWithFirestoreData(apiData: List<ResultSummary>): List<ResultSummary> {
         return try {
-            val oreumSnapshot = firestore.collection("oreum_info_col").get().await()
-            val userId = auth.currentUser?.uid
-
-            val stampMap =
-                oreumSnapshot.documents.associate {
-                    it.id to (it.getLong("stamp")?.toInt() ?: 0)
-                }
-            val favMap = oreumSnapshot.documents.associate {
-                it.id to (it.getLong("favorite")?.toInt() ?: 0)
-            }
-
-            val userSnapshot = userId?.let {
-                firestore.collection("user_info_col")
-                    .document(it).get(Source.SERVER).await()
-            }
-
-            val userFavorites =
-                userSnapshot?.get("favorites").toStringBooleanMap()
-
-            val userStamps =
-                userSnapshot?.get("stampedOreums").toStringStringMap()
-
-            apiData.map { oreum ->
-                val idStr = oreum.idx.toString()
-                oreum.copy(
-                    totalFavorites = favMap[idStr] ?: 0,
-                    totalStamps = stampMap[idStr] ?: 0,
-                    userLiked = userFavorites[idStr] == true,
-                    userStamped = userStamps.containsKey(idStr)
-                )
-            }
+            val oreumData = fetchOreumFirestoreData()
+            val userData = fetchUserFirestoreData(auth.currentUser?.uid)
+            applyFirestoreData(apiData, oreumData, userData)
         } catch (e: Exception) {
             Log.e("OreumRepository", "❌ Firestore 병합 실패", e)
             apiData
