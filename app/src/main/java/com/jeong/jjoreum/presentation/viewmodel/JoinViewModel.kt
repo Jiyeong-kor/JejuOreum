@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+private val NICKNAME_REGEX = Regex("^[가-힣a-zA-Z0-9]+$")
+
 @HiltViewModel
 class JoinViewModel @Inject constructor(
     private val prefs: PreferenceManager,
@@ -55,7 +57,7 @@ class JoinViewModel @Inject constructor(
             return
         }
 
-        val isValid = nickname.length in 3..15 && nickname.matches("^[가-힣a-zA-Z0-9]+$".toRegex())
+        val isValid = nickname.length in 3..15 && nickname.matches(NICKNAME_REGEX)
         _isNicknameInvalid.value = !isValid
 
         if (isValid) {
