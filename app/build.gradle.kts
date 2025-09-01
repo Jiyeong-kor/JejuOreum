@@ -1,23 +1,5 @@
 import java.util.Properties
 
-android {
-    defaultConfig {
-        val localProperties = Properties().apply {
-            val file = rootProject.file("local.properties")
-            if (file.exists()) {
-                file.inputStream().use { load(it) }
-            }
-        }
-        val appKey = localProperties.getProperty("appKey") ?: ""
-
-        buildConfigField("String", "APP_KEY", "\"$appKey\"")
-
-        val jejuOreumBaseUrl = localProperties.getProperty("jejuOreumBaseUrl") ?: ""
-
-        buildConfigField("String", "JEJU_OREUM_URL", "\"$jejuOreumBaseUrl\"")
-    }
-}
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -40,6 +22,18 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties().apply {
+            val file = rootProject.file("local.properties")
+            if (file.exists()) {
+                file.inputStream().use { load(it) }
+            }
+        }
+        val appKey = localProperties.getProperty("appKey") ?: ""
+        buildConfigField("String", "APP_KEY", "\"$appKey\"")
+
+        val jejuOreumBaseUrl = localProperties.getProperty("jejuOreumBaseUrl") ?: ""
+        buildConfigField("String", "JEJU_OREUM_URL", "\"$jejuOreumBaseUrl\"")
     }
 
     buildTypes {
@@ -65,7 +59,6 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        // optIn.add("kotlin.RequiresOptIn") 등 필요 시 추가
     }
     jvmToolchain(17)
 }
