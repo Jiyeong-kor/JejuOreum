@@ -7,8 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val viewModel: SplashViewModel by viewModels()
     private val networkManager by lazy { NetworkManager(this) }
     private var showNetworkDialog by mutableStateOf(false)
@@ -30,23 +29,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { viewModel.isLoading.value }
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         networkManager.registerNetworkCallback(
-            onAvailable = { showNetworkDialog = false },
-            onLost = { showNetworkDialog = true }
+            onAvailable = { showNetworkDialog = false }, onLost = { showNetworkDialog = true }
         )
         if (!networkManager.checkNetworkState()) {
             showNetworkDialog = true
         }
-
         viewModel.checkUserStatus()
-
         setContent {
             JJOreumTheme {
-                val uiState by viewModel.uiState.observeAsState()
+                val uiState by viewModel.uiState.collectAsState()
                 uiState?.let { state ->
                     val startDestination = when (state) {
                         SplashUiState.GoToJoin -> "join"

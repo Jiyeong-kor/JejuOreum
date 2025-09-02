@@ -2,8 +2,6 @@ package com.jeong.jjoreum.presentation.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.security.ProviderInstaller
@@ -14,6 +12,8 @@ import com.jeong.jjoreum.repository.OreumRepository
 import com.kakao.vectormap.KakaoMapSdk
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,8 +25,8 @@ class SplashViewModel @Inject constructor(
 ) : ViewModel() {
 
     val isLoading = MutableStateFlow(true)
-    private val _uiState = MutableLiveData<SplashUiState>()
-    val uiState: LiveData<SplashUiState> = _uiState
+    private val _uiState = MutableStateFlow<SplashUiState?>(null)
+    val uiState: StateFlow<SplashUiState?> = _uiState.asStateFlow()
 
     fun checkUserStatus() {
         viewModelScope.launch {
