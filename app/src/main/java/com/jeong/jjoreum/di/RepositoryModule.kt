@@ -1,6 +1,13 @@
 package com.jeong.jjoreum.di
 
-import com.jeong.jjoreum.repository.*
+import com.jeong.jjoreum.repository.OreumRepository
+import com.jeong.jjoreum.repository.OreumRepositoryImpl
+import com.jeong.jjoreum.repository.ReviewRepository
+import com.jeong.jjoreum.repository.ReviewRepositoryImpl
+import com.jeong.jjoreum.repository.StampRepository
+import com.jeong.jjoreum.repository.StampRepositoryImpl
+import com.jeong.jjoreum.repository.UserInteractionRepository
+import com.jeong.jjoreum.repository.UserInteractionRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
