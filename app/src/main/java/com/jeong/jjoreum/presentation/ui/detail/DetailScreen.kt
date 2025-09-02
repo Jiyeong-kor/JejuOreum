@@ -65,7 +65,6 @@ fun DetailScreen(
     val isFavorite by viewModel.isFavorite.collectAsState()
     val hasStamp by viewModel.hasStamp.collectAsState()
     val reviewList by viewModel.reviewList.collectAsState()
-    val event by viewModel.event.collectAsState()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -80,22 +79,18 @@ fun DetailScreen(
         }
     }
 
-    LaunchedEffect(event) {
-        val currentEvent = event
-        when (currentEvent) {
-            is DetailViewModel.DetailEvent.StampSuccess -> {
-                showToast(context.getString(R.string.stamp_verified_message))
-                onFavoriteToggled(viewModel.oreumDetail.value?.idx.toString())
-            }
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is DetailViewModel.DetailEvent.StampSuccess -> {
+                    showToast(context.getString(R.string.stamp_verified_message))
+                    onFavoriteToggled(viewModel.oreumDetail.value?.idx.toString())
+                }
 
-            is DetailViewModel.DetailEvent.StampFailure -> {
-                showToast(currentEvent.message)
+                is DetailViewModel.DetailEvent.StampFailure -> {
+                    showToast(event.message)
+                }
             }
-
-            null -> {}
-        }
-        if (currentEvent != null) {
-            viewModel.clearEvent()
         }
     }
 

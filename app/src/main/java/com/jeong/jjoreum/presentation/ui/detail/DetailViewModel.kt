@@ -9,8 +9,11 @@ import com.jeong.jjoreum.repository.ReviewRepository
 import com.jeong.jjoreum.repository.StampRepository
 import com.jeong.jjoreum.repository.UserInteractionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,8 +45,8 @@ class DetailViewModel @Inject constructor(
         data class StampFailure(val message: String) : DetailEvent()
     }
 
-    private val _event = MutableStateFlow<DetailEvent?>(null)
-    val event: StateFlow<DetailEvent?> = _event.asStateFlow()
+    private val _event = MutableSharedFlow<DetailEvent>()
+    val event: SharedFlow<DetailEvent> = _event.asSharedFlow()
 
     fun setOreumDetail(oreum: ResultSummary) {
         _oreumDetail.value = oreum
@@ -99,23 +102,17 @@ class DetailViewModel @Inject constructor(
                 oreumLng = oreum.x
             )
 
-            _event.value = when {
+            when {
                 result.isSuccess -> {
                     fetchStampStatus()
-                    DetailEvent.StampSuccess
+                    _event.emit(DetailEvent.StampSuccess)
                 }
 
                 result.isFailure -> {
                     val message = result.exceptionOrNull()?.message ?: "알 수 없는 오류"
-                    DetailEvent.StampFailure(message)
+                    _event.emit(DetailEvent.StampFailure(message))
                 }
-
-                else -> null
             }
         }
-    }
-
-    fun clearEvent() {
-        _event.value = null
     }
 }
