@@ -1,7 +1,5 @@
 package com.jeong.jjoreum.presentation.ui.main
 
-import android.net.ConnectivityManager
-import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,19 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: SplashViewModel by viewModels()
-    private lateinit var connectivityManager: ConnectivityManager
     private val networkManager by lazy { NetworkManager(this) }
     private var showNetworkDialog by mutableStateOf(false)
-
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            showNetworkDialog = false
-        }
-
-        override fun onLost(network: Network) {
-            showNetworkDialog = true
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +34,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        connectivityManager = getSystemService(ConnectivityManager::class.java)
-        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        networkManager.registerNetworkCallback(
+            onAvailable = { showNetworkDialog = false },
+            onLost = { showNetworkDialog = true }
+        )
         if (!networkManager.checkNetworkState()) {
             showNetworkDialog = true
         }
@@ -80,6 +69,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        connectivityManager.unregisterNetworkCallback(networkCallback)
+        networkManager.unregisterNetworkCallback()
     }
 }
