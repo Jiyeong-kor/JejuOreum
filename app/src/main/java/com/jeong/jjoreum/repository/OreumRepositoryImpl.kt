@@ -40,6 +40,8 @@ class OreumRepositoryImpl @Inject constructor(
             val apiData = response.body()?.resultSummary ?: emptyList()
             val enumerated = apiData.mapIndexed { idx, oreum -> oreum.copy(idx = idx) }
             mergeWithFirestoreData(enumerated)
+                .onFailure { Log.e("OreumRepository", "❌ Firestore 병합 실패", it) }
+                .getOrThrow()
         }
     }
 
@@ -81,7 +83,10 @@ class OreumRepositoryImpl @Inject constructor(
         if (cachedList.isEmpty()) {
             fetchOreumList().onSuccess { _oreumListFlow.value = it }
         } else {
-            _oreumListFlow.value = mergeWithFirestoreData(cachedList)
+            mergeWithFirestoreData(cachedList)
+                .onSuccess { _oreumListFlow.value = it }
+                .onFailure { Log.e("OreumRepository", "❌ Firestore 병합 실패", it) }
+                .getOrThrow()
         }
     }
 
@@ -131,14 +136,13 @@ class OreumRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun mergeWithFirestoreData(apiData: List<ResultSummary>): List<ResultSummary> {
-        return try {
+    private suspend fun mergeWithFirestoreData(
+        apiData: List<ResultSummary>
+    ): Result<List<ResultSummary>> {
+        return runCatching {
             val oreumData = fetchOreumFirestoreData()
             val userData = fetchUserFirestoreData(auth.currentUser?.uid)
             applyFirestoreData(apiData, oreumData, userData)
-        } catch (e: Exception) {
-            Log.e("OreumRepository", "❌ Firestore 병합 실패", e)
-            apiData
         }
     }
 }
