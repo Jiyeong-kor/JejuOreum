@@ -19,20 +19,22 @@ import com.kakao.vectormap.label.LabelTextStyle
 import com.kakao.vectormap.label.OrderingType
 
 class MapRenderer(private val map: KakaoMap) {
-
-    private val labelLayer: LabelLayer = map.labelManager?.addLayer(
-        LabelLayerOptions.from("oreumLayer")
-            .setOrderingType(OrderingType.Rank)
-            .setCompetitionUnit(CompetitionUnit.IconAndText)
-            .setCompetitionType(CompetitionType.All),
-    )?.apply {
-        isVisible = true
-        isClickable = true
-    } ?: error("LabelLayer 생성 실패")
-
+    private val labelLayer: LabelLayer? = runCatching {
+        map.labelManager?.addLayer(
+            LabelLayerOptions.from("oreumLayer")
+                .setOrderingType(OrderingType.Rank)
+                .setCompetitionUnit(CompetitionUnit.IconAndText)
+                .setCompetitionType(CompetitionType.All)
+        )?.apply {
+            isVisible = true
+            isClickable = true
+        }
+    }.getOrElse {
+        Log.e("MapRenderer", "LabelLayer 생성 실패", it)
+        null
+    }
     private val markersByPoint = mutableMapOf<GeoPoint, Label>()
     private var selectedLabel: Label? = null
-
     private val unselectedStyle: LabelStyles by lazy(LazyThreadSafetyMode.NONE) {
         LabelStyles.from(
             LabelStyle.from(R.drawable.oreum_unselected).apply {
@@ -40,7 +42,7 @@ class MapRenderer(private val map: KakaoMap) {
                     LabelTextStyle
                         .from(24, 0xFF000000.toInt(), 0, 0)
                 )
-            },
+            }
         )
     }
     private val selectedStyle: LabelStyles by lazy(LazyThreadSafetyMode.NONE) {
@@ -50,7 +52,7 @@ class MapRenderer(private val map: KakaoMap) {
                     LabelTextStyle
                         .from(32, 0xFF000000.toInt(), 0, 0)
                 )
-            },
+            }
         )
     }
 
@@ -58,21 +60,21 @@ class MapRenderer(private val map: KakaoMap) {
     private fun LatLng.quantKey(): GeoPoint = GeoPoint(latitude, longitude).quantized()
 
     fun syncMarkers(pins: List<MapPinUi>) {
+        val layer = labelLayer ?: return
         val newKeyByPin = pins.associateBy { it.quantKey() }
         val oldKeys = markersByPoint.keys
         val newKeys = newKeyByPin.keys
-
         if (oldKeys.size == newKeys.size && oldKeys.containsAll(newKeys)) return
 
-        val wasVisible = labelLayer.isVisible
-        if (wasVisible) labelLayer.isVisible = false
+        val wasVisible = layer.isVisible
+        if (wasVisible) layer.isVisible = false
         try {
             (oldKeys - newKeys).forEach { key ->
-                markersByPoint.remove(key)?.let { labelLayer.remove(it) }
+                markersByPoint.remove(key)?.let { layer.remove(it) }
             }
             (newKeys - oldKeys).forEach { key ->
                 val p = newKeyByPin.getValue(key)
-                val label = labelLayer.addLabel(
+                val label = layer.addLabel(
                     com.kakao.vectormap.label.LabelOptions
                         .from(LatLng.from(p.lat, p.lon))
                         .setTexts(LabelTextBuilder().setTexts(p.title))
@@ -82,8 +84,8 @@ class MapRenderer(private val map: KakaoMap) {
                 markersByPoint[key] = label
             }
         } finally {
-            labelLayer.isVisible = wasVisible
         }
+        layer.isVisible = wasVisible
     }
 
     fun selectMarkerAt(latLng: LatLng) {
@@ -103,7 +105,7 @@ class MapRenderer(private val map: KakaoMap) {
     }
 
     fun release() {
-        runCatching { labelLayer.removeAll() }
+        runCatching { labelLayer?.removeAll() }
             .onFailure { Log.w("MapRenderer", "removeAll 실패", it) }
         markersByPoint.clear()
         selectedLabel = null
