@@ -25,13 +25,4 @@ class JJOreumApplication : Application(), SingletonImageLoader.Factory {
         )
         return ep.imageLoader()
     }
-
-    companion object {
-        private lateinit var jjOreumApplication: JJOreumApplication
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        jjOreumApplication = this
-    }
 }
