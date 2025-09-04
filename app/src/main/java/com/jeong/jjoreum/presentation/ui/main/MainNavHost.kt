@@ -24,7 +24,7 @@ import com.google.gson.Gson
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.presentation.ui.detail.DetailScreen
-import com.jeong.jjoreum.presentation.ui.detail.DetailViewModel
+import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
 import com.jeong.jjoreum.presentation.ui.list.ListScreen
 import com.jeong.jjoreum.presentation.ui.map.MapScreen
 import com.jeong.jjoreum.presentation.ui.profile.MyScreen
@@ -90,7 +90,8 @@ fun MainNavHost(startDestination: String) {
                         },
                         icon = {
                             val iconRes =
-                                if (currentRoute == "my") R.drawable.ic_my_selected else R.drawable.ic_my_unselected
+                                if (currentRoute == "my") R.drawable.ic_my_selected
+                                else R.drawable.ic_my_unselected
                             Icon(
                                 painterResource(iconRes),
                                 contentDescription = stringResource(R.string.my_title)
