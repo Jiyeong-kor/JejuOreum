@@ -22,8 +22,4 @@ class PreferenceManager(context: Context) {
     }
 
     suspend fun isUserRegistered(): Boolean = getNickname().isNotBlank()
-
-    suspend fun clearUserData() {
-        dataStore.edit { it.remove(nicknameKey) }
-    }
 }
