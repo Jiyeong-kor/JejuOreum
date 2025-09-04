@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
+import com.jeong.jjoreum.util.Constants
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,28 +21,28 @@ class UserInteractionRepositoryImpl @Inject constructor(
     override suspend fun getFavoriteStatus(oreumIdx: String): Boolean {
         val uid = getUserId() ?: return false
         val doc = firestore.collection(
-            "user_info_col"
+            Constants.COLLECTION_USER_INFO
         ).document(uid).get().await()
-        val map = doc.get("favorites").toStringBooleanMap()
+        val map = doc.get(Constants.FIELD_FAVORITES).toStringBooleanMap()
         return map[oreumIdx] == true
     }
 
     override suspend fun getStampStatus(oreumIdx: String): Boolean {
         val uid = getUserId() ?: return false
         val doc = firestore.collection(
-            "user_info_col"
+            Constants.COLLECTION_USER_INFO
         ).document(uid).get().await()
-        val map = doc.get("stampedOreums").toStringStringMap()
+        val map = doc.get(Constants.FIELD_STAMPED_OREUMS).toStringStringMap()
         return map.containsKey(oreumIdx)
     }
 
     override suspend fun toggleFavorite(oreumIdx: String, newIsFavorite: Boolean): Int {
-        val uid = getUserId() ?: throw IllegalStateException("로그인 필요")
+        val uid = getUserId() ?: throw IllegalStateException(Constants.MESSAGE_LOGIN_REQUIRED)
         val userDoc = firestore.collection(
-            "user_info_col"
+            Constants.COLLECTION_USER_INFO
         ).document(uid)
         val oreumDoc = firestore.collection(
-            "oreum_info_col"
+            Constants.COLLECTION_OREUM_INFO
         ).document(oreumIdx)
 
         return try {
@@ -49,8 +50,9 @@ class UserInteractionRepositoryImpl @Inject constructor(
                 val userSnap = tx.get(userDoc)
                 val oreumSnap = tx.get(oreumDoc)
 
-                val favorites = userSnap.get("favorites").toStringBooleanMap().toMutableMap()
-                var count = oreumSnap.getLong("favorite")?.toInt() ?: 0
+                val favorites =
+                    userSnap.get(Constants.FIELD_FAVORITES).toStringBooleanMap().toMutableMap()
+                var count = oreumSnap.getLong(Constants.FIELD_FAVORITE)?.toInt() ?: 0
 
                 if (newIsFavorite) {
                     favorites[oreumIdx] = true
@@ -59,14 +61,13 @@ class UserInteractionRepositoryImpl @Inject constructor(
                     favorites[oreumIdx] = false
                     if (count > 0) count--
                 }
-
                 tx.set(
                     userDoc,
-                    mapOf("favorites" to favorites), SetOptions.merge()
+                    mapOf(Constants.FIELD_FAVORITES to favorites), SetOptions.merge()
                 )
                 tx.set(
                     oreumDoc,
-                    mapOf("favorite" to count), SetOptions.merge()
+                    mapOf(Constants.FIELD_FAVORITE to count), SetOptions.merge()
                 )
                 Log.d(
                     "FavoriteDebug",
@@ -77,31 +78,31 @@ class UserInteractionRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("FavoriteDebug", "❌ [쓰기 실패] 원인: ", e)
             val oreumSnap = oreumDoc.get().await()
-            oreumSnap.getLong("favorite")?.toInt() ?: 0
+            oreumSnap.getLong(Constants.FIELD_FAVORITE)?.toInt() ?: 0
         }
     }
 
     override suspend fun getAllFavoriteStatus(): Map<String, Boolean> {
         val uid = getUserId() ?: return emptyMap()
         val doc = firestore.collection(
-            "user_info_col"
+            Constants.COLLECTION_USER_INFO
         ).document(uid).get(Source.SERVER).await()
-        return doc.get("favorites").toStringBooleanMap()
+        return doc.get(Constants.FIELD_FAVORITES).toStringBooleanMap()
     }
 
     override suspend fun getAllStampStatus(): Map<String, Boolean> {
         val uid = getUserId() ?: return emptyMap()
         val doc = firestore.collection(
-            "user_info_col"
+            Constants.COLLECTION_USER_INFO
         ).document(uid).get().await()
-        return doc.get("stampedOreums").toStringStringMap().mapValues { true }
+        return doc.get(Constants.FIELD_STAMPED_OREUMS).toStringStringMap().mapValues { true }
     }
 
     override suspend fun getCurrentUserNickname(): String {
-        val uid = getUserId() ?: return "닉네임없음"
+        val uid = getUserId() ?: return Constants.DEFAULT_NICKNAME
         val doc = firestore.collection(
-            "user_info_col"
+            Constants.COLLECTION_USER_INFO
         ).document(uid).get().await()
-        return doc.getString("nickname") ?: "닉네임없음"
+        return doc.getString(Constants.FIELD_NICKNAME) ?: Constants.DEFAULT_NICKNAME
     }
 }

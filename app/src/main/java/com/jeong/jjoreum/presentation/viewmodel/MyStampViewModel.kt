@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.jeong.jjoreum.data.model.entity.MyStampItem
 import com.jeong.jjoreum.repository.OreumRepository
 import com.jeong.jjoreum.repository.UserInteractionRepository
+import com.jeong.jjoreum.util.Constants
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +21,7 @@ class MyStampViewModel @Inject constructor(
     private val _stampedList = MutableStateFlow<List<MyStampItem>>(emptyList())
     val stampedList: StateFlow<List<MyStampItem>> = _stampedList
 
-    private val _nickname = MutableStateFlow("닉네임없음")
+    private val _nickname = MutableStateFlow(Constants.DEFAULT_NICKNAME)
     val nickname: StateFlow<String> = _nickname
 
     init {
@@ -31,10 +32,7 @@ class MyStampViewModel @Inject constructor(
         viewModelScope.launch {
             val result = oreumRepository.loadOreumListIfNeeded()
             if (result.isFailure) return@launch
-
-            // 캐시된 데이터 직접 사용
             val oreumList = oreumRepository.getCachedOreumList()
-
             val stamped = oreumList.filter { it.userStamped }.map {
                 MyStampItem(
                     userId = 0,

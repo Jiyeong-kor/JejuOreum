@@ -9,6 +9,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -61,21 +62,21 @@ class StampRepositoryImpl @Inject constructor(
             }
 
             val uid = auth.currentUser?.uid ?: return Result.failure(
-                Exception("로그인이 필요합니다.")
+                Exception(Constants.MESSAGE_LOGIN_REQUIRED)
             )
 
             firestore.runBatch { batch ->
                 batch.update(
                     firestore.collection(
-                        "user_info_col"
+                        Constants.COLLECTION_USER_INFO
                     ).document(uid),
-                    "stampedOreums.$oreumIdx", oreumName
+                    "${Constants.FIELD_STAMPED_OREUMS}.${oreumIdx}", oreumName
                 )
                 batch.update(
                     firestore.collection(
-                        "oreum_info_col"
+                        Constants.COLLECTION_OREUM_INFO
                     ).document(oreumIdx),
-                    "stamp", FieldValue.increment(1)
+                    Constants.FIELD_STAMP, FieldValue.increment(1)
                 )
             }.await()
 
