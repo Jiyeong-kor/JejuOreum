@@ -9,11 +9,13 @@ import com.jeong.jjoreum.domain.geo.GeoPoint
 import com.jeong.jjoreum.domain.geo.quantized
 import com.jeong.jjoreum.repository.OreumRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 
@@ -67,7 +69,7 @@ class MapViewModel @Inject constructor(
     }
 
     fun updateVisibleOreumWithin(bounds: GeoBounds) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val full = oreumList.value
             val minLat = min(bounds.sw.lat, bounds.ne.lat)
             val maxLat = max(bounds.sw.lat, bounds.ne.lat)
@@ -76,11 +78,13 @@ class MapViewModel @Inject constructor(
 
             val newPins = full.filter { o ->
                 o.y in minLat..maxLat && o.x in minLon..maxLon
-            }
-                .map { o -> MapPinUi(title = o.oreumKname, lat = o.y, lon = o.x) }
+            }.map { o -> MapPinUi(title = o.oreumKname, lat = o.y, lon = o.x) }
 
-            if (newPins == _visiblePins.value) return@launch
-            _visiblePins.value = newPins
+            if (newPins != _visiblePins.value) {
+                withContext(Dispatchers.Main) {
+                    _visiblePins.value = newPins
+                }
+            }
         }
     }
 

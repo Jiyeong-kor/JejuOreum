@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.jeong.jjoreum.util.PREF_KEY_NICKNAME
+import com.jeong.jjoreum.util.Constants.PREF_KEY_NICKNAME
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

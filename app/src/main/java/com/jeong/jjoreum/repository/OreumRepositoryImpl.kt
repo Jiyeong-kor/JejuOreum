@@ -6,6 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.data.model.api.ResultSummary
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
@@ -51,30 +53,34 @@ class OreumRepositoryImpl @Inject constructor(
             ?: throw IllegalStateException("해당 오름을 찾을 수 없습니다.")
 
         val userId = auth.currentUser?.uid
-        val oreumDoc = firestore.collection(
-            "oreum_info_col"
-        ).document(oreumIdx).get().await()
-        val userDoc = userId?.let {
-            firestore.collection(
-                "user_info_col"
-            ).document(it).get().await()
+        return coroutineScope {
+            val oreumDeferred = async {
+                firestore.collection("oreum_info_col")
+                    .document(oreumIdx).get().await()
+            }
+            val userDeferred = async {
+                userId?.let {
+                    firestore.collection("user_info_col")
+                        .document(it).get().await()
+                }
+            }
+
+            val oreumDoc = oreumDeferred.await()
+            val userDoc = userDeferred.await()
+            val totalFavorites = oreumDoc.getLong("favorite")?.toInt() ?: 0
+            val totalStamps = oreumDoc.getLong("stamp")?.toInt() ?: 0
+            val userFavorites = userDoc?.get("favorites").toStringBooleanMap()
+            val userStamps = userDoc?.get("stampedOreums").toStringStringMap()
+            val userLiked = userFavorites[oreumIdx] == true
+            val userStamped = userStamps.containsKey(oreumIdx)
+
+            oreum.copy(
+                totalFavorites = totalFavorites,
+                totalStamps = totalStamps,
+                userLiked = userLiked,
+                userStamped = userStamped
+            )
         }
-
-        val totalFavorites = oreumDoc.getLong("favorite")?.toInt() ?: 0
-        val totalStamps = oreumDoc.getLong("stamp")?.toInt() ?: 0
-
-        val userFavorites = userDoc?.get("favorites").toStringBooleanMap()
-        val userStamps = userDoc?.get("stampedOreums").toStringStringMap()
-
-        val userLiked = userFavorites[oreumIdx] == true
-        val userStamped = userStamps.containsKey(oreumIdx)
-
-        return oreum.copy(
-            totalFavorites = totalFavorites,
-            totalStamps = totalStamps,
-            userLiked = userLiked,
-            userStamped = userStamped
-        )
     }
 
     override suspend fun refreshAllOreumsWithNewUserData() {
