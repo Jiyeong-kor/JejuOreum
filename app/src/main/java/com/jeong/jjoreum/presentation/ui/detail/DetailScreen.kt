@@ -52,6 +52,7 @@ import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PermissionManager
 import com.jeong.jjoreum.data.model.entity.ReviewItem
+import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -137,7 +138,12 @@ fun DetailScreen(
 
                             else -> {
                                 when (savedLocationGranted) {
-                                    false -> showToast(context.getString(R.string.permission_required_message))
+                                    false -> showToast(
+                                        context.getString(
+                                            R.string.permission_required_message
+                                        )
+                                    )
+
                                     else -> permissionLauncher.launch(
                                         Manifest.permission.ACCESS_FINE_LOCATION
                                     )
@@ -156,7 +162,6 @@ fun DetailScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             oreumDetail?.let { oreum ->
-                // Image
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
