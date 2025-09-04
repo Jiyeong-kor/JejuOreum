@@ -32,7 +32,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,11 +70,18 @@ fun DetailScreen(
     val reviewList by viewModel.reviewList.collectAsState()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    var savedLocationGranted by remember { mutableStateOf<Boolean?>(null) }
+
+    LaunchedEffect(Unit) {
+        savedLocationGranted = PermissionManager.isLocationGranted(context)
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         coroutineScope.launch { PermissionManager.setLocationGranted(context, isGranted) }
+        savedLocationGranted = isGranted
+
         if (isGranted) {
             viewModel.stampOreum()
         } else {
@@ -126,9 +136,12 @@ fun DetailScreen(
                             }
 
                             else -> {
-                                permissionLauncher.launch(
-                                    Manifest.permission.ACCESS_FINE_LOCATION
-                                )
+                                when (savedLocationGranted) {
+                                    false -> showToast(context.getString(R.string.permission_required_message))
+                                    else -> permissionLauncher.launch(
+                                        Manifest.permission.ACCESS_FINE_LOCATION
+                                    )
+                                }
                             }
                         }
                     }
