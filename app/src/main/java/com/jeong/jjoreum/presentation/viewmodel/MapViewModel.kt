@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.map
+package com.jeong.jjoreum.presentation.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -7,6 +7,8 @@ import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.domain.geo.GeoBounds
 import com.jeong.jjoreum.domain.geo.GeoPoint
 import com.jeong.jjoreum.domain.geo.quantized
+import com.jeong.jjoreum.presentation.ui.map.MapPinUi
+import com.jeong.jjoreum.presentation.ui.map.MapUiState
 import com.jeong.jjoreum.repository.OreumRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +70,12 @@ class MapViewModel @Inject constructor(
         }
     }
 
+    private val pinCache = mutableMapOf<GeoPoint, MapPinUi>()
+    private var lastBounds: GeoBounds? = null
+
     fun updateVisibleOreumWithin(bounds: GeoBounds) {
+        if (bounds == lastBounds) return
+        lastBounds = bounds
         viewModelScope.launch(Dispatchers.Default) {
             val full = oreumList.value
             val minLat = min(bounds.sw.lat, bounds.ne.lat)
@@ -76,14 +83,19 @@ class MapViewModel @Inject constructor(
             val minLon = min(bounds.sw.lon, bounds.ne.lon)
             val maxLon = max(bounds.sw.lon, bounds.ne.lon)
 
-            val newPins = full.filter { o ->
-                o.y in minLat..maxLat && o.x in minLon..maxLon
-            }.map { o -> MapPinUi(title = o.oreumKname, lat = o.y, lon = o.x) }
-
-            if (newPins != _visiblePins.value) {
-                withContext(Dispatchers.Main) {
-                    _visiblePins.value = newPins
+            val pins = ArrayList<MapPinUi>()
+            for (o in full) {
+                if (o.y in minLat..maxLat && o.x in minLon..maxLon) {
+                    val key = o.quantKey()
+                    val cached = pinCache[key]
+                    val pin = cached ?: MapPinUi(o.oreumKname, o.y, o.x)
+                        .also { pinCache[key] = it }
+                    pins.add(pin)
                 }
+            }
+
+            if (pins != _visiblePins.value) {
+                withContext(Dispatchers.Main) { _visiblePins.value = pins }
             }
         }
     }
