@@ -1,11 +1,14 @@
 package com.jeong.jjoreum.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.repository.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WriteReviewViewModel @Inject constructor(
     private val reviewRepo: ReviewRepository,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _reviews = MutableStateFlow<List<ReviewItem>>(emptyList())
@@ -54,7 +58,7 @@ class WriteReviewViewModel @Inject constructor(
         if (_reviewInputText.value.isBlank()) return
 
         val currentUser = auth.currentUser ?: return
-        val nickname = auth.currentUser?.displayName ?: "익명"
+        val nickname = auth.currentUser?.displayName ?: context.getString(R.string.anonymous)
 
         val newReview = ReviewItem(
             userId = currentUser.uid,

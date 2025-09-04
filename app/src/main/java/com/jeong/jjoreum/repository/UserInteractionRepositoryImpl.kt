@@ -1,19 +1,23 @@
 package com.jeong.jjoreum.repository
 
-import android.util.Log
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.util.Constants
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserInteractionRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @param:ApplicationContext private val context: Context
 ) : UserInteractionRepository {
 
     private fun getUserId(): String? = auth.currentUser?.uid
@@ -37,7 +41,9 @@ class UserInteractionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun toggleFavorite(oreumIdx: String, newIsFavorite: Boolean): Int {
-        val uid = getUserId() ?: throw IllegalStateException(Constants.MESSAGE_LOGIN_REQUIRED)
+        val uid = getUserId() ?: throw IllegalStateException(
+            context.getString(R.string.login_required)
+        )
         val userDoc = firestore.collection(
             Constants.COLLECTION_USER_INFO
         ).document(uid)
@@ -69,14 +75,11 @@ class UserInteractionRepositoryImpl @Inject constructor(
                     oreumDoc,
                     mapOf(Constants.FIELD_FAVORITE to count), SetOptions.merge()
                 )
-                Log.d(
-                    "FavoriteDebug",
-                    "✅ [쓰기 성공] Oreum $oreumIdx -> $newIsFavorite"
-                )
+                Timber.d("✅ [쓰기 성공] Oreum %s -> %s", oreumIdx, newIsFavorite)
                 count
             }.await()
         } catch (e: Exception) {
-            Log.e("FavoriteDebug", "❌ [쓰기 실패] 원인: ", e)
+            Timber.e(e, "❌ [쓰기 실패] 원인")
             val oreumSnap = oreumDoc.get().await()
             oreumSnap.getLong(Constants.FIELD_FAVORITE)?.toInt() ?: 0
         }
@@ -99,10 +102,11 @@ class UserInteractionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrentUserNickname(): String {
-        val uid = getUserId() ?: return Constants.DEFAULT_NICKNAME
+        val defaultNickname = context.getString(R.string.default_nickname)
+        val uid = getUserId() ?: return defaultNickname
         val doc = firestore.collection(
             Constants.COLLECTION_USER_INFO
         ).document(uid).get().await()
-        return doc.getString(Constants.FIELD_NICKNAME) ?: Constants.DEFAULT_NICKNAME
+        return doc.getString(Constants.FIELD_NICKNAME) ?: defaultNickname
     }
 }

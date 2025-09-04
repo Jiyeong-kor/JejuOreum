@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
@@ -89,7 +90,7 @@ fun WriteReviewScreen(
 
             // ViewModel에 텍스트 변경 알림
             onValueChange = onReviewTextChange,
-            label = { Text("후기를 입력하세요") },
+            label = { Text(stringResource(id = R.string.review_input_hint)) },
             modifier = Modifier.fillMaxWidth(),
             maxLines = 5
         )
@@ -104,7 +105,7 @@ fun WriteReviewScreen(
             // 텍스트가 있을 때만 활성화
             enabled = reviewInputText.isNotBlank()
         ) {
-            Text("후기 저장")
+            Text(stringResource(id = R.string.save_review))
         }
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
@@ -112,7 +113,7 @@ fun WriteReviewScreen(
         if (reviews.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    "작성된 후기가 없습니다.",
+                    stringResource(id = R.string.no_reviews),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -153,7 +154,7 @@ fun ReviewItemCard(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_my_selected),
-                    contentDescription = "Profile",
+                    contentDescription = stringResource(id = R.string.review_profile_desc),
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
@@ -175,7 +176,7 @@ fun ReviewItemCard(
                     IconButton(onClick = { onDeleteClick(review) }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete",
+                            contentDescription = stringResource(id = R.string.review_delete_desc),
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
@@ -196,7 +197,7 @@ fun ReviewItemCard(
                     Icon(
                         imageVector = if (review.isLiked) Icons.Filled.Favorite
                         else Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Like",
+                        contentDescription = stringResource(id = R.string.review_like_desc),
                         tint = likeIconColor
                     )
                 }

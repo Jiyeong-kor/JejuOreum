@@ -28,7 +28,7 @@ fun JoinRoute(
         if (auth.currentUser == null) {
             auth.signInAnonymously().addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    context.toastMessage(context.getString(R.string.auth_failed))
+                    context.toastMessage(R.string.auth_failed)
                 }
             }
         }
@@ -42,11 +42,11 @@ fun JoinRoute(
         onNextClick = {
             viewModel.saveNickname(
                 onSuccess = {
-                    context.toastMessage(context.getString(R.string.signup_success))
+                    context.toastMessage(R.string.signup_success)
                     onNavigateToMain()
                 },
                 onFailure = {
-                    context.toastMessage(context.getString(R.string.nickname_save_failed))
+                    context.toastMessage(R.string.nickname_save_failed)
                 }
             )
         }

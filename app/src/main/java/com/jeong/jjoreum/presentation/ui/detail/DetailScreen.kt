@@ -234,7 +234,7 @@ fun BottomButtonSection(
                     id = if (isFavorite) R.drawable.ic_favorite_selected
                     else R.drawable.ic_favorite_unselected
                 ),
-                contentDescription = "Favorite",
+                contentDescription = stringResource(id = R.string.desc_favorite_icon),
                 tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(36.dp)
             )
@@ -247,7 +247,13 @@ fun BottomButtonSection(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            Text(text = if (hasStamp) "후기 작성" else "스탬프 찍기")
+            Text(
+                text = if (hasStamp) {
+                    stringResource(id = R.string.write_review)
+                } else {
+                    stringResource(id = R.string.detail_stamp)
+                }
+            )
         }
     }
 }
@@ -272,7 +278,7 @@ fun ReviewSection(
         )
         if (reviews.isEmpty()) {
             Text(
-                text = "작성된 후기가 없습니다",
+                text = stringResource(id = R.string.no_reviews),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
@@ -338,7 +344,7 @@ fun ReviewItem(
             IconButton(onClick = { onDeleteClick(review.userReview) }) {
                 Icon(
                     painter = painterResource(id = ic_menu_delete),
-                    contentDescription = "Delete Review"
+                    contentDescription = stringResource(id = R.string.review_delete_desc)
                 )
             }
         }

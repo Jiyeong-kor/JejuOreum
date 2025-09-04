@@ -9,6 +9,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
@@ -35,11 +36,15 @@ class StampRepositoryImpl @Inject constructor(
                 context, Manifest.permission.ACCESS_FINE_LOCATION
             )
             if (permission != PackageManager.PERMISSION_GRANTED) {
-                return Result.failure(Exception("위치 권한이 필요합니다."))
+                return Result.failure(
+                    Exception(
+                        context.getString(R.string.permission_required_message)
+                    )
+                )
             }
 
             val location = fusedLocationClient.lastLocation.await()
-                ?: return Result.failure(Exception("현재 위치를 가져올 수 없습니다."))
+                ?: return Result.failure(Exception(context.getString(R.string.location_unavailable)))
 
             val userLocation = Location("").apply {
                 latitude = location.latitude
@@ -55,14 +60,13 @@ class StampRepositoryImpl @Inject constructor(
             if (distance > 200) {
                 return Result.failure(
                     Exception(
-                        "오름과의 거리가 ${"%.2f".format(distance)}m 입니다. " +
-                                "200m 이내로 가까이 가주세요."
+                        context.getString(R.string.distance_warning, distance)
                     )
                 )
             }
 
             val uid = auth.currentUser?.uid ?: return Result.failure(
-                Exception(Constants.MESSAGE_LOGIN_REQUIRED)
+                Exception(context.getString(R.string.login_required))
             )
 
             firestore.runBatch { batch ->

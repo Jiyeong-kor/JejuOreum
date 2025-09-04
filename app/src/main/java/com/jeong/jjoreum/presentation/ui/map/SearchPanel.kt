@@ -2,7 +2,13 @@ package com.jeong.jjoreum.presentation.ui.map
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -17,11 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
 
 @Composable
@@ -40,7 +48,7 @@ fun SearchPanel(
             onValueChange = onQueryChange,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            placeholder = { Text("오름의 이름이나 주소로 검색해 주세요") },
+            placeholder = { Text(stringResource(id = R.string.search_placeholder)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(
                 onSearch = {
@@ -119,7 +127,7 @@ fun SearchPanel(
                         .fillMaxWidth()
                         .background(Color.White),
                     contentAlignment = Alignment.Center
-                ) { Text("검색 결과가 없어요.") }
+                ) { Text(stringResource(id = R.string.search_empty)) }
             }
 
             is MapUiState.Hidden, is MapUiState.Idle -> Unit

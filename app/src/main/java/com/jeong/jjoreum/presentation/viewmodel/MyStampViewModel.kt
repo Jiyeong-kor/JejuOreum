@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.jeong.jjoreum.data.model.entity.MyStampItem
 import com.jeong.jjoreum.repository.OreumRepository
 import com.jeong.jjoreum.repository.UserInteractionRepository
-import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +20,7 @@ class MyStampViewModel @Inject constructor(
     private val _stampedList = MutableStateFlow<List<MyStampItem>>(emptyList())
     val stampedList: StateFlow<List<MyStampItem>> = _stampedList
 
-    private val _nickname = MutableStateFlow(Constants.DEFAULT_NICKNAME)
+    private val _nickname = MutableStateFlow("")
     val nickname: StateFlow<String> = _nickname
 
     init {

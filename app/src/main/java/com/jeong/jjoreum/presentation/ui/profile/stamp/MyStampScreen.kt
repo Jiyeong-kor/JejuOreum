@@ -2,7 +2,16 @@ package com.jeong.jjoreum.presentation.ui.profile.stamp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -44,7 +53,7 @@ fun MyStampScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${nickname}님의 스탬프",
+                text = stringResource(id = R.string.my_stamp_title, nickname),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.my_stamp_image_margin_start)))
@@ -52,11 +61,13 @@ fun MyStampScreen(
                 painter = painterResource(id = R.drawable.ic_stamp),
                 contentDescription = stringResource(id = R.string.desc_stamp_icon),
                 modifier = Modifier.size(dimensionResource(id = R.dimen.my_stamp_image_size)),
-                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                    MaterialTheme.colorScheme.primary
+                )
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.my_stamp_num_margin_start)))
             Text(
-                text = "${count}개",
+                text = stringResource(id = R.string.stamp_count, count),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )

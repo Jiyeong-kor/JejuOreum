@@ -1,17 +1,20 @@
 package com.jeong.jjoreum.repository
 
-import android.util.Log
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.util.Constants
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +22,8 @@ import javax.inject.Singleton
 class OreumRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val apiService: OreumRetrofitInterface
+    private val apiService: OreumRetrofitInterface,
+    @param:ApplicationContext private val context: Context
 ) : OreumRepository {
 
     private val _oreumListFlow = MutableStateFlow<List<ResultSummary>>(emptyList())
@@ -38,12 +42,17 @@ class OreumRepositoryImpl @Inject constructor(
         return runCatching {
             val response = apiService.getOreumList()
             if (!response.isSuccessful) {
-                throw IllegalStateException("API 실패: ${response.errorBody()?.string()}")
+                throw IllegalStateException(
+                    context.getString(
+                        R.string.api_failure,
+                        response.errorBody()?.string()
+                    )
+                )
             }
             val apiData = response.body()?.resultSummary ?: emptyList()
             val enumerated = apiData.mapIndexed { idx, oreum -> oreum.copy(idx = idx) }
             mergeWithFirestoreData(enumerated)
-                .onFailure { Log.e("OreumRepository", "❌ Firestore 병합 실패", it) }
+                .onFailure { Timber.e(it, "Firestore merge failed") }
                 .getOrThrow()
         }
     }
@@ -51,7 +60,7 @@ class OreumRepositoryImpl @Inject constructor(
     override suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary {
         loadOreumListIfNeeded().getOrThrow()
         val oreum = _oreumListFlow.value.find { it.idx.toString() == oreumIdx }
-            ?: throw IllegalStateException("해당 오름을 찾을 수 없습니다.")
+            ?: throw IllegalStateException(context.getString(R.string.oreum_not_found))
 
         val userId = auth.currentUser?.uid
         return coroutineScope {
@@ -92,7 +101,7 @@ class OreumRepositoryImpl @Inject constructor(
         } else {
             mergeWithFirestoreData(cachedList)
                 .onSuccess { _oreumListFlow.value = it }
-                .onFailure { Log.e("OreumRepository", "❌ Firestore 병합 실패", it) }
+                .onFailure { Timber.e(it, "Firestore merge failed") }
                 .getOrThrow()
         }
     }
@@ -108,7 +117,9 @@ class OreumRepositoryImpl @Inject constructor(
     )
 
     private suspend fun fetchOreumFirestoreData(): OreumFirestoreData {
-        val oreumSnapshot = firestore.collection(Constants.COLLECTION_OREUM_INFO).get().await()
+        val oreumSnapshot = firestore.collection(
+            Constants.COLLECTION_OREUM_INFO
+        ).get().await()
         val stampMap = oreumSnapshot.documents.associate {
             it.id to (it.getLong(Constants.FIELD_STAMP)?.toInt() ?: 0)
         }

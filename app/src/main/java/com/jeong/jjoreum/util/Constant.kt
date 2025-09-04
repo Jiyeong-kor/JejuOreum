@@ -22,8 +22,4 @@ object Constants {
     const val FIELD_REVIEW_LIKE_NUM = "reviewLikeNum"
     const val FIELD_IS_LIKED = "isLiked"
     const val FIELD_UID = "uid"
-
-    // Default Values / Messages
-    const val DEFAULT_NICKNAME = "닉네임없음"
-    const val MESSAGE_LOGIN_REQUIRED = "로그인이 필요합니다."
 }

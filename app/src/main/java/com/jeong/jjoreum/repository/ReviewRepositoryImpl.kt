@@ -1,9 +1,12 @@
 package com.jeong.jjoreum.repository
 
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.util.Constants
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +14,8 @@ import javax.inject.Singleton
 @Singleton
 class ReviewRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @param:ApplicationContext private val context: Context
 ) : ReviewRepository {
 
     override suspend fun getReviews(oreumIdx: String): List<ReviewItem> {
@@ -34,7 +38,7 @@ class ReviewRepositoryImpl @Inject constructor(
 
     override suspend fun writeReview(oreumIdx: String, review: ReviewItem): Result<Unit> {
         val userId = auth.currentUser?.uid
-            ?: return Result.failure(Exception(Constants.MESSAGE_LOGIN_REQUIRED))
+            ?: return Result.failure(Exception(context.getString(R.string.login_required)))
         val docRef = firestore.collection(Constants.COLLECTION_REVIEWS)
             .document(oreumIdx)
             .collection(Constants.SUBCOLLECTION_ITEMS)

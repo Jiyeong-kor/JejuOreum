@@ -1,7 +1,9 @@
 package com.jeong.jjoreum.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.domain.usecase.ToggleFavoriteUseCase
@@ -9,6 +11,7 @@ import com.jeong.jjoreum.repository.ReviewRepository
 import com.jeong.jjoreum.repository.StampRepository
 import com.jeong.jjoreum.repository.UserInteractionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,8 +26,8 @@ class DetailViewModel @Inject constructor(
     private val userInteractionRepository: UserInteractionRepository,
     private val reviewRepository: ReviewRepository,
     private val stampRepository: StampRepository,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
-
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _oreumDetail = MutableStateFlow<ResultSummary?>(null)
@@ -109,7 +112,8 @@ class DetailViewModel @Inject constructor(
                 }
 
                 result.isFailure -> {
-                    val message = result.exceptionOrNull()?.message ?: "알 수 없는 오류"
+                    val message = result.exceptionOrNull()?.message
+                        ?: context.getString(R.string.unknown_error_message)
                     _event.emit(DetailEvent.StampFailure(message))
                 }
             }

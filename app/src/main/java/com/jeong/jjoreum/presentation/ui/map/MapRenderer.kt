@@ -1,6 +1,5 @@
 package com.jeong.jjoreum.presentation.ui.map
 
-import android.util.Log
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.domain.geo.GeoPoint
 import com.jeong.jjoreum.domain.geo.quantized
@@ -17,6 +16,7 @@ import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.label.LabelTextBuilder
 import com.kakao.vectormap.label.LabelTextStyle
 import com.kakao.vectormap.label.OrderingType
+import timber.log.Timber
 
 class MapRenderer(private val map: KakaoMap) {
     private val labelLayer: LabelLayer? = runCatching {
@@ -30,7 +30,7 @@ class MapRenderer(private val map: KakaoMap) {
             isClickable = true
         }
     }.getOrElse {
-        Log.e("MapRenderer", "LabelLayer 생성 실패", it)
+        Timber.e(it, "LabelLayer 생성 실패")
         null
     }
     private val markersByPoint = mutableMapOf<GeoPoint, Label>()
@@ -106,7 +106,7 @@ class MapRenderer(private val map: KakaoMap) {
 
     fun release() {
         runCatching { labelLayer?.removeAll() }
-            .onFailure { Log.w("MapRenderer", "removeAll 실패", it) }
+            .onFailure { Timber.w(it, "removeAll 실패") }
         markersByPoint.clear()
         selectedLabel = null
     }

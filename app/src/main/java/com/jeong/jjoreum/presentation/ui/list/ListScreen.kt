@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -166,7 +167,7 @@ fun ListItem(
                             } else {
                                 painterResource(id = R.drawable.ic_favorite_unselected)
                             },
-                            contentDescription = "Favorite",
+                            contentDescription = stringResource(id = R.string.desc_favorite_icon),
                             tint = if (oreum.userLiked) Color.Red else Color.White,
                             modifier = Modifier.size(24.dp)
                         )
@@ -184,7 +185,7 @@ fun ListItem(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_stamp_variant),
-                            contentDescription = "Stamp",
+                            contentDescription = stringResource(id = R.string.desc_stamp_icon),
                             tint = if (oreum.userStamped) MaterialTheme.colorScheme.primary
                             else Color.White,
                             modifier = Modifier.size(24.dp)

@@ -1,7 +1,6 @@
 package com.jeong.jjoreum.presentation.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.security.ProviderInstaller
@@ -15,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,9 +41,9 @@ class SplashViewModel @Inject constructor(
     private fun installSecurityProvider() {
         try {
             ProviderInstaller.installIfNeeded(application)
-            Log.i("SplashViewModel", "✅ Security Provider installed")
+            Timber.i("✅ Security Provider installed")
         } catch (e: Exception) {
-            Log.e("SplashViewModel", "❌ Provider install failed: ${e.message}")
+            Timber.e(e, "❌ Provider install failed: %s", e.message)
         }
     }
 
@@ -53,7 +53,7 @@ class SplashViewModel @Inject constructor(
 
     private suspend fun preloadOreumList() {
         oreumRepository.loadOreumListIfNeeded()
-            .onFailure { Log.e("SplashViewModel", "❌ Preload failed", it) }
+            .onFailure { Timber.e(it, "❌ Preload failed") }
     }
 
     private suspend fun decideNavigation() {

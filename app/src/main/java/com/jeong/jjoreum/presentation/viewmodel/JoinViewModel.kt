@@ -1,18 +1,21 @@
 package com.jeong.jjoreum.presentation.viewmodel
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PreferenceManager
 import com.jeong.jjoreum.data.model.entity.JoinItem
 import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 
 private val NICKNAME_REGEX = Regex("^[가-힣a-zA-Z0-9]+$")
@@ -21,7 +24,8 @@ private val NICKNAME_REGEX = Regex("^[가-힣a-zA-Z0-9]+$")
 class JoinViewModel @Inject constructor(
     private val prefs: PreferenceManager,
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _hasUserTyped = MutableStateFlow(false)
@@ -76,17 +80,15 @@ class JoinViewModel @Inject constructor(
 
         viewModelScope.launch {
             val currentUser = auth.currentUser
-            Log.d(
-                "JoinViewModel",
-                "checkNicknameAvailability - Current User UID: ${currentUser?.uid}"
+            Timber.d(
+                "checkNicknameAvailability - Current User UID: %s",
+                currentUser?.uid
             )
 
+
             if (currentUser == null) {
-                Log.e(
-                    "JoinViewModel",
-                    "checkNicknameAvailability - User not authenticated!"
-                )
-                _nicknameErrorMessage.value = "사용자 인증 오류"
+                Timber.e("checkNicknameAvailability - User not authenticated!")
+                _nicknameErrorMessage.value = context.getString(R.string.auth_error)
                 _isNicknameAvailable.value = false
                 _isLoadingNicknameAvailability.value = false
                 return@launch
@@ -102,15 +104,16 @@ class JoinViewModel @Inject constructor(
                     _nicknameErrorMessage.value = null
                     _isNicknameAvailable.value = true
                 } else {
-                    _nicknameErrorMessage.value = "이미 존재하는 닉네임입니다."
+                    _nicknameErrorMessage.value =
+                        context.getString(R.string.nickname_already_exists)
                     _isNicknameAvailable.value = false
                 }
             } catch (e: Exception) {
-                Log.e(
-                    "JoinViewModel",
-                    "Error checking nickname availability: ${e.message}", e
+                Timber.e(
+                    e,
+                    "Error checking nickname availability: %s", e.message
                 )
-                _nicknameErrorMessage.value = "닉네임 확인 중 오류 발생"
+                _nicknameErrorMessage.value = context.getString(R.string.nickname_check_error)
                 _isNicknameAvailable.value = false
             } finally {
                 _isLoadingNicknameAvailability.value = false
@@ -123,8 +126,7 @@ class JoinViewModel @Inject constructor(
         if (nickname.isEmpty() || _isNicknameInvalid.value
             || !_isNicknameAvailable.value || _isLoadingNicknameAvailability.value
         ) {
-            Log.w(
-                "JoinViewModel",
+            Timber.w(
                 "saveNickname - Nickname is empty, invalid, not available, or still loading."
             )
             onFailure()
@@ -133,13 +135,13 @@ class JoinViewModel @Inject constructor(
 
         viewModelScope.launch {
             val currentUser = auth.currentUser
-            Log.d(
-                "JoinViewModel",
-                "saveNickname - Current User UID: ${currentUser?.uid}"
+            Timber.d(
+                "saveNickname - Current User UID: %s",
+                currentUser?.uid
             )
 
             if (currentUser == null) {
-                Log.e("JoinViewModel", "saveNickname - User not authenticated!")
+                Timber.e("saveNickname - User not authenticated")
                 onFailure()
                 return@launch
             }
@@ -157,16 +159,17 @@ class JoinViewModel @Inject constructor(
                     .set(userInfo.toMap())
                     .await()
 
-                Log.i(
-                    "JoinViewModel",
-                    "Nickname successfully saved to Firestore for UID: $uid"
+                Timber.i(
+                    "Nickname successfully saved to Firestore for UID: %s",
+                    uid
                 )
                 prefs.setNickname(nickname)
                 onSuccess(nickname)
             } catch (e: Exception) {
-                Log.e(
-                    "JoinViewModel",
-                    "Error saving nickname to Firestore for UID: $uid", e
+                Timber.e(
+                    e,
+                    "Error saving nickname to Firestore for UID: %s",
+                    uid
                 )
                 onFailure()
             }

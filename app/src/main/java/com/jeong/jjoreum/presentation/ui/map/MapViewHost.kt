@@ -1,6 +1,5 @@
 package com.jeong.jjoreum.presentation.ui.map
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +21,7 @@ import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import com.kakao.vectormap.camera.CameraUpdateFactory
+import timber.log.Timber
 
 class MapController(
     val selectMarkerAt: (LatLng) -> Unit,
@@ -97,7 +97,7 @@ fun MapViewHost(
                     }
 
                     override fun onMapError(error: Exception) {
-                        Log.e("MapViewHost", "Map error: ${error.message}")
+                        Timber.e(error, "Map error: %s", error.message)
                     }
                 },
                 object : KakaoMapReadyCallback() {

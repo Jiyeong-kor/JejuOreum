@@ -9,6 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.components.SingletonComponent
+import timber.log.Timber
 
 @HiltAndroidApp
 class JJOreumApplication : Application(), SingletonImageLoader.Factory {
@@ -24,5 +25,12 @@ class JJOreumApplication : Application(), SingletonImageLoader.Factory {
             this, ImageLoaderEntryPoint::class.java
         )
         return ep.imageLoader()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
     }
 }
