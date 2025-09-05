@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.jjoreum.feature.join.presentation
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

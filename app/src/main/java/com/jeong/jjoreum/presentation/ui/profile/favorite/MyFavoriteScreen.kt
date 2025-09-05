@@ -17,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
-import com.jeong.jjoreum.presentation.ui.list.ListItem
+import com.jeong.jjoreum.feature.list.presentation.ListItem
 import com.jeong.jjoreum.presentation.viewmodel.MyFavoriteViewModel
 
 @Composable

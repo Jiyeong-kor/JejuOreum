@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.list
+package com.jeong.jjoreum.feature.list.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.join
+package com.jeong.jjoreum.feature.join.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,7 +11,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.presentation.viewmodel.JoinViewModel
 import com.jeong.jjoreum.util.extensions.toastMessage
 
 @Composable

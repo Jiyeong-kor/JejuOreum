@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.join
+package com.jeong.jjoreum.feature.join.presentation
 
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Box

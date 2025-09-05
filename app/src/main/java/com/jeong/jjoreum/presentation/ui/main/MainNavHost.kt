@@ -25,14 +25,14 @@ import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.presentation.ui.detail.DetailScreen
 import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
-import com.jeong.jjoreum.presentation.ui.list.ListScreen
+import com.jeong.jjoreum.feature.list.presentation.ListScreen
 import com.jeong.jjoreum.presentation.ui.map.MapScreen
 import com.jeong.jjoreum.presentation.ui.profile.MyScreen
 import com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewRoute
 import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.getValue
-import com.jeong.jjoreum.presentation.ui.join.JoinRoute
+import com.jeong.jjoreum.feature.join.presentation.JoinRoute
 
 @Composable
 fun MainNavHost(startDestination: String) {
