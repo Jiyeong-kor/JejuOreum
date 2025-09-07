@@ -2,9 +2,9 @@ package com.jeong.jjoreum.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.jjoreum.data.model.api.ResultSummary
-import com.jeong.jjoreum.repository.OreumRepository
-import com.jeong.jjoreum.repository.UserInteractionRepository
+import com.jeong.domain.entity.ResultSummary
+import com.jeong.domain.repository.OreumRepository
+import com.jeong.domain.repository.UserInteractionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

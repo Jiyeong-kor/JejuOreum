@@ -14,7 +14,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.jeong.jjoreum.data.model.api.ResultSummary
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.presentation.ui.detail.DetailScreen
 import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
 

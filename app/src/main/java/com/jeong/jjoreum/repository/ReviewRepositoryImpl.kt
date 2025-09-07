@@ -3,8 +3,9 @@ package com.jeong.jjoreum.repository
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.domain.entity.ReviewItem
+import com.jeong.domain.repository.ReviewRepository
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await

@@ -1,7 +1,6 @@
 package com.jeong.jjoreum.presentation.ui.map
 
-import com.jeong.jjoreum.data.model.api.ResultSummary
-
+import com.jeong.domain.entity.ResultSummary
 
 /**
  * 지도 화면 UI 상태 정의

@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.jeong.domain.entity.ReviewItem
+import com.jeong.domain.repository.ReviewRepository
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.entity.ReviewItem
-import com.jeong.jjoreum.repository.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -10,8 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.presentation.ui.profile.favorite.MyFavoriteScreen
 import com.jeong.jjoreum.presentation.ui.profile.stamp.MyStampScreen
 import kotlinx.coroutines.launch

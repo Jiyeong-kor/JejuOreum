@@ -15,8 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.presentation.ui.list.ListItem
 import com.jeong.jjoreum.presentation.viewmodel.MyFavoriteViewModel
 

@@ -1,6 +1,6 @@
-package com.jeong.jjoreum.repository
+package com.jeong.domain.repository
 
-import com.jeong.jjoreum.data.model.api.ResultSummary
+import com.jeong.domain.entity.ResultSummary
 import kotlinx.coroutines.flow.StateFlow
 
 interface OreumRepository {

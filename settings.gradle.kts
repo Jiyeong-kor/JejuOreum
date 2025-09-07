@@ -4,9 +4,9 @@ pluginManagement {
     repositories {
         google {
             content {
+                includeGroupByRegex("androidx.*")
                 includeGroupByRegex("com\\.android.*")
                 includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
             }
         }
         mavenCentral()
@@ -28,3 +28,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "JejuOreum"
 include(":app")
+include(":domain")

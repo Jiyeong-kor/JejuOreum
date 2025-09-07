@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
+import com.jeong.domain.repository.UserInteractionRepository
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext

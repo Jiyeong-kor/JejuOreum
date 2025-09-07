@@ -1,10 +1,9 @@
-package com.jeong.jjoreum.domain.usecase
+package com.jeong.domain.usecase
 
-import com.jeong.jjoreum.repository.OreumRepository
-import com.jeong.jjoreum.repository.UserInteractionRepository
-import javax.inject.Inject
+import com.jeong.domain.repository.OreumRepository
+import com.jeong.domain.repository.UserInteractionRepository
 
-class ToggleFavoriteUseCase @Inject constructor(
+class ToggleFavoriteUseCase(
     private val userInteractionRepository: UserInteractionRepository,
     private val oreumRepository: OreumRepository
 ) {

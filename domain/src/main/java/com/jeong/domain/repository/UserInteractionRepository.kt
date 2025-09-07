@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.repository
+package com.jeong.domain.repository
 
 interface UserInteractionRepository {
     suspend fun getFavoriteStatus(oreumIdx: String): Boolean

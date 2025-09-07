@@ -28,8 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.domain.entity.MyStampItem
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.entity.MyStampItem
 import com.jeong.jjoreum.presentation.viewmodel.MyStampViewModel
 
 @Composable

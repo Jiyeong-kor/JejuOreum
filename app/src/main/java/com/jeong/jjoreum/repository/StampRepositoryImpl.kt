@@ -9,6 +9,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.domain.repository.StampRepository
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext

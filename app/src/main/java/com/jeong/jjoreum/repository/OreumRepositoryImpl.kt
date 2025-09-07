@@ -4,9 +4,10 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
+import com.jeong.domain.entity.ResultSummary
+import com.jeong.domain.repository.OreumRepository
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
-import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.util.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async

@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jeong.jjoreum.data.model.api.ResultSummary
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
 import com.jeong.jjoreum.presentation.viewmodel.MapViewModel
 import com.kakao.vectormap.LatLng

@@ -37,8 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
+import com.jeong.domain.entity.ReviewItem
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
 import java.text.SimpleDateFormat
 import java.util.Date

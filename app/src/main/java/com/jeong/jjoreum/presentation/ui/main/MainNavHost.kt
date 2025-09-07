@@ -10,10 +10,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,18 +23,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.presentation.ui.detail.DetailScreen
-import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
+import com.jeong.jjoreum.presentation.ui.join.JoinRoute
 import com.jeong.jjoreum.presentation.ui.list.ListScreen
 import com.jeong.jjoreum.presentation.ui.map.MapScreen
 import com.jeong.jjoreum.presentation.ui.profile.MyScreen
 import com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewRoute
+import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
 import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.runtime.getValue
-import com.jeong.jjoreum.presentation.ui.join.JoinRoute
 
 @Composable
 fun MainNavHost(startDestination: String) {

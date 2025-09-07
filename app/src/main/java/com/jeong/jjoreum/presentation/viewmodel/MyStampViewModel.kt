@@ -2,9 +2,9 @@ package com.jeong.jjoreum.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.jjoreum.data.model.entity.MyStampItem
-import com.jeong.jjoreum.repository.OreumRepository
-import com.jeong.jjoreum.repository.UserInteractionRepository
+import com.jeong.domain.entity.MyStampItem
+import com.jeong.domain.repository.OreumRepository
+import com.jeong.domain.repository.UserInteractionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

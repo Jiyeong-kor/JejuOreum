@@ -36,8 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.api.ResultSummary
 
 @Composable
 fun ListScreen(
