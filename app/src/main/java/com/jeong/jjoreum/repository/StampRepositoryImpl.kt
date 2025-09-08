@@ -11,7 +11,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.domain.repository.StampRepository
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.util.Constants
+import com.jeong.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

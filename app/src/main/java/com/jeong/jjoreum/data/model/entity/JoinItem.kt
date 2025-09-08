@@ -2,7 +2,7 @@ package com.jeong.jjoreum.data.model.entity
 
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.IgnoreExtraProperties
-import com.jeong.jjoreum.util.Constants
+import com.jeong.utils.Constants
 
 @IgnoreExtraProperties
 data class JoinItem(

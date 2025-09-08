@@ -8,7 +8,7 @@ import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.repository.OreumRepository
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
-import com.jeong.jjoreum.util.Constants
+import com.jeong.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PreferenceManager
 import com.jeong.jjoreum.data.model.entity.JoinItem
-import com.jeong.jjoreum.util.Constants
+import com.jeong.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

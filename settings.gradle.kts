@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":core:utils")
+
+
 include(":core:ui")
 
 
@@ -39,3 +42,4 @@ rootProject.name = "JejuOreum"
 include(":app")
 include(":domain")
 include(":core:ui")
+include(":core:utils")

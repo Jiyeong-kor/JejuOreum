@@ -7,7 +7,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.jeong.domain.repository.UserInteractionRepository
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.util.Constants
+import com.jeong.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber

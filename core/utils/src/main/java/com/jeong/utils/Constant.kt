@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.util
+package com.jeong.utils
 
 object Constants {
     const val PREF_KEY_NICKNAME = "joinNickname"
