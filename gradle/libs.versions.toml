@@ -2,7 +2,6 @@
 activityCompose = "1.10.1"
 agp = "8.13.0"
 android = "2.12.8"
-appcompat = "1.7.1"
 coilBom = "3.3.0"
 compose-compiler = "2.2.10"
 composeBom = "2025.08.01"
@@ -45,11 +44,11 @@ rxbinding = "4.0.0"
 tedpermissionCoroutine = "3.4.2"
 tedpermissionNormal = "3.4.2"
 timber = "5.0.1"
+appcompat = "1.7.1"
 
 [libraries]
 android = { module = "com.kakao.maps.open:android", version.ref = "android" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -94,6 +93,7 @@ rxbinding = { group = "com.jakewharton.rxbinding4", name = "rxbinding", version.
 tedpermission-coroutine = { module = "io.github.ParkSangGwon:tedpermission-coroutine", version.ref = "tedpermissionCoroutine" }
 tedpermission-normal = { module = "io.github.ParkSangGwon:tedpermission-normal", version.ref = "tedpermissionNormal" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.dialog
+package com.jeong.ui.dialog
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,11 +15,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
-import com.jeong.jjoreum.R
+import com.jeong.core.ui.R
 
-/**
- * 네트워크 연결이 없을 때 다시 시도를 요청하는 다이얼로그
- */
 @Composable
 fun NetworkDialog(onRetryClick: () -> Unit) {
     Dialog(onDismissRequest = { }) {

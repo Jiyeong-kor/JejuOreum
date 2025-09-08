@@ -111,6 +111,7 @@ dependencies {
     implementation(platform(libs.coil.bom))
     implementation(platform(libs.firebase.bom))
     implementation(project(":domain"))
+    implementation(project(":core:ui"))
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.play.services)

@@ -1,5 +1,14 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":core:ui")
+
+
+include(":core")
+
+
+include(":core")
+
+
 pluginManagement {
     repositories {
         google {
@@ -29,3 +38,4 @@ dependencyResolutionManagement {
 rootProject.name = "JejuOreum"
 include(":app")
 include(":domain")
+include(":core:ui")

@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="network_error_text_padding_horizontal">30dp</dimen>
+    <dimen name="network_error_text_padding_vertical">20dp</dimen>
+    <dimen name="network_retry_text_padding_vertical">15dp</dimen>
+    <dimen name="network_text_size">17sp</dimen>
+    <dimen name="network_border">1dp</dimen>
+</resources>

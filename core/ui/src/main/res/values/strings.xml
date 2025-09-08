@@ -1,0 +1,4 @@
+<resources>
+    <string name="network_error">네트워크가 연결되지 않았습니다.\nWi-Fi 또는 데이터를 활성화 해주세요.</string>
+    <string name="network_retry">다시 시도</string>
+</resources>
