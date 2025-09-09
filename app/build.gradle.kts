@@ -110,8 +110,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))
     implementation(platform(libs.firebase.bom))
-    implementation(project(":domain"))
-    implementation(project(":data"))
     implementation(project(":core:ui"))
     implementation(project(":core:utils"))
     ksp(libs.hilt.android.compiler)
