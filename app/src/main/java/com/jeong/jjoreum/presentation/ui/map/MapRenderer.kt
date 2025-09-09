@@ -1,8 +1,8 @@
 package com.jeong.jjoreum.presentation.ui.map
 
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.domain.geo.GeoPoint
-import com.jeong.jjoreum.domain.geo.quantized
+import com.jeong.domain.geo.GeoPoint
+import com.jeong.domain.geo.quantized
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraUpdateFactory

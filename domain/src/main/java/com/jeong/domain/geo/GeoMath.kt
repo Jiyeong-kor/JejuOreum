@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.domain.geo
+package com.jeong.domain.geo
 
 import kotlin.math.pow
 import kotlin.math.round
