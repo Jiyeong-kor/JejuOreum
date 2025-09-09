@@ -42,21 +42,18 @@ java {
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(project(":core:utils"))
-
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.play.services)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
+    implementation(libs.converter.gson)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.play.services.location)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.timber)
     implementation(libs.javax.inject)
-
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.play.services.location)
+    implementation(libs.retrofit)
+    implementation(libs.timber)
+    implementation(project(":core:utils"))
+    implementation(project(":domain"))
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

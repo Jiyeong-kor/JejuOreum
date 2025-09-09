@@ -1,20 +1,19 @@
 package com.jeong.data.repository
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import androidx.annotation.RequiresPermission
-import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.domain.repository.StampRepository
 import com.jeong.utils.Constants
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.tasks.await
 
 @Singleton
 class StampRepositoryImpl @Inject constructor(
@@ -25,7 +24,6 @@ class StampRepositoryImpl @Inject constructor(
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-    @RequiresPermission(anyOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override suspend fun tryStamp(
         oreumIdx: String,
         oreumName: String,
@@ -33,13 +31,14 @@ class StampRepositoryImpl @Inject constructor(
         oreumLng: Double
     ): Result<Unit> {
         try {
-            val permission = ContextCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION
+            val permission = context.checkSelfPermission(
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
             if (permission != PackageManager.PERMISSION_GRANTED) {
                 return Result.failure(Exception("Permission required"))
             }
 
+            @SuppressLint("MissingPermission")
             val location = fusedLocationClient.lastLocation.await()
                 ?: return Result.failure(Exception("Location unavailable"))
 
