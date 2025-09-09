@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.repository.OreumRepository
-import com.jeong.domain.geo.GeoBounds
-import com.jeong.domain.geo.GeoPoint
-import com.jeong.domain.geo.quantized
+import com.jeong.domain.entity.GeoBounds
+import com.jeong.domain.entity.GeoPoint
+import com.jeong.domain.entity.quantized
 import com.jeong.jjoreum.presentation.ui.map.MapPinUi
 import com.jeong.jjoreum.presentation.ui.map.MapUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
