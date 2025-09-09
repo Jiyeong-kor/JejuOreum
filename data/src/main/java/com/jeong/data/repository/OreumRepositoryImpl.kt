@@ -1,15 +1,12 @@
-package com.jeong.jjoreum.repository
+package com.jeong.data.repository
 
-import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
+import com.jeong.data.api.OreumRetrofitInterface
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.repository.OreumRepository
-import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
 import com.jeong.utils.Constants
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +21,6 @@ class OreumRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val apiService: OreumRetrofitInterface,
-    @param:ApplicationContext private val context: Context
 ) : OreumRepository {
 
     private val _oreumListFlow = MutableStateFlow<List<ResultSummary>>(emptyList())
@@ -44,10 +40,7 @@ class OreumRepositoryImpl @Inject constructor(
             val response = apiService.getOreumList()
             if (!response.isSuccessful) {
                 throw IllegalStateException(
-                    context.getString(
-                        R.string.api_failure,
-                        response.errorBody()?.string()
-                    )
+                    "API failure: ${response.errorBody()?.string()}"
                 )
             }
             val apiData = response.body()?.resultSummary ?: emptyList()
@@ -61,7 +54,7 @@ class OreumRepositoryImpl @Inject constructor(
     override suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary {
         loadOreumListIfNeeded().getOrThrow()
         val oreum = _oreumListFlow.value.find { it.idx.toString() == oreumIdx }
-            ?: throw IllegalStateException(context.getString(R.string.oreum_not_found))
+            ?: throw IllegalStateException("Oreum not found")
 
         val userId = auth.currentUser?.uid
         return coroutineScope {

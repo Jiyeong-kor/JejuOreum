@@ -29,6 +29,7 @@ dependencyResolutionManagement {
 rootProject.name = "JejuOreum"
 include(":app")
 include(":domain")
+include(":data")
 include(":core:ui")
 include(":core:utils")
 include(":core:navigation")

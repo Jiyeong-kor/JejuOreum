@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.repository
+package com.jeong.data.repository
 
 internal fun Any?.toStringBooleanMap(): Map<String, Boolean> =
     (this as? Map<*, *>)?.mapNotNull { (k, v) ->

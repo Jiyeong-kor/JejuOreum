@@ -1,16 +1,21 @@
 package com.jeong.jjoreum.di
 
+import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.data.repository.OreumRepositoryImpl
+import com.jeong.data.repository.ReviewRepositoryImpl
+import com.jeong.data.repository.StampRepositoryImpl
+import com.jeong.data.repository.UserInteractionRepositoryImpl
 import com.jeong.domain.repository.OreumRepository
 import com.jeong.domain.repository.ReviewRepository
 import com.jeong.domain.repository.StampRepository
 import com.jeong.domain.repository.UserInteractionRepository
-import com.jeong.jjoreum.repository.OreumRepositoryImpl
-import com.jeong.jjoreum.repository.ReviewRepositoryImpl
-import com.jeong.jjoreum.repository.StampRepositoryImpl
-import com.jeong.jjoreum.repository.UserInteractionRepositoryImpl
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -27,11 +32,17 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindStampRepository(impl: StampRepositoryImpl): StampRepository
-
-    @Singleton
-    @Binds
     abstract fun bindUserInteractionRepository(
         impl: UserInteractionRepositoryImpl
     ): UserInteractionRepository
+
+    companion object {
+        @Provides
+        @Singleton
+        fun provideStampRepository(
+            @ApplicationContext context: Context,
+            firestore: FirebaseFirestore,
+            auth: FirebaseAuth,
+        ): StampRepository = StampRepositoryImpl(context, firestore, auth)
+    }
 }

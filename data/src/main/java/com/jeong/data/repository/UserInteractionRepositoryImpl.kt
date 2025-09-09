@@ -1,14 +1,11 @@
-package com.jeong.jjoreum.repository
+package com.jeong.data.repository
 
-import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.jeong.domain.repository.UserInteractionRepository
-import com.jeong.jjoreum.R
 import com.jeong.utils.Constants
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,7 +15,6 @@ import javax.inject.Singleton
 class UserInteractionRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    @param:ApplicationContext private val context: Context
 ) : UserInteractionRepository {
 
     private fun getUserId(): String? = auth.currentUser?.uid
@@ -42,9 +38,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun toggleFavorite(oreumIdx: String, newIsFavorite: Boolean): Int {
-        val uid = getUserId() ?: throw IllegalStateException(
-            context.getString(R.string.login_required)
-        )
+        val uid = getUserId() ?: throw IllegalStateException("Login required")
         val userDoc = firestore.collection(
             Constants.COLLECTION_USER_INFO
         ).document(uid)
@@ -103,7 +97,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrentUserNickname(): String {
-        val defaultNickname = context.getString(R.string.default_nickname)
+        val defaultNickname = "Traveler"
         val uid = getUserId() ?: return defaultNickname
         val doc = firestore.collection(
             Constants.COLLECTION_USER_INFO

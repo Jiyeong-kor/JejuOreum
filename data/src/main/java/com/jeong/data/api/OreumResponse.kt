@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.data.model.api
+package com.jeong.data.api
 
 import com.google.gson.annotations.SerializedName
 import com.jeong.domain.entity.ResultSummary

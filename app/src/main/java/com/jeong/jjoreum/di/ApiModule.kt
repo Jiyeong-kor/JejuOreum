@@ -9,7 +9,7 @@ import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.crossfade
 import com.jeong.jjoreum.BuildConfig
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.model.api.OreumRetrofitInterface
+import com.jeong.data.api.OreumRetrofitInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
