@@ -2,7 +2,7 @@ package com.jeong.jjoreum.data.model.entity
 
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.IgnoreExtraProperties
-import com.jeong.utils.Constants
+import com.jeong.data.FirestoreConstants
 
 @IgnoreExtraProperties
 data class JoinItem(
@@ -14,10 +14,10 @@ data class JoinItem(
     @Exclude
     fun toMap(): Map<String, Any> {
         return mapOf(
-            Constants.FIELD_UID to uid,
-            Constants.FIELD_NICKNAME to nickname,
-            Constants.FIELD_FAVORITES to favorites,
-            Constants.FIELD_STAMPED_OREUMS to stampedOreums
+            FirestoreConstants.FIELD_UID to uid,
+            FirestoreConstants.FIELD_NICKNAME to nickname,
+            FirestoreConstants.FIELD_FAVORITES to favorites,
+            FirestoreConstants.FIELD_STAMPED_OREUMS to stampedOreums
         )
     }
 }

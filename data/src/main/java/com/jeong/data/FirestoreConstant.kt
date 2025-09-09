@@ -1,15 +1,12 @@
-package com.jeong.utils
+package com.jeong.data
 
-object Constants {
-    const val PREF_KEY_NICKNAME = "joinNickname"
+object FirestoreConstants {
 
-    // Firestore Collections
     const val COLLECTION_USER_INFO = "user_info_col"
     const val COLLECTION_OREUM_INFO = "oreum_info_col"
     const val COLLECTION_REVIEWS = "reviews"
     const val SUBCOLLECTION_ITEMS = "items"
 
-    // Firestore Fields
     const val FIELD_FAVORITES = "favorites"
     const val FIELD_STAMPED_OREUMS = "stampedOreums"
     const val FIELD_FAVORITE = "favorite"

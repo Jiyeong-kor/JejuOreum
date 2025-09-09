@@ -6,7 +6,7 @@ import com.google.firebase.firestore.Source
 import com.jeong.data.api.OreumRetrofitInterface
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.repository.OreumRepository
-import com.jeong.utils.Constants
+import com.jeong.data.FirestoreConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,22 +59,24 @@ class OreumRepositoryImpl @Inject constructor(
         val userId = auth.currentUser?.uid
         return coroutineScope {
             val oreumDeferred = async {
-                firestore.collection(Constants.COLLECTION_OREUM_INFO)
+                firestore.collection(FirestoreConstants.COLLECTION_OREUM_INFO)
                     .document(oreumIdx).get().await()
             }
             val userDeferred = async {
                 userId?.let {
-                    firestore.collection(Constants.COLLECTION_USER_INFO)
+                    firestore.collection(FirestoreConstants.COLLECTION_USER_INFO)
                         .document(it).get().await()
                 }
             }
 
             val oreumDoc = oreumDeferred.await()
             val userDoc = userDeferred.await()
-            val totalFavorites = oreumDoc.getLong(Constants.FIELD_FAVORITE)?.toInt() ?: 0
-            val totalStamps = oreumDoc.getLong(Constants.FIELD_STAMP)?.toInt() ?: 0
-            val userFavorites = userDoc?.get(Constants.FIELD_FAVORITES).toStringBooleanMap()
-            val userStamps = userDoc?.get(Constants.FIELD_STAMPED_OREUMS).toStringStringMap()
+            val totalFavorites = oreumDoc.getLong(FirestoreConstants.FIELD_FAVORITE)?.toInt() ?: 0
+            val totalStamps = oreumDoc.getLong(FirestoreConstants.FIELD_STAMP)?.toInt() ?: 0
+            val userFavorites =
+                userDoc?.get(FirestoreConstants.FIELD_FAVORITES).toStringBooleanMap()
+            val userStamps =
+                userDoc?.get(FirestoreConstants.FIELD_STAMPED_OREUMS).toStringStringMap()
             val userLiked = userFavorites[oreumIdx] == true
             val userStamped = userStamps.containsKey(oreumIdx)
 
@@ -112,23 +114,25 @@ class OreumRepositoryImpl @Inject constructor(
 
     private suspend fun fetchOreumFirestoreData(): OreumFirestoreData {
         val oreumSnapshot = firestore.collection(
-            Constants.COLLECTION_OREUM_INFO
+            FirestoreConstants.COLLECTION_OREUM_INFO
         ).get().await()
         val stampMap = oreumSnapshot.documents.associate {
-            it.id to (it.getLong(Constants.FIELD_STAMP)?.toInt() ?: 0)
+            it.id to (it.getLong(FirestoreConstants.FIELD_STAMP)?.toInt() ?: 0)
         }
         val favMap = oreumSnapshot.documents.associate {
-            it.id to (it.getLong(Constants.FIELD_FAVORITE)?.toInt() ?: 0)
+            it.id to (it.getLong(FirestoreConstants.FIELD_FAVORITE)?.toInt() ?: 0)
         }
         return OreumFirestoreData(favMap, stampMap)
     }
 
     private suspend fun fetchUserFirestoreData(userId: String?): UserFirestoreData {
         if (userId == null) return UserFirestoreData(emptyMap(), emptyMap())
-        val userSnapshot = firestore.collection(Constants.COLLECTION_USER_INFO)
+        val userSnapshot = firestore.collection(FirestoreConstants.COLLECTION_USER_INFO)
             .document(userId).get(Source.SERVER).await()
-        val userFavorites = userSnapshot.get(Constants.FIELD_FAVORITES).toStringBooleanMap()
-        val userStamps = userSnapshot.get(Constants.FIELD_STAMPED_OREUMS).toStringStringMap()
+        val userFavorites =
+            userSnapshot.get(FirestoreConstants.FIELD_FAVORITES).toStringBooleanMap()
+        val userStamps =
+            userSnapshot.get(FirestoreConstants.FIELD_STAMPED_OREUMS).toStringStringMap()
         return UserFirestoreData(userFavorites, userStamps)
     }
 

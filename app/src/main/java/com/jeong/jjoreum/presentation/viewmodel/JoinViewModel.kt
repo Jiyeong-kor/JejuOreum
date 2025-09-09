@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PreferenceManager
 import com.jeong.jjoreum.data.model.entity.JoinItem
-import com.jeong.utils.Constants
+import com.jeong.data.FirestoreConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -95,8 +95,8 @@ class JoinViewModel @Inject constructor(
             }
 
             try {
-                val snapshot = firestore.collection(Constants.COLLECTION_USER_INFO)
-                    .whereEqualTo(Constants.FIELD_NICKNAME, nickname)
+                val snapshot = firestore.collection(FirestoreConstants.COLLECTION_USER_INFO)
+                    .whereEqualTo(FirestoreConstants.FIELD_NICKNAME, nickname)
                     .get()
                     .await()
 
@@ -154,7 +154,7 @@ class JoinViewModel @Inject constructor(
                     nickname = nickname
                 )
 
-                firestore.collection(Constants.COLLECTION_USER_INFO)
+                firestore.collection(FirestoreConstants.COLLECTION_USER_INFO)
                     .document(uid)
                     .set(userInfo.toMap())
                     .await()

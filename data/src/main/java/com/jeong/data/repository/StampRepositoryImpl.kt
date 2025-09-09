@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.domain.repository.StampRepository
-import com.jeong.utils.Constants
+import com.jeong.data.FirestoreConstants
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
@@ -66,15 +66,15 @@ class StampRepositoryImpl @Inject constructor(
             firestore.runBatch { batch ->
                 batch.update(
                     firestore.collection(
-                        Constants.COLLECTION_USER_INFO
+                        FirestoreConstants.COLLECTION_USER_INFO
                     ).document(uid),
-                    "${Constants.FIELD_STAMPED_OREUMS}.${oreumIdx}", oreumName
+                    "${FirestoreConstants.FIELD_STAMPED_OREUMS}.${oreumIdx}", oreumName
                 )
                 batch.update(
                     firestore.collection(
-                        Constants.COLLECTION_OREUM_INFO
+                        FirestoreConstants.COLLECTION_OREUM_INFO
                     ).document(oreumIdx),
-                    Constants.FIELD_STAMP, FieldValue.increment(1)
+                    FirestoreConstants.FIELD_STAMP, FieldValue.increment(1)
                 )
             }.await()
 
