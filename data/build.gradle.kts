@@ -10,7 +10,6 @@ android {
     defaultConfig {
         minSdk = 23
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -42,8 +41,6 @@ java {
 }
 
 dependencies {
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
     implementation(libs.converter.gson)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)

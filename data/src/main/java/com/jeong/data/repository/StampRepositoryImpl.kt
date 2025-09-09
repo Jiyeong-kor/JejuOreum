@@ -24,6 +24,7 @@ class StampRepositoryImpl @Inject constructor(
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
+    @SuppressLint("MissingPermission")
     override suspend fun tryStamp(
         oreumIdx: String,
         oreumName: String,
@@ -38,7 +39,6 @@ class StampRepositoryImpl @Inject constructor(
                 return Result.failure(Exception("Permission required"))
             }
 
-            @SuppressLint("MissingPermission")
             val location = fusedLocationClient.lastLocation.await()
                 ?: return Result.failure(Exception("Location unavailable"))
 
