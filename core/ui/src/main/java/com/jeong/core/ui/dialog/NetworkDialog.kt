@@ -1,4 +1,4 @@
-package com.jeong.ui.dialog
+package com.jeong.core.ui.dialog
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -1,4 +1,4 @@
-package com.jeong.ui.theme
+package com.jeong.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

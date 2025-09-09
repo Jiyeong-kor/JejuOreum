@@ -12,7 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.presentation.viewmodel.JoinViewModel
-import com.jeong.ui.extensions.toastMessage
+import com.jeong.core.ui.extensions.toastMessage
 
 @Composable
 fun JoinRoute(

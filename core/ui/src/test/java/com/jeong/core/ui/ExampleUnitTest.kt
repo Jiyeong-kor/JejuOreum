@@ -1,4 +1,4 @@
-package com.jeong.ui
+package com.jeong.core.ui
 
 import org.junit.Test
 
