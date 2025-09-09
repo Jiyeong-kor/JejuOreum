@@ -49,11 +49,9 @@ java {
 dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui)
-    implementation(libs.material)
     implementation(platform(libs.androidx.compose.bom))
     testImplementation(libs.junit)
 }
