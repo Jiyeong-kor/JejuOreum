@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.security.ProviderInstaller
 import com.jeong.domain.repository.OreumRepository
 import com.jeong.jjoreum.BuildConfig
-import com.jeong.jjoreum.data.local.PreferenceManager
+import com.jeong.data.local.PreferenceManager
 import com.jeong.jjoreum.presentation.ui.splash.SplashUiState
 import com.kakao.vectormap.KakaoMapSdk
 import dagger.hilt.android.lifecycle.HiltViewModel

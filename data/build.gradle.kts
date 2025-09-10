@@ -41,6 +41,7 @@ java {
 }
 
 dependencies {
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.converter.gson)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)

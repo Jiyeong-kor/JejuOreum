@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.local.PreferenceManager
-import com.jeong.jjoreum.data.model.entity.JoinItem
+import com.jeong.data.local.PreferenceManager
+import com.jeong.data.model.entity.JoinItem
 import com.jeong.data.FirestoreConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

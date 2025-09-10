@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.data.local
+package com.jeong.data.local
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
@@ -7,10 +7,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.jeong.core.utils.PreferenceKeys.PREF_KEY_NICKNAME
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
 
-class PreferenceManager(context: Context) {
+class PreferenceManager @Inject constructor(context: Context) {
     private val dataStore = context.dataStore
     private val nicknameKey = stringPreferencesKey(PREF_KEY_NICKNAME)
     val nicknameFlow = dataStore.data.map { it[nicknameKey] ?: "" }

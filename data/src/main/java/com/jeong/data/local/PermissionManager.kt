@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.data.local
+package com.jeong.data.local
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey

@@ -50,7 +50,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.data.local.PermissionManager
+import com.jeong.data.local.PermissionManager
 import com.jeong.domain.entity.ReviewItem
 import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
 import kotlinx.coroutines.launch

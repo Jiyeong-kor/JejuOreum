@@ -3,7 +3,7 @@ package com.jeong.jjoreum.di
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jjoreum.data.local.PreferenceManager
+import com.jeong.data.local.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
