@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.jeong.navigation"
+    namespace = "com.jeong.core.navigation"
     compileSdk = 36
 
     defaultConfig {
