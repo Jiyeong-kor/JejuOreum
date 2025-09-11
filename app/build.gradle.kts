@@ -113,6 +113,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":feature:splash"))
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.play.services)

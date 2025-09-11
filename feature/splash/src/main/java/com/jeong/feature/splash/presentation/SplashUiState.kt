@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.splash
+package com.jeong.feature.splash.presentation
 
 sealed class SplashUiState {
     data object GoToMap : SplashUiState()

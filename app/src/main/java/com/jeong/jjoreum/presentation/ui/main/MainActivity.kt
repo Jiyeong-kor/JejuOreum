@@ -13,9 +13,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jeong.core.ui.dialog.NetworkDialog
-import com.jeong.jjoreum.presentation.ui.splash.SplashUiState
+import com.jeong.feature.splash.presentation.SplashUiState
 import com.jeong.core.ui.theme.JJOreumTheme
-import com.jeong.jjoreum.presentation.viewmodel.SplashViewModel
+import com.jeong.feature.splash.presentation.SplashViewModel
 import com.jeong.jjoreum.util.NetworkManager
 import dagger.hilt.android.AndroidEntryPoint
 

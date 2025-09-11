@@ -1,14 +1,10 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.feature.splash.presentation
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.security.ProviderInstaller
-import com.jeong.domain.repository.OreumRepository
-import com.jeong.jjoreum.BuildConfig
 import com.jeong.data.local.PreferenceManager
-import com.jeong.jjoreum.presentation.ui.splash.SplashUiState
-import com.kakao.vectormap.KakaoMapSdk
+import com.jeong.domain.repository.OreumRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,9 +37,9 @@ class SplashViewModel @Inject constructor(
     private fun installSecurityProvider() {
         try {
             ProviderInstaller.installIfNeeded(application)
-            Timber.i("✅ Security Provider installed")
+            Timber.Forest.i("✅ Security Provider installed")
         } catch (e: Exception) {
-            Timber.e(e, "❌ Provider install failed: %s", e.message)
+            Timber.Forest.e(e, "❌ Provider install failed: %s", e.message)
         }
     }
 
@@ -53,7 +49,7 @@ class SplashViewModel @Inject constructor(
 
     private suspend fun preloadOreumList() {
         oreumRepository.loadOreumListIfNeeded()
-            .onFailure { Timber.e(it, "❌ Preload failed") }
+            .onFailure { Timber.Forest.e(it, "❌ Preload failed") }
     }
 
     private suspend fun decideNavigation() {
