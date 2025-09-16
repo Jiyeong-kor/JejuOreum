@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.di
+package com.jeong.oreum.di
 
 import com.jeong.domain.repository.OreumRepository
 import com.jeong.domain.repository.UserInteractionRepository
@@ -10,7 +10,7 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
-object UseCaseModule {
+object OreumUseCaseModule {
     @Provides
     fun provideToggleFavoriteUseCase(
         userInteractionRepository: UserInteractionRepository,

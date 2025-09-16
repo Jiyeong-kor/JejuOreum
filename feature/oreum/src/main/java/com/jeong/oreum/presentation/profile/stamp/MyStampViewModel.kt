@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.oreum.presentation.profile.stamp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

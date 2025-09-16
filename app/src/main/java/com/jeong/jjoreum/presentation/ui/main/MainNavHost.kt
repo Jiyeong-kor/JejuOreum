@@ -31,24 +31,28 @@ import com.jeong.jjoreum.presentation.ui.list.ListScreen
 import com.jeong.jjoreum.presentation.ui.map.MapScreen
 import com.jeong.jjoreum.presentation.ui.profile.MyScreen
 import com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewRoute
-import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
-import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
+import com.jeong.oreum.presentation.detail.DetailViewModel
+import com.jeong.oreum.presentation.review.WriteReviewViewModel
 
 @Composable
 fun MainNavHost(startDestination: String) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val showBottomBar = currentRoute in listOf("map", "list", "my")
+    val showBottomBar = currentRoute in listOf(
+        OreumDestinations.MAP,
+        OreumDestinations.LIST,
+        OreumDestinations.MY,
+    )
 
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar {
                     NavigationBarItem(
-                        selected = currentRoute == "map",
+                        selected = currentRoute == OreumDestinations.MAP,
                         onClick = {
-                            navController.navigate("map") {
+                            navController.navigate(OreumDestinations.MAP) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -63,9 +67,9 @@ fun MainNavHost(startDestination: String) {
                         label = { Text(stringResource(R.string.map_title)) }
                     )
                     NavigationBarItem(
-                        selected = currentRoute == "list",
+                        selected = currentRoute == OreumDestinations.LIST,
                         onClick = {
-                            navController.navigate("list") {
+                            navController.navigate(OreumDestinations.LIST) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -80,9 +84,9 @@ fun MainNavHost(startDestination: String) {
                         label = { Text(stringResource(R.string.list_title)) }
                     )
                     NavigationBarItem(
-                        selected = currentRoute == "my",
+                        selected = currentRoute == OreumDestinations.MY,
                         onClick = {
-                            navController.navigate("my") {
+                            navController.navigate(OreumDestinations.MY) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -111,14 +115,14 @@ fun MainNavHost(startDestination: String) {
             composable("join") {
                 JoinRoute(
                     onNavigateToMain = {
-                        navController.navigate("map") {
+                        navController.navigate(OreumDestinations.MAP) {
                             popUpTo("join") { inclusive = true }
                             launchSingleTop = true
                         }
                     }
                 )
             }
-            composable("map") {
+            composable(OreumDestinations.MAP) {
                 MapScreen(
                     onNavigateToWriteReview = { idx, name ->
                         navController.navigate("writeReview/$idx/$name")
@@ -126,34 +130,39 @@ fun MainNavHost(startDestination: String) {
                     onFavoriteToggled = {}
                 )
             }
-            composable("list") {
+            composable(OreumDestinations.LIST) {
                 val context = LocalContext.current
                 ListScreen(
                     onItemClick = { oreum ->
                         val json = Uri.encode(Gson().toJson(oreum))
-                        navController.navigate("detail/$json")
+                        navController.navigate(OreumDestinations.detailRoute(json))
                     },
                     showToast = { msg ->
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                     }
                 )
             }
-            composable("my") {
+            composable(OreumDestinations.MY) {
                 MyScreen(
                     onFavoriteItemClick = { oreum ->
                         val json = Uri.encode(Gson().toJson(oreum))
-                        navController.navigate("detail/$json")
+                        navController.navigate(OreumDestinations.detailRoute(json))
                     },
                     onNavigateToWriteReview = { idx, name ->
-                        navController.navigate("writeReview/$idx/$name")
+                        navController.navigate(
+                            OreumDestinations.writeReviewRoute(idx, name)
+                        )
                     }
                 )
             }
             composable(
-                route = "detail/{oreum}",
-                arguments = listOf(navArgument("oreum") { type = NavType.StringType })
+                route = "${OreumDestinations.DETAIL}/{${OreumDestinations.DETAIL_ARG}}",
+                arguments = listOf(
+                    navArgument(OreumDestinations.DETAIL_ARG) { type = NavType.StringType }
+                )
             ) { backStackEntry ->
-                val json = backStackEntry.arguments?.getString("oreum") ?: return@composable
+                val json = backStackEntry.arguments?.getString(OreumDestinations.DETAIL_ARG)
+                    ?: return@composable
                 val oreum = Gson().fromJson(json, ResultSummary::class.java)
                 val context = LocalContext.current
                 val vm: DetailViewModel = hiltViewModel()
@@ -161,7 +170,9 @@ fun MainNavHost(startDestination: String) {
                 DetailScreen(
                     viewModel = vm,
                     onNavigateToWriteReview = { idx, name ->
-                        navController.navigate("writeReview/$idx/$name")
+                        navController.navigate(
+                            OreumDestinations.writeReviewRoute(idx, name)
+                        )
                     },
                     showToast = { msg ->
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -170,14 +181,17 @@ fun MainNavHost(startDestination: String) {
                 )
             }
             composable(
-                route = "writeReview/{oreumIdx}/{oreumName}",
+                route = "${OreumDestinations.WRITE_REVIEW}/{${OreumDestinations.WRITE_REVIEW_ARG_IDX}}/{${OreumDestinations.WRITE_REVIEW_ARG_NAME}}",
                 arguments = listOf(
-                    navArgument("oreumIdx") { type = NavType.IntType },
-                    navArgument("oreumName") { type = NavType.StringType }
-                )
+                    navArgument(OreumDestinations.WRITE_REVIEW_ARG_IDX) { type = NavType.IntType },
+                    navArgument(OreumDestinations.WRITE_REVIEW_ARG_NAME) {
+                        type = NavType.StringType
+                    })
             ) { backStackEntry ->
-                val idx = backStackEntry.arguments?.getInt("oreumIdx") ?: -1
-                val name = backStackEntry.arguments?.getString("oreumName") ?: ""
+                val idx = backStackEntry.arguments
+                    ?.getInt(OreumDestinations.WRITE_REVIEW_ARG_IDX) ?: -1
+                val name = backStackEntry.arguments
+                    ?.getString(OreumDestinations.WRITE_REVIEW_ARG_NAME) ?: ""
                 val vm: WriteReviewViewModel = hiltViewModel()
                 LaunchedEffect(Unit) { vm.init(idx, name) }
                 WriteReviewRoute(viewModel = vm)

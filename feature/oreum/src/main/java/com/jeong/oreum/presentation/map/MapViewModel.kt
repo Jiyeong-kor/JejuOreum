@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.oreum.presentation.map
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,8 +8,6 @@ import com.jeong.domain.repository.OreumRepository
 import com.jeong.domain.entity.GeoBounds
 import com.jeong.domain.entity.GeoPoint
 import com.jeong.domain.entity.quantized
-import com.jeong.jjoreum.presentation.ui.map.MapPinUi
-import com.jeong.jjoreum.presentation.ui.map.MapUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

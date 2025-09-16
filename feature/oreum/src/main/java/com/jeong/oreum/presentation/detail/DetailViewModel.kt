@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.oreum.presentation.detail
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,6 @@ import com.jeong.domain.repository.ReviewRepository
 import com.jeong.domain.repository.StampRepository
 import com.jeong.domain.repository.UserInteractionRepository
 import com.jeong.domain.usecase.ToggleFavoriteUseCase
-import com.jeong.jjoreum.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow

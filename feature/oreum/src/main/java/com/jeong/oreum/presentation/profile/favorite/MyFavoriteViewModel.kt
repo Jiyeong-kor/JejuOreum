@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.oreum.presentation.profile.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +24,7 @@ class MyFavoriteViewModel @Inject constructor(
             .map { list -> list.filter { it.userLiked } }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.Companion.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
 

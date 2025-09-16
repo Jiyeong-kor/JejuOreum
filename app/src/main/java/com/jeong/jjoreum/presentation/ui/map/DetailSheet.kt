@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.presentation.ui.detail.DetailScreen
-import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
+import com.jeong.oreum.presentation.detail.DetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

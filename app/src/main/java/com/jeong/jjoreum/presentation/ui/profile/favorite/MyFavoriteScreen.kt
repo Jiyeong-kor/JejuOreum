@@ -18,7 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.presentation.ui.list.ListItem
-import com.jeong.jjoreum.presentation.viewmodel.MyFavoriteViewModel
+import com.jeong.oreum.presentation.profile.favorite.MyFavoriteViewModel
 
 @Composable
 fun MyFavoriteScreen(

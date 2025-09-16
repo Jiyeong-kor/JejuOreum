@@ -39,7 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.jeong.domain.entity.ReviewItem
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
+import com.jeong.oreum.presentation.review.WriteReviewViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -69,7 +69,7 @@ fun WriteReviewScreen(
     reviews: List<ReviewItem>,
     reviewInputText: String,
     onReviewTextChange: (String) -> Unit,
-    onSaveClick: () -> Unit,
+    onSaveClick: (String) -> Unit,
     onLikeClick: (ReviewItem) -> Unit,
     onDeleteClick: (ReviewItem) -> Unit
 ) {
@@ -98,8 +98,9 @@ fun WriteReviewScreen(
 
         Button(
 
-            // ViewModel에 저장 이벤트 알림
-            onClick = onSaveClick,
+            onClick = {
+                onSaveClick(stringResource(id = R.string.anonymous))
+            },
             modifier = Modifier.fillMaxWidth(),
 
             // 텍스트가 있을 때만 활성화

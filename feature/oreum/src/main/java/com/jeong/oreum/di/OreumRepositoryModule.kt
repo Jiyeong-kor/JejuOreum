@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.di
+package com.jeong.oreum.di
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+abstract class OreumRepositoryModule {
     @Singleton
     @Binds
     abstract fun bindOreumRepository(impl: OreumRepositoryImpl): OreumRepository

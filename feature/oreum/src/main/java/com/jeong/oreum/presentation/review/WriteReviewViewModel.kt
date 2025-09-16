@@ -1,12 +1,10 @@
-package com.jeong.jjoreum.presentation.viewmodel
+package com.jeong.oreum.presentation.review
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import com.jeong.domain.entity.ReviewItem
 import com.jeong.domain.repository.ReviewRepository
-import com.jeong.jjoreum.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,11 +52,11 @@ class WriteReviewViewModel @Inject constructor(
         }
     }
 
-    fun saveReview() {
+    fun saveReview(defaultNickname: String) {
         if (_reviewInputText.value.isBlank()) return
 
         val currentUser = auth.currentUser ?: return
-        val nickname = auth.currentUser?.displayName ?: context.getString(R.string.anonymous)
+        val nickname = auth.currentUser?.displayName ?: defaultNickname
 
         val newReview = ReviewItem(
             userId = currentUser.uid,

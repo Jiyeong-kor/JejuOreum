@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.domain.entity.MyStampItem
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.presentation.viewmodel.MyStampViewModel
+import com.jeong.oreum.presentation.profile.stamp.MyStampViewModel
 
 @Composable
 fun MyStampScreen(

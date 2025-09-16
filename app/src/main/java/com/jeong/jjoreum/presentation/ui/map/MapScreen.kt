@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.domain.entity.ResultSummary
-import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
-import com.jeong.jjoreum.presentation.viewmodel.MapViewModel
+import com.jeong.oreum.presentation.detail.DetailViewModel
+import com.jeong.oreum.presentation.map.MapViewModel
 import com.kakao.vectormap.LatLng
 
 private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {

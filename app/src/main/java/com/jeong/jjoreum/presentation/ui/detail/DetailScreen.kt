@@ -52,7 +52,7 @@ import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
 import com.jeong.data.local.PermissionManager
 import com.jeong.domain.entity.ReviewItem
-import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
+import com.jeong.oreum.presentation.detail.DetailViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -99,8 +99,9 @@ fun DetailScreen(
                 }
 
                 is DetailViewModel.DetailEvent.StampFailure -> {
-                    showToast(event.message)
-                }
+                    val message = event.message
+                        ?: context.getString(R.string.unknown_error_message)
+                    showToast(message)                }
             }
         }
     }
