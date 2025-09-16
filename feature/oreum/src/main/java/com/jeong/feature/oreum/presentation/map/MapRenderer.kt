@@ -1,9 +1,8 @@
-package com.jeong.jjoreum.presentation.ui.map
+package com.jeong.feature.oreum.presentation.map
 
-import com.jeong.jjoreum.R
 import com.jeong.domain.entity.GeoPoint
 import com.jeong.domain.entity.quantized
-import com.jeong.oreum.presentation.map.MapPinUi
+import com.jeong.feature.oreum.R
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraUpdateFactory
@@ -85,8 +84,8 @@ class MapRenderer(private val map: KakaoMap) {
                 markersByPoint[key] = label
             }
         } finally {
+            layer.isVisible = wasVisible
         }
-        layer.isVisible = wasVisible
     }
 
     fun selectMarkerAt(latLng: LatLng) {

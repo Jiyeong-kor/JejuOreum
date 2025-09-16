@@ -164,9 +164,9 @@ fun ListItem(
                     ) {
                         Icon(
                             painter = if (oreum.userLiked) {
-                                painterResource(id = R.drawable.ic_favorite_selected)
+                                painterResource(id = R.drawable.oreum_favorite_selected)
                             } else {
-                                painterResource(id = R.drawable.ic_favorite_unselected)
+                                painterResource(id = R.drawable.oreum_favorite_unselected)
                             },
                             contentDescription = stringResource(id = R.string.desc_favorite_icon),
                             tint = if (oreum.userLiked) Color.Red else Color.White,
@@ -185,7 +185,7 @@ fun ListItem(
                         modifier = Modifier.clickable { onStampClick(oreum) }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_stamp_variant),
+                            painter = painterResource(id = R.drawable.oreum_stamp_variant),
                             contentDescription = stringResource(id = R.string.desc_stamp_icon),
                             tint = if (oreum.userStamped) MaterialTheme.colorScheme.primary
                             else Color.White,

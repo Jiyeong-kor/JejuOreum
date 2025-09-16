@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.detail
+package com.jeong.feature.oreum.presentation.detail
 
 import android.Manifest
 import android.R.drawable.ic_menu_delete
@@ -49,17 +49,17 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.jeong.jjoreum.R
 import com.jeong.data.local.PermissionManager
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.entity.ReviewItem
-import com.jeong.oreum.presentation.detail.DetailViewModel
+import com.jeong.feature.oreum.R
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun DetailScreen(
+fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel(),
     onNavigateToWriteReview: (Int, String) -> Unit,
     showToast: (String) -> Unit,
@@ -86,7 +86,7 @@ fun DetailScreen(
         if (isGranted) {
             viewModel.stampOreum()
         } else {
-            showToast(context.getString(R.string.permission_required_message))
+            showToast(context.getString(R.string.oreum_permission_required_message))
         }
     }
 
@@ -94,65 +94,87 @@ fun DetailScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is DetailViewModel.DetailEvent.StampSuccess -> {
-                    showToast(context.getString(R.string.stamp_verified_message))
+                    showToast(context.getString(R.string.oreum_stamp_success_message))
                     onFavoriteToggled(viewModel.oreumDetail.value?.idx.toString())
                 }
 
                 is DetailViewModel.DetailEvent.StampFailure -> {
                     val message = event.message
-                        ?: context.getString(R.string.unknown_error_message)
-                    showToast(message)                }
+                        ?: context.getString(R.string.oreum_unknown_error_message)
+                    showToast(message)
+                }
             }
         }
     }
 
+    DetailScreen(
+        oreumDetail = oreumDetail,
+        isFavorite = isFavorite,
+        hasStamp = hasStamp,
+        reviewList = reviewList,
+        onFavoriteToggled = {
+            val oreumIdx = oreumDetail?.idx?.toString() ?: return@DetailScreen
+            viewModel.toggleFavorite(oreumIdx)
+            showToast(
+                context.getString(
+                    if (!isFavorite) R.string.oreum_favorite_added_message
+                    else R.string.oreum_favorite_removed_message
+                )
+            )
+            onFavoriteToggled(oreumIdx)
+        },
+        onStampClick = {
+            if (hasStamp) {
+                onNavigateToWriteReview(
+                    oreumDetail?.idx ?: -1,
+                    oreumDetail?.oreumKname ?: ""
+                )
+            } else {
+                when {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED -> {
+                        viewModel.stampOreum()
+                    }
+
+                    else -> {
+                        when (savedLocationGranted) {
+                            false -> showToast(
+                                context.getString(
+                                    R.string.oreum_permission_required_message
+                                )
+                            )
+
+                            else -> permissionLauncher.launch(
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        onNavigateToWriteReview = onNavigateToWriteReview
+    )
+}
+
+@Composable
+private fun DetailScreen(
+    oreumDetail: ResultSummary?,
+    isFavorite: Boolean,
+    hasStamp: Boolean,
+    reviewList: List<ReviewItem>,
+    onFavoriteToggled: () -> Unit,
+    onStampClick: () -> Unit,
+    onNavigateToWriteReview: (Int, String) -> Unit,
+) {
     Scaffold(
         bottomBar = {
             BottomButtonSection(
                 isFavorite = isFavorite,
                 hasStamp = hasStamp,
-                onFavoriteClick = {
-                    val oreumIdx = oreumDetail?.idx?.toString() ?: return@BottomButtonSection
-                    viewModel.toggleFavorite(oreumIdx)
-                    showToast(
-                        context.getString(
-                            if (!isFavorite) R.string.favorite_added_message
-                            else R.string.favorite_removed_message
-                        )
-                    )
-                    onFavoriteToggled(oreumIdx)
-                },
-                onStampClick = {
-                    if (hasStamp) {
-                        onNavigateToWriteReview(
-                            oreumDetail?.idx ?: -1,
-                            oreumDetail?.oreumKname ?: ""
-                        )
-                    } else {
-                        when {
-                            ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.ACCESS_FINE_LOCATION
-                            ) == PackageManager.PERMISSION_GRANTED -> {
-                                viewModel.stampOreum()
-                            }
-
-                            else -> {
-                                when (savedLocationGranted) {
-                                    false -> showToast(
-                                        context.getString(
-                                            R.string.permission_required_message
-                                        )
-                                    )
-
-                                    else -> permissionLauncher.launch(
-                                        Manifest.permission.ACCESS_FINE_LOCATION
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                onFavoriteClick = onFavoriteToggled,
+                onStampClick = onStampClick
             )
         }
     ) { innerPadding ->
@@ -177,7 +199,7 @@ fun DetailScreen(
                     if (oreum.userStamped) {
                         Image(
                             painter = painterResource(id = R.drawable.oreum_stamp_badge),
-                            contentDescription = stringResource(id = R.string.desc_stamp_icon),
+                            contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .padding(12.dp)
@@ -208,14 +230,14 @@ fun DetailScreen(
 
             ReviewSection(
                 reviews = reviewList,
-                oreumId = oreumDetail?.idx?.toString() ?: ""
+                oreumId = oreumDetail?.idx?.toString() ?: "",
             )
         }
     }
 }
 
 @Composable
-fun BottomButtonSection(
+private fun BottomButtonSection(
     isFavorite: Boolean,
     hasStamp: Boolean,
     onFavoriteClick: () -> Unit,
@@ -235,7 +257,7 @@ fun BottomButtonSection(
                     id = if (isFavorite) R.drawable.oreum_favorite_selected
                     else R.drawable.oreum_favorite_unselected
                 ),
-                contentDescription = stringResource(id = R.string.desc_favorite_icon),
+                contentDescription = stringResource(id = R.string.oreum_desc_favorite_icon),
                 tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(36.dp)
             )
@@ -250,9 +272,9 @@ fun BottomButtonSection(
         ) {
             Text(
                 text = if (hasStamp) {
-                    stringResource(id = R.string.write_review)
+                    stringResource(id = R.string.oreum_write_review)
                 } else {
-                    stringResource(id = R.string.detail_stamp)
+                    stringResource(id = R.string.oreum_detail_stamp)
                 }
             )
         }
@@ -260,11 +282,11 @@ fun BottomButtonSection(
 }
 
 @Composable
-fun ReviewSection(
+private fun ReviewSection(
     reviews: List<ReviewItem>,
     oreumId: String,
     onLikeClick: (String, String) -> Unit = { _, _ -> },
-    onDeleteClick: (String) -> Unit = {}
+    onDeleteClick: (String) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -272,14 +294,14 @@ fun ReviewSection(
             .padding(top = 16.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.review_title),
+            text = stringResource(id = R.string.oreum_review_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         if (reviews.isEmpty()) {
             Text(
-                text = stringResource(id = R.string.no_reviews),
+                text = stringResource(id = R.string.oreum_no_reviews),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
@@ -307,11 +329,11 @@ fun ReviewSection(
 }
 
 @Composable
-fun ReviewItem(
+private fun ReviewItem(
     review: ReviewItem,
     oreumId: String,
     onLikeClick: (String, String) -> Unit,
-    onDeleteClick: (String) -> Unit
+    onDeleteClick: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -345,7 +367,7 @@ fun ReviewItem(
             IconButton(onClick = { onDeleteClick(review.userReview) }) {
                 Icon(
                     painter = painterResource(id = ic_menu_delete),
-                    contentDescription = stringResource(id = R.string.review_delete_desc)
+                    contentDescription = stringResource(id = R.string.oreum_review_delete_desc)
                 )
             }
         }
@@ -365,7 +387,6 @@ fun ReviewItem(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            // 좋아요 버튼
             Row(
                 modifier = Modifier
                     .clickable { onLikeClick(review.userId, oreumId) },
@@ -376,14 +397,14 @@ fun ReviewItem(
                         id = if (review.isLiked) R.drawable.oreum_favorite_selected
                         else R.drawable.oreum_favorite_unselected
                     ),
-                    contentDescription = stringResource(id = R.string.review_like_desc),
+                    contentDescription = stringResource(id = R.string.oreum_review_like_desc),
                     tint = if (review.isLiked) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "${review.reviewLikeNum}",
+                    text = "${'$'}{review.reviewLikeNum}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )

@@ -9,6 +9,7 @@ import com.jeong.domain.repository.ReviewRepository
 import com.jeong.domain.repository.StampRepository
 import com.jeong.domain.repository.UserInteractionRepository
 import com.jeong.domain.usecase.ToggleFavoriteUseCase
+import com.jeong.feature.oreum.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -112,7 +113,7 @@ class DetailViewModel @Inject constructor(
 
                 result.isFailure -> {
                     val message = result.exceptionOrNull()?.message
-                        ?: context.getString(R.string.unknown_error_message)
+                        ?: context.getString(R.string.oreum_unknown_error_message)
                     _event.emit(DetailEvent.StampFailure(message))
                 }
             }
