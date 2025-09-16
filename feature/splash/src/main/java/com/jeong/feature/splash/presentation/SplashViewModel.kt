@@ -3,8 +3,11 @@ package com.jeong.feature.splash.presentation
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.data.local.PreferenceManager
+import com.google.android.gms.security.ProviderInstaller
 import com.jeong.domain.repository.OreumRepository
+import com.jeong.feature.splash.BuildConfig
+import com.jeong.feature.splash.domain.UserStatusChecker
+import com.kakao.vectormap.KakaoMapSdk
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val prefs: PreferenceManager,
+    private val userStatusChecker: UserStatusChecker,
     private val oreumRepository: OreumRepository,
     private val application: Application
 ) : ViewModel() {
@@ -53,7 +56,7 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun decideNavigation() {
-        val isSignedUp = prefs.isUserRegistered()
+        val isSignedUp = userStatusChecker.isUserRegistered()
         _uiState.value = if (isSignedUp) SplashUiState.GoToMap else SplashUiState.GoToJoin
     }
 }
