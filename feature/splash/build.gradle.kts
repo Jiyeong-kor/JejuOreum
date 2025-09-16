@@ -42,14 +42,14 @@ kotlin {
 }
 
 dependencies {
-
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.hilt.android)
     implementation(libs.kakao.vectormap)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.play.services.basement)
     implementation(libs.timber)
-    implementation(project(":data"))
+    implementation(project(":core:utils"))
     implementation(project(":domain"))
     ksp(libs.hilt.android.compiler)
 }
