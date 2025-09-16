@@ -3,6 +3,7 @@ package com.jeong.feature.oreum.presentation.review
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.jeong.domain.entity.ReviewItem
 import com.jeong.domain.repository.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -49,8 +49,6 @@ dependencies {
     implementation(libs.timber)
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))
-    implementation(project(":core:ui"))
-    implementation(project(":core:utils"))
     implementation(project(":data"))
     implementation(project(":domain"))
     ksp(libs.hilt.android.compiler)
