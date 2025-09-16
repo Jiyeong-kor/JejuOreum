@@ -1,4 +1,4 @@
-package com.jeong.oreum.presentation.profile.favorite
+package com.jeong.feature.oreum.presentation.profile.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

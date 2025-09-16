@@ -1,4 +1,4 @@
-package com.jeong.oreum.di
+package com.jeong.feature.oreum.di
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth

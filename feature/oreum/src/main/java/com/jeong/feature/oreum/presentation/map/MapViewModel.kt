@@ -1,4 +1,4 @@
-package com.jeong.oreum.presentation.map
+package com.jeong.feature.oreum.presentation.map
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

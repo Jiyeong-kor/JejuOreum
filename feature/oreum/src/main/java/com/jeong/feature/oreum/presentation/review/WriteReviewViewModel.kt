@@ -1,4 +1,4 @@
-package com.jeong.oreum.presentation.review
+package com.jeong.feature.oreum.presentation.review
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

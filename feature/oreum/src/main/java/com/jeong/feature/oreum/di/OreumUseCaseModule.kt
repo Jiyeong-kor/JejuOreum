@@ -1,4 +1,4 @@
-package com.jeong.oreum.di
+package com.jeong.feature.oreum.di
 
 import com.jeong.domain.repository.OreumRepository
 import com.jeong.domain.repository.UserInteractionRepository

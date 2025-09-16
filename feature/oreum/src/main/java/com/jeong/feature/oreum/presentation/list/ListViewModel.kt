@@ -1,4 +1,4 @@
-package com.jeong.oreum.presentation.list
+package com.jeong.feature.oreum.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
