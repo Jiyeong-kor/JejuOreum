@@ -1,8 +1,9 @@
-package com.jeong.feature.oreum.presentation.map
+package com.jeong.oreum.presentation.map
 
 import com.jeong.domain.entity.GeoPoint
 import com.jeong.domain.entity.quantized
 import com.jeong.feature.oreum.R
+import com.jeong.feature.oreum.presentation.map.MapPinUi
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraUpdateFactory
@@ -11,6 +12,7 @@ import com.kakao.vectormap.label.CompetitionUnit
 import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelLayerOptions
+import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.label.LabelTextBuilder
@@ -75,7 +77,7 @@ class MapRenderer(private val map: KakaoMap) {
             (newKeys - oldKeys).forEach { key ->
                 val p = newKeyByPin.getValue(key)
                 val label = layer.addLabel(
-                    com.kakao.vectormap.label.LabelOptions
+                    LabelOptions
                         .from(LatLng.from(p.lat, p.lon))
                         .setTexts(LabelTextBuilder().setTexts(p.title))
                         .setStyles(unselectedStyle)

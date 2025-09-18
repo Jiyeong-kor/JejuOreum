@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.jeong.domain.entity.ReviewItem
+import com.jeong.feature.oreum.presentation.review.WriteReviewViewModel
 import com.jeong.jjoreum.R
-import com.jeong.oreum.presentation.review.WriteReviewViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

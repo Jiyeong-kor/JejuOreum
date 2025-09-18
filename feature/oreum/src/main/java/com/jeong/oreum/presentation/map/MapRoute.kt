@@ -23,6 +23,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.presentation.detail.DetailViewModel
+import com.jeong.oreum.presentation.map.DetailSheet
+import com.jeong.oreum.presentation.map.MapController
+import com.jeong.oreum.presentation.map.MapViewHost
+import com.jeong.oreum.presentation.map.SearchPanel
 
 private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this

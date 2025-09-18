@@ -1,4 +1,4 @@
-package com.jeong.feature.oreum.presentation.map
+package com.jeong.oreum.presentation.map
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -14,6 +14,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.feature.oreum.presentation.map.MapViewModel
+import com.jeong.feature.oreum.presentation.map.asGeoBounds
+import com.jeong.feature.oreum.presentation.map.asGeoPoint
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng

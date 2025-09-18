@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.jeong.domain.entity.ResultSummary
+import com.jeong.feature.oreum.presentation.map.MapUiState
 import com.jeong.jjoreum.R
 
 @Composable

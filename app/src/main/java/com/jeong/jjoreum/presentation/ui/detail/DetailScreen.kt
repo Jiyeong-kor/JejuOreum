@@ -49,14 +49,14 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.jeong.jjoreum.R
 import com.jeong.data.local.PermissionManager
 import com.jeong.domain.entity.ReviewItem
-import com.jeong.oreum.presentation.detail.DetailViewModel
-import kotlinx.coroutines.launch
+import com.jeong.feature.oreum.presentation.detail.DetailViewModel
+import com.jeong.jjoreum.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @Composable
 fun DetailScreen(
@@ -101,7 +101,8 @@ fun DetailScreen(
                 is DetailViewModel.DetailEvent.StampFailure -> {
                     val message = event.message
                         ?: context.getString(R.string.unknown_error_message)
-                    showToast(message)                }
+                    showToast(message)
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.jeong.feature.oreum.presentation.map
+package com.jeong.oreum.presentation.map
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DividerDefaults
@@ -35,7 +34,7 @@ import com.jeong.feature.oreum.R
 @Composable
 fun SearchPanel(
     query: String,
-    uiState: MapUiState,
+    uiState: com.jeong.feature.oreum.presentation.map.MapUiState,
     onQueryChange: (String) -> Unit,
     onResultClick: (ResultSummary) -> Unit,
     modifier: Modifier = Modifier

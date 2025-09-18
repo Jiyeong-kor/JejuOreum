@@ -1,4 +1,4 @@
-package com.jeong.feature.oreum.presentation.map
+package com.jeong.oreum.presentation.map
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box

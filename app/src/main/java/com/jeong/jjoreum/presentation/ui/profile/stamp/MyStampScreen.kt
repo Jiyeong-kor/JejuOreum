@@ -28,8 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.domain.entity.MyStampItem
+import com.jeong.feature.oreum.presentation.profile.stamp.MyStampViewModel
 import com.jeong.jjoreum.R
-import com.jeong.oreum.presentation.profile.stamp.MyStampViewModel
 
 @Composable
 fun MyStampScreen(
