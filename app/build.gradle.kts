@@ -30,11 +30,12 @@ plugins {
 
 android {
     namespace = "com.jeong.jjoreum"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.jeong.jjoreum"
         minSdk = 23
+        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -52,11 +53,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
         viewBinding = true
@@ -65,36 +63,36 @@ android {
 }
 
 dependencies {
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.android)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.preference.ktx)
-    implementation(libs.firebase.firestore)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.rxbinding)
-    implementation(libs.lottie)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.play.services.location)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.coil.kt.coil)
     implementation(libs.converter.gson)
-    implementation(libs.retrofit)
-    implementation(libs.android)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.hilt.android)
     implementation(libs.kakao.v2.all)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.logging.interceptor)
+    implementation(libs.lottie)
+    implementation(libs.material)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp)
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.retrofit)
+    implementation(libs.rxbinding)
     implementation(libs.tedpermission.coroutine)
     implementation(libs.tedpermission.normal)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.coil.kt.coil)
-    implementation(libs.okhttp)
-    implementation(libs.play.services.maps)
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.androidx.core.splashscreen)
+    implementation(platform(libs.firebase.bom))
+    ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
 
