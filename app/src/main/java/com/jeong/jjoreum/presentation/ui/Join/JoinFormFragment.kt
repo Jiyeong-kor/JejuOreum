@@ -77,13 +77,13 @@ class JoinFormFragment :
         )
         colorOnSurfaceVariantAttr = typedValue.data
         requireContext().theme.resolveAttribute(
-            com.google.android.material.R.attr.colorError,
+            com.google.android.material.R.attr.colorOnError,
             typedValue,
             true
         )
         colorErrorAttr = typedValue.data
         requireContext().theme.resolveAttribute(
-            com.google.android.material.R.attr.colorPrimary,
+            com.google.android.material.R.attr.colorOnPrimary,
             typedValue,
             true
         )
