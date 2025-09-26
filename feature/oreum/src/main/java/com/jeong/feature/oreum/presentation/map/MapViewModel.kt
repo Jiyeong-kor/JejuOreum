@@ -3,11 +3,14 @@ package com.jeong.feature.oreum.presentation.map
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.domain.entity.ResultSummary
-import com.jeong.domain.repository.OreumRepository
 import com.jeong.domain.entity.GeoBounds
 import com.jeong.domain.entity.GeoPoint
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.entity.quantized
+import com.jeong.feature.oreum.domain.usecase.FilterOreumsWithinBoundsUseCase
+import com.jeong.feature.oreum.domain.usecase.FindOreumByLocationUseCase
+import com.jeong.feature.oreum.domain.usecase.ObserveOreumSummariesUseCase
+import com.jeong.feature.oreum.domain.usecase.SearchOreumsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,27 +19,25 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.math.max
-import kotlin.math.min
+
+private const val KEY_CAM_LAT = "cam_lat"
+private const val KEY_CAM_LON = "cam_lon"
+private const val KEY_CAM_ZOOM = "cam_zoom"
 
 data class CameraSnapshot(val center: GeoPoint, val zoomLevel: Int)
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    repository: OreumRepository,
+    observeOreumSummariesUseCase: ObserveOreumSummariesUseCase,
+    private val filterOreumsWithinBoundsUseCase: FilterOreumsWithinBoundsUseCase,
+    private val searchOreumsUseCase: SearchOreumsUseCase,
+    private val findOreumByLocationUseCase: FindOreumByLocationUseCase,
     private val savedStateHandle: SavedStateHandle
-
 ) : ViewModel() {
 
-    private companion object {
-        const val KEY_CAM_LAT = "cam_lat"
-        const val KEY_CAM_LON = "cam_lon"
-        const val KEY_CAM_ZOOM = "cam_zoom"
-    }
+    private val oreumList: StateFlow<List<ResultSummary>> = observeOreumSummariesUseCase()
 
-    private val oreumList: StateFlow<List<ResultSummary>> = repository.oreumListFlow
-
-    private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Idle)
+    private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Hidden)
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
 
     private val _visiblePins = MutableStateFlow<List<MapPinUi>>(emptyList())
@@ -51,59 +52,44 @@ class MapViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    fun onSearchQueryChanged(query: String) {
-        _searchQuery.value = query
-        viewModelScope.launch {
-            val q = query.trim()
-            if (q.isBlank()) {
-                _uiState.value = MapUiState.Hidden
-                return@launch
-            }
-            val result = oreumList.value.filter { item ->
-                item.oreumKname.contains(q) || item.oreumAddr.contains(q)
-            }
-            _uiState.value =
-                if (result.isEmpty()) MapUiState.NoResults
-                else MapUiState.SearchResults(result)
-        }
-    }
-
     private val pinCache = mutableMapOf<GeoPoint, MapPinUi>()
     private var lastBounds: GeoBounds? = null
+
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
+        viewModelScope.launch(Dispatchers.Default) {
+            val results = searchOreumsUseCase(oreumList.value, query)
+            withContext(Dispatchers.Main) {
+                _uiState.value = when {
+                    query.isBlank() -> MapUiState.Hidden
+                    results.isEmpty() -> MapUiState.NoResults
+                    else -> MapUiState.SearchResults(results)
+                }
+            }
+        }
+    }
 
     fun updateVisibleOreumWithin(bounds: GeoBounds) {
         if (bounds == lastBounds) return
         lastBounds = bounds
         viewModelScope.launch(Dispatchers.Default) {
-            val full = oreumList.value
-            val minLat = min(bounds.sw.lat, bounds.ne.lat)
-            val maxLat = max(bounds.sw.lat, bounds.ne.lat)
-            val minLon = min(bounds.sw.lon, bounds.ne.lon)
-            val maxLon = max(bounds.sw.lon, bounds.ne.lon)
-
-            val pins = ArrayList<MapPinUi>()
-            for (o in full) {
-                if (o.y in minLat..maxLat && o.x in minLon..maxLon) {
-                    val key = o.quantKey()
-                    val cached = pinCache[key]
-                    val pin = cached ?: MapPinUi(o.oreumKname, o.y, o.x)
-                        .also { pinCache[key] = it }
-                    pins.add(pin)
+            val visible = filterOreumsWithinBoundsUseCase(oreumList.value, bounds)
+            val pins = visible.map { summary ->
+                val point = GeoPoint(summary.y, summary.x).quantized()
+                pinCache.getOrPut(point) {
+                    MapPinUi(summary.oreumKname, summary.y, summary.x)
                 }
             }
-
             if (pins != _visiblePins.value) {
                 withContext(Dispatchers.Main) { _visiblePins.value = pins }
             }
         }
     }
 
-    private fun ResultSummary.quantKey(): GeoPoint = GeoPoint(y, x).quantized()
-
     fun selectOreumAt(point: GeoPoint): ResultSummary? {
-        val key = point.quantized()
-        _selectedOreum.value = oreumList.value.find { it.quantKey() == key }
-        return _selectedOreum.value
+        val oreum = findOreumByLocationUseCase(oreumList.value, point)
+        _selectedOreum.value = oreum
+        return oreum
     }
 
     fun clearSelection() {
