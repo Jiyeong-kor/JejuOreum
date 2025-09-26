@@ -20,33 +20,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.jeong.domain.model.NicknameValidationResult
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.presentation.viewmodel.JoinViewModel
 
 @Composable
 fun JoinFormScreen(
-    viewModel: JoinViewModel,
+    uiState: JoinUiState,
     isTermChecked: Boolean,
+    onNicknameChange: (String) -> Unit,
     onTermCheckedChange: (Boolean) -> Unit,
     onTermClick: () -> Unit,
-    onNextClick: () -> Unit
+    onSubmit: () -> Unit
 ) {
-    val nickname by viewModel.nickname.collectAsState()
-    val isLoading by viewModel.isLoadingNicknameAvailability.collectAsState()
-    val isInvalid by viewModel.isNicknameInvalid.collectAsState()
-    val errorMessage by viewModel.nicknameErrorMessage.collectAsState()
-    val isAvailable by viewModel.isNicknameAvailable.collectAsState()
-    val hasTyped by viewModel.hasUserTyped.collectAsState()
-
     val focusManager = LocalFocusManager.current
+    val isChecking = uiState.availability is NicknameAvailabilityState.Checking
+    val isInvalid = uiState.validation is NicknameValidationResult.Invalid
 
     Column(
         modifier = Modifier
@@ -60,8 +54,8 @@ fun JoinFormScreen(
         )
 
         OutlinedTextField(
-            value = nickname,
-            onValueChange = { viewModel.updateNickname(it) },
+            value = uiState.nickname,
+            onValueChange = onNicknameChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 24.dp),
@@ -69,41 +63,62 @@ fun JoinFormScreen(
             textStyle = MaterialTheme.typography.bodyLarge,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
-                viewModel.updateNickname(nickname.trim())
                 focusManager.clearFocus()
+                if (uiState.canSubmit && isTermChecked) {
+                    onSubmit()
+                }
             }),
             trailingIcon = {
-                if (isLoading) {
+                if (isChecking) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
                         strokeWidth = 2.dp
                     )
                 }
             },
-            isError = hasTyped && isInvalid
+            isError = uiState.hasUserInteracted && isInvalid
         )
 
         Text(
             text = stringResource(id = R.string.nickname_rule),
             style = MaterialTheme.typography.bodySmall,
-            color = if (hasTyped && isInvalid)
+            color = if (uiState.hasUserInteracted && isInvalid) {
                 MaterialTheme.colorScheme.error
-            else
-                MaterialTheme.colorScheme.onSurfaceVariant,
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
             modifier = Modifier.padding(top = 8.dp)
         )
+        when (uiState.availability) {
+            NicknameAvailabilityState.Available -> {
+                Text(
+                    text = stringResource(id = R.string.nickname_available),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
 
-        if (errorMessage != null || isAvailable) {
-            val color = if (isAvailable)
-                MaterialTheme.colorScheme.primary
-            else
-                MaterialTheme.colorScheme.error
-            Text(
-                text = errorMessage ?: stringResource(id = R.string.nickname_available),
-                style = MaterialTheme.typography.bodySmall,
-                color = color,
-                modifier = Modifier.padding(top = 4.dp)
-            )
+            NicknameAvailabilityState.Unavailable -> {
+                Text(
+                    text = stringResource(id = R.string.nickname_already_exists),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            is NicknameAvailabilityState.Error -> {
+                Text(
+                    text = stringResource(id = R.string.nickname_check_error),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            NicknameAvailabilityState.Idle,
+            NicknameAvailabilityState.Checking -> Unit
         }
 
         Text(
@@ -138,16 +153,24 @@ fun JoinFormScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = onNextClick,
-            enabled = isTermChecked && !isLoading && !isInvalid && isAvailable,
+            onClick = onSubmit,
+            enabled = isTermChecked && uiState.canSubmit,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp, bottom = 16.dp)
         ) {
-            Text(
-                text = stringResource(id = R.string.join_form_btn_next),
-                style = MaterialTheme.typography.labelLarge
-            )
+            if (uiState.isSaving) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                Text(
+                    text = stringResource(id = R.string.join_form_btn_next),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
         }
     }
 }

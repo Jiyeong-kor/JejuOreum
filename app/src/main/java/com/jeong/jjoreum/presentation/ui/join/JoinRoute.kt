@@ -9,10 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.jeong.jjoreum.R
-import com.jeong.jjoreum.presentation.viewmodel.JoinViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.core.ui.extensions.toastMessage
+import com.jeong.jjoreum.R
 
 @Composable
 fun JoinRoute(
@@ -22,33 +21,37 @@ fun JoinRoute(
     val context = LocalContext.current
     var isTermChecked by remember { mutableStateOf(false) }
     var showTermDialog by remember { mutableStateOf(false) }
-    val auth = remember { FirebaseAuth.getInstance() }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        if (auth.currentUser == null) {
-            auth.signInAnonymously().addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
+        viewModel.events.collect { event ->
+            when (event) {
+                JoinEvent.AuthenticationFailed -> {
                     context.toastMessage(R.string.auth_failed)
+                }
+
+                is JoinEvent.NicknameSaved -> {
+                    context.toastMessage(R.string.signup_success)
+                    onNavigateToMain()
+                }
+
+                JoinEvent.NicknameSaveFailed -> {
+                    context.toastMessage(R.string.nickname_save_failed)
                 }
             }
         }
     }
 
     JoinFormScreen(
-        viewModel = viewModel,
+        uiState = uiState,
         isTermChecked = isTermChecked,
-        onTermCheckedChange = { isTermChecked = it },
+        onNicknameChange = viewModel::onNicknameChanged,
+        onTermCheckedChange = { isChecked -> isTermChecked = isChecked },
         onTermClick = { showTermDialog = true },
-        onNextClick = {
-            viewModel.saveNickname(
-                onSuccess = {
-                    context.toastMessage(R.string.signup_success)
-                    onNavigateToMain()
-                },
-                onFailure = {
-                    context.toastMessage(R.string.nickname_save_failed)
-                }
-            )
+        onSubmit = {
+            if (isTermChecked) {
+                viewModel.submitNickname()
+            }
         }
     )
 
