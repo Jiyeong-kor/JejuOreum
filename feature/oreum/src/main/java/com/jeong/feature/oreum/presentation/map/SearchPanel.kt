@@ -1,4 +1,4 @@
-package com.jeong.oreum.presentation.map
+package com.jeong.feature.oreum.presentation.map
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,7 +34,7 @@ import com.jeong.feature.oreum.R
 @Composable
 fun SearchPanel(
     query: String,
-    uiState: com.jeong.feature.oreum.presentation.map.MapUiState,
+    uiState: MapUiState,
     onQueryChange: (String) -> Unit,
     onResultClick: (ResultSummary) -> Unit,
     modifier: Modifier = Modifier

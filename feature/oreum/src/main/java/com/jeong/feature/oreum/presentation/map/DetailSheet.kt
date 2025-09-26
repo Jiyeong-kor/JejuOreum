@@ -1,4 +1,4 @@
-package com.jeong.oreum.presentation.map
+package com.jeong.feature.oreum.presentation.map
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -48,6 +48,7 @@ fun DetailSheet(
             ) {
                 DetailRoute(
                     viewModel = detailVm,
+                    initialOreum = overlay,
                     onNavigateToWriteReview = onNavigateToWriteReview,
                     showToast = { msg ->
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

@@ -63,7 +63,8 @@ fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel(),
     onNavigateToWriteReview: (Int, String) -> Unit,
     showToast: (String) -> Unit,
-    onFavoriteToggled: (String) -> Unit
+    onFavoriteToggled: (String) -> Unit,
+    initialOreum: ResultSummary? = null
 ) {
     val oreumDetail by viewModel.oreumDetail.collectAsState()
     val isFavorite by viewModel.isFavorite.collectAsState()
@@ -72,6 +73,10 @@ fun DetailRoute(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var savedLocationGranted by remember { mutableStateOf<Boolean?>(null) }
+
+    LaunchedEffect(initialOreum) {
+        initialOreum?.let(viewModel::setOreumDetail)
+    }
 
     LaunchedEffect(Unit) {
         savedLocationGranted = PermissionManager.isLocationGranted(context)

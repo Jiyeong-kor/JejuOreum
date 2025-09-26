@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.coil3.coil.compose)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.kakao.vectormap)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.timber)

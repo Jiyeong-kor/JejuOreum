@@ -25,15 +25,14 @@ import androidx.navigation.navArgument
 import com.google.gson.Gson
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.navigation.OreumNavigation
-import com.jeong.feature.oreum.presentation.detail.DetailViewModel
+import com.jeong.feature.oreum.presentation.detail.DetailRoute
+import com.jeong.feature.oreum.presentation.list.ListRoute
+import com.jeong.feature.oreum.presentation.map.MapRoute
+import com.jeong.feature.oreum.presentation.profile.MyRoute
+import com.jeong.feature.oreum.presentation.review.WriteReviewRoute
 import com.jeong.feature.oreum.presentation.review.WriteReviewViewModel
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.presentation.ui.detail.DetailScreen
 import com.jeong.jjoreum.presentation.ui.join.JoinRoute
-import com.jeong.jjoreum.presentation.ui.list.ListScreen
-import com.jeong.jjoreum.presentation.ui.map.MapScreen
-import com.jeong.jjoreum.presentation.ui.profile.MyScreen
-import com.jeong.jjoreum.presentation.ui.profile.review.WriteReviewRoute
 
 @Composable
 fun MainNavHost(startDestination: String) {
@@ -124,7 +123,7 @@ fun MainNavHost(startDestination: String) {
                 )
             }
             composable(OreumNavigation.MAP) {
-                MapScreen(
+                MapRoute(
                     onNavigateToWriteReview = { idx, name ->
                         navController.navigate("writeReview/$idx/$name")
                     },
@@ -133,7 +132,7 @@ fun MainNavHost(startDestination: String) {
             }
             composable(OreumNavigation.LIST) {
                 val context = LocalContext.current
-                ListScreen(
+                ListRoute(
                     onItemClick = { oreum ->
                         val json = Uri.encode(Gson().toJson(oreum))
                         navController.navigate(OreumNavigation.detailRoute(json))
@@ -144,7 +143,7 @@ fun MainNavHost(startDestination: String) {
                 )
             }
             composable(OreumNavigation.MY) {
-                MyScreen(
+                MyRoute(
                     onFavoriteItemClick = { oreum ->
                         val json = Uri.encode(Gson().toJson(oreum))
                         navController.navigate(OreumNavigation.detailRoute(json))
@@ -166,10 +165,8 @@ fun MainNavHost(startDestination: String) {
                     ?: return@composable
                 val oreum = Gson().fromJson(json, ResultSummary::class.java)
                 val context = LocalContext.current
-                val vm: DetailViewModel = hiltViewModel()
-                LaunchedEffect(oreum) { vm.setOreumDetail(oreum) }
-                DetailScreen(
-                    viewModel = vm,
+                DetailRoute(
+                    initialOreum = oreum,
                     onNavigateToWriteReview = { idx, name ->
                         navController.navigate(
                             OreumNavigation.writeReviewRoute(idx, name)
