@@ -11,6 +11,7 @@ import com.kakao.vectormap.label.CompetitionUnit
 import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelLayerOptions
+import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.label.LabelTextBuilder
@@ -33,7 +34,10 @@ class MapRenderer(private val map: KakaoMap) {
         Timber.e(it, "LabelLayer 생성 실패")
         null
     }
-    private val markersByPoint = mutableMapOf<GeoPoint, Label>()
+
+    private data class MarkerEntry(val pin: MapPinUi, val label: Label)
+
+    private val markersByPoint = mutableMapOf<GeoPoint, MarkerEntry>()
     private var selectedLabel: Label? = null
     private val unselectedStyle: LabelStyles by lazy(LazyThreadSafetyMode.NONE) {
         LabelStyles.from(
@@ -55,6 +59,16 @@ class MapRenderer(private val map: KakaoMap) {
             }
         )
     }
+    private val clusterStyle: LabelStyles by lazy(LazyThreadSafetyMode.NONE) {
+        LabelStyles.from(
+            LabelStyle.from(R.drawable.oreum_selected).apply {
+                setTextStyles(
+                    LabelTextStyle
+                        .from(28, 0xFFFFFFFF.toInt(), 0, 0)
+                )
+            }
+        )
+    }
 
     private fun MapPinUi.quantKey(): GeoPoint = GeoPoint(lat, lon).quantized()
     private fun LatLng.quantKey(): GeoPoint = GeoPoint(latitude, longitude).quantized()
@@ -62,37 +76,61 @@ class MapRenderer(private val map: KakaoMap) {
     fun syncMarkers(pins: List<MapPinUi>) {
         val layer = labelLayer ?: return
         val newKeyByPin = pins.associateBy { it.quantKey() }
-        val oldKeys = markersByPoint.keys
+        val oldKeys = markersByPoint.keys.toSet()
         val newKeys = newKeyByPin.keys
-        if (oldKeys.size == newKeys.size && oldKeys.containsAll(newKeys)) return
-
+        if (oldKeys.size == newKeys.size && oldKeys.containsAll(newKeys)) {
+            val allSame = oldKeys.all { key ->
+                markersByPoint[key]?.pin == newKeyByPin[key]
+            }
+            if (allSame) return
+        }
         val wasVisible = layer.isVisible
         if (wasVisible) layer.isVisible = false
         try {
             (oldKeys - newKeys).forEach { key ->
-                markersByPoint.remove(key)?.let { layer.remove(it) }
+                markersByPoint.remove(key)?.let { entry ->
+                    if (selectedLabel == entry.label) {
+                        entry.label.changeStyles(unselectedStyle)
+                        selectedLabel = null
+                    }
+                    layer.remove(entry.label)
+                }
             }
             (newKeys - oldKeys).forEach { key ->
-                val p = newKeyByPin.getValue(key)
-                val label = layer.addLabel(
-                    com.kakao.vectormap.label.LabelOptions
-                        .from(LatLng.from(p.lat, p.lon))
-                        .setTexts(LabelTextBuilder().setTexts(p.title))
-                        .setStyles(unselectedStyle)
-                        .setTag("oreum:${p.title}")
-                )
-                markersByPoint[key] = label
+                val pin = newKeyByPin.getValue(key)
+                val label = layer.addLabel(pin.createLabelOptions())
+                markersByPoint[key] = MarkerEntry(pin, label)
+            }
+            (oldKeys intersect newKeys).forEach { key ->
+                val newPin = newKeyByPin.getValue(key)
+                val oldEntry = markersByPoint.getValue(key)
+                if (oldEntry.pin != newPin) {
+                    if (selectedLabel == oldEntry.label) {
+                        oldEntry.label.changeStyles(unselectedStyle)
+                        selectedLabel = null
+                    }
+                    layer.remove(oldEntry.label)
+                    val label = layer.addLabel(newPin.createLabelOptions())
+                    markersByPoint[key] = MarkerEntry(newPin, label)
+                }
             }
         } finally {
+            layer.isVisible = wasVisible
         }
-        layer.isVisible = wasVisible
     }
 
-    fun selectMarkerAt(latLng: LatLng) {
-        selectedLabel?.changeStyles(unselectedStyle)
-        val label = markersByPoint[latLng.quantKey()]
-        label?.changeStyles(selectedStyle)
-        selectedLabel = label
+    fun selectMarkerAt(latLng: LatLng): MapPinUi? {
+        val entry = markersByPoint[latLng.quantKey()] ?: return null
+        val pin = entry.pin
+        if (pin is MapPinUi.Single) {
+            selectedLabel?.changeStyles(unselectedStyle)
+            entry.label.changeStyles(selectedStyle)
+            selectedLabel = entry.label
+        } else {
+            selectedLabel?.changeStyles(unselectedStyle)
+            selectedLabel = null
+        }
+        return pin
     }
 
     fun clearSelection() {
@@ -109,5 +147,19 @@ class MapRenderer(private val map: KakaoMap) {
             .onFailure { Timber.w(it, "removeAll 실패") }
         markersByPoint.clear()
         selectedLabel = null
+    }
+
+    private fun MapPinUi.createLabelOptions(): LabelOptions = when (this) {
+        is MapPinUi.Cluster -> LabelOptions
+            .from(LatLng.from(lat, lon))
+            .setTexts(LabelTextBuilder().setTexts(count.toString()))
+            .setStyles(clusterStyle)
+            .setTag("oreum:cluster:$count")
+
+        is MapPinUi.Single -> LabelOptions
+            .from(LatLng.from(lat, lon))
+            .setTexts(LabelTextBuilder().setTexts(title))
+            .setStyles(unselectedStyle)
+            .setTag("oreum:$oreumId")
     }
 }

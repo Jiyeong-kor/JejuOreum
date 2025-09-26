@@ -70,12 +70,14 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    private val pinCache = mutableMapOf<GeoPoint, MapPinUi>()
-    private var lastBounds: GeoBounds? = null
+    private data class ViewportSnapshot(val bounds: GeoBounds, val zoom: Int)
 
-    fun updateVisibleOreumWithin(bounds: GeoBounds) {
-        if (bounds == lastBounds) return
-        lastBounds = bounds
+    private var lastViewport: ViewportSnapshot? = null
+
+    fun updateVisibleOreumWithin(bounds: GeoBounds, zoomLevel: Int) {
+        val snapshot = ViewportSnapshot(bounds, zoomLevel)
+        if (snapshot == lastViewport) return
+        lastViewport = snapshot
         viewModelScope.launch(Dispatchers.Default) {
             val full = oreumList.value
             val minLat = min(bounds.sw.lat, bounds.ne.lat)
@@ -83,17 +85,49 @@ class MapViewModel @Inject constructor(
             val minLon = min(bounds.sw.lon, bounds.ne.lon)
             val maxLon = max(bounds.sw.lon, bounds.ne.lon)
 
-            val pins = ArrayList<MapPinUi>()
+            val precision = zoomLevel.toClusterPrecision()
+            val clusters =
+                LinkedHashMap<GeoPoint, MutableList<ResultSummary>>()
             for (o in full) {
-                if (o.y in minLat..maxLat && o.x in minLon..maxLon) {
-                    val key = o.quantKey()
-                    val cached = pinCache[key]
-                    val pin = cached ?: MapPinUi(o.oreumKname, o.y, o.x)
-                        .also { pinCache[key] = it }
-                    pins.add(pin)
-                }
+            if (o.y in minLat..maxLat && o.x in minLon..maxLon) {
+                val key = GeoPoint(o.y, o.x).quantized(precision)
+                clusters.getOrPut(key) { mutableListOf() }.add(o)
             }
-
+        }
+            val pins = buildList {
+                for ((key, group) in clusters) {
+                    if (group.size == 1) {
+                        val oreum = group.first()
+                        add(
+                            MapPinUi.Single(
+                                lat = oreum.y,
+                                lon = oreum.x,
+                                title = oreum.oreumKname,
+                                oreumId = oreum.idx,
+                            )
+                        )
+                    } else {
+                        val avgLat = group.sumOf { it.y } / group.size
+                        val avgLon = group.sumOf { it.x } / group.size
+                        add(
+                            MapPinUi.Cluster(
+                                lat = avgLat.takeIf { it.isFinite() } ?: key.lat,
+                                lon = avgLon.takeIf { it.isFinite() } ?: key.lon,
+                                count = group.size,
+                            )
+                        )
+                    }
+                }
+            }.sortedWith(
+                compareBy<MapPinUi> { it.lat }
+                    .thenBy { it.lon }
+                    .thenBy {
+                        when (it) {
+                            is MapPinUi.Cluster -> it.count.toDouble()
+                            is MapPinUi.Single -> it.oreumId.toDouble()
+                        }
+                    }
+            )
             if (pins != _visiblePins.value) {
                 withContext(Dispatchers.Main) { _visiblePins.value = pins }
             }
@@ -130,5 +164,13 @@ class MapViewModel @Inject constructor(
         return if (lat != null && lon != null && zoom != null) {
             CameraSnapshot(GeoPoint(lat, lon), zoom)
         } else null
+    }
+
+    private fun Int.toClusterPrecision(): Int = when {
+        this >= 13 -> 5
+        this >= 11 -> 4
+        this >= 9 -> 3
+        this >= 7 -> 2
+        else -> 1
     }
 }

@@ -22,9 +22,10 @@ import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import timber.log.Timber
+private const val MAX_CLUSTER_ZOOM_LEVEL = 19
 
 class MapController(
-    val selectMarkerAt: (LatLng) -> Unit,
+    val selectMarkerAt: (LatLng) -> MapPinUi?,
     val moveCameraTo: (LatLng) -> Unit,
     val pause: () -> Unit,
     val resume: () -> Unit
@@ -135,13 +136,31 @@ fun MapViewHost(
                         val sw = map.fromScreenPoint(vp.left, vp.bottom)
                         val ne = map.fromScreenPoint(vp.right, vp.top)
                         if (sw != null && ne != null) {
-                            viewModel.updateVisibleOreumWithin(asGeoBounds(sw, ne))
-                        }
+                            viewModel.updateVisibleOreumWithin(
+                                asGeoBounds(sw, ne),
+                                map.zoomLevel
+                            )                        }
                         map.setOnPoiClickListener { _, latLng, _, _ ->
-                            renderer?.selectMarkerAt(latLng)
-                            renderer?.moveCameraTo(latLng)
-                            viewModel.selectOreumAt(latLng.asGeoPoint())
-                        }
+                            when (val pin = renderer?.selectMarkerAt(latLng)) {
+                                is MapPinUi.Cluster -> {
+                                    viewModel.clearSelection()
+                                    val targetZoom = (map.zoomLevel + 1)
+                                        .coerceAtMost(MAX_CLUSTER_ZOOM_LEVEL)
+                                    map.moveCamera(
+                                        CameraUpdateFactory.newCenterPosition(
+                                            latLng,
+                                            targetZoom
+                                        )
+                                    )
+                                }
+
+                                is MapPinUi.Single -> {
+                                    renderer?.moveCameraTo(latLng)
+                                    viewModel.selectOreumAt(latLng.asGeoPoint())
+                                }
+
+                                null -> Unit
+                            }}
                         map.setOnViewportClickListener { _, _, _ ->
                             renderer?.clearSelection()
                             viewModel.clearSelection()
@@ -153,8 +172,8 @@ fun MapViewHost(
                             val ne2 = m.fromScreenPoint(v.right, v.top)
                             if (sw2 != null && ne2 != null) {
                                 viewModel.updateVisibleOreumWithin(
-                                    asGeoBounds(sw2, ne2)
-                                )
+                                    asGeoBounds(sw2, ne2),
+                                    m.zoomLevel                                )
                             }
                             val cx = (v.left + v.right) / 2
                             val cy = (v.top + v.bottom) / 2

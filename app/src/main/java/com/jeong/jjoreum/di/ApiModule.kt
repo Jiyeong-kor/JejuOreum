@@ -30,7 +30,7 @@ import javax.net.ssl.X509TrustManager
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
-    private const val BASE_URL = BuildConfig.JEJU_OREUM_URL
+    private val BASE_URL by lazy { BuildConfig.JEJU_OREUM_URL }
 
     @Singleton
     @Provides

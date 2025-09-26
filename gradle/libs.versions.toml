@@ -1,100 +1,99 @@
 [versions]
-activityCompose = "1.10.1"
+activityCompose = "1.11.0"
 agp = "8.13.0"
 android = "2.12.8"
 coilBom = "3.3.0"
-composeBom = "2025.08.01"
-coreSplashscreen = "1.0.1"
-hilt = "2.57.1"
-hiltNavigationCompose = "1.2.0"
-hiltAndroid = "2.57.1"
-kakaoV2All = "2.20.6"
+composeBom = "2025.09.01"
+converterGson = "3.0.0"
 coreKtx = "1.17.0"
+coreSplashscreen = "1.0.1"
+datastore = "1.1.7"
+espressoCore = "3.7.0"
+firebaseAuthKtx = "23.2.1"
+firebaseBom = "34.3.0"
+firebaseFirestore = "26.0.1"
+foundation = "1.9.2"
+googleGmsGoogleServices = "4.4.3"
+hilt = "2.57.2"
+hiltNavigationCompose = "1.3.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
-espressoCore = "3.7.0"
-lifecycleViewmodelKtx = "2.9.3"
-material = "1.13.0"
-datastore = "1.1.7"
-googleGmsGoogleServices = "4.4.3"
-firebaseFirestore = "26.0.0"
-firebaseBom = "34.2.0"
-rxbinding = "4.0.0"
-lottie = "6.6.7"
-lottieCompose = "6.6.7"
-navigationCompose = "2.9.3"
-okhttp = "5.1.0"
+kakaoV2All = "2.20.6"
+kotlin = "2.2.20"
+kotlinxCoroutinesPlayServices = "1.10.2"
+kotlinxCoroutinesTest = "1.10.2"
+ksp = "2.2.20-2.0.3"
+lifecycleLivedataKtx = "2.9.4"
+lifecycleRuntimeCompose = "2.9.4"
+lifecycleViewmodelKtx = "2.9.4"
 loggingInterceptor = "5.1.0"
-converterGson = "3.0.0"
-retrofit = "3.0.0"
-tedpermissionCoroutine = "3.4.2"
-tedpermissionNormal = "3.4.2"
-lifecycleLivedataKtx = "2.9.3"
+lottie = "6.6.9"
+lottieCompose = "6.6.9"
+material = "1.13.0"
+mockk = "1.14.5"
+navigationCompose = "2.9.5"
+okhttp = "5.1.0"
 playServicesLocation = "21.3.0"
 playServicesMaps = "19.2.0"
-firebaseAuthKtx = "23.2.1"
-kotlin = "2.2.10"
-kotlin-ksp = "2.2.0-2.0.2"
-compose-compiler = "2.2.10"
-foundation = "1.9.0"
-lifecycleRuntimeCompose = "2.9.3"
-runtimeLivedata = "1.9.0"
-mockk = "1.14.5"
-kotlinxCoroutinesTest = "1.10.2"
-kotlinxCoroutinesPlayServices = "1.10.2"
+retrofit = "3.0.0"
+runtimeLivedata = "1.9.2"
+rxbinding = "4.0.0"
+tedpermissionCoroutine = "3.4.2"
+tedpermissionNormal = "3.4.2"
 timber = "5.0.1"
 
 [libraries]
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended"}
+android = { module = "com.kakao.maps.open:android", version.ref = "android" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-ui = { module = "androidx.compose.ui:ui" }
 coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coilBom" }
-coil3-coil = { module = "io.coil-kt.coil3:coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp" }
+coil3-coil = { module = "io.coil-kt.coil3:coil" }
 coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
-androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-android = { module = "com.kakao.maps.open:android", version.ref = "android" }
-androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
 kakao-v2-all = { module = "com.kakao.sdk:v2-all", version.ref = "kakaoV2All" }
-androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-rxbinding = { group = "com.jakewharton.rxbinding4", name = "rxbinding", version.ref = "rxbinding" }
-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-tedpermission-coroutine = { module = "io.github.ParkSangGwon:tedpermission-coroutine", version.ref = "tedpermissionCoroutine" }
-tedpermission-normal = { module = "io.github.ParkSangGwon:tedpermission-normal", version.ref = "tedpermissionNormal" }
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
-lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
-androidx-foundation = { module = "androidx.compose.foundation:foundation" }
-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
-androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
-kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+rxbinding = { group = "com.jakewharton.rxbinding4", name = "rxbinding", version.ref = "rxbinding" }
+tedpermission-coroutine = { module = "io.github.ParkSangGwon:tedpermission-coroutine", version.ref = "tedpermissionCoroutine" }
+tedpermission-normal = { module = "io.github.ParkSangGwon:tedpermission-normal", version.ref = "tedpermissionNormal" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
-kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "compose-compiler" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
