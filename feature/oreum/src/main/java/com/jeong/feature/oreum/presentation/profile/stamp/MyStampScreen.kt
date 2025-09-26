@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.domain.entity.MyStampItem
 import com.jeong.feature.oreum.R
@@ -35,14 +36,17 @@ import com.jeong.feature.oreum.R
 @Composable
 fun MyStampScreen(
     onNavigateToWriteReview: (Int, String) -> Unit,
-    viewModel: MyStampViewModel = hiltViewModel(),
+    viewModel: MyStampViewModel = hiltViewModel()
 ) {
-    val nickname by viewModel.nickname.collectAsStateWithLifecycle()
-    val stampedList by viewModel.stampedList.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) { viewModel.loadStampedList() }
 
-    val count = stampedList.size
+    LaunchedEffect(uiState.errorMessage) {
+        uiState.errorMessage?.let { viewModel.clearError() }
+    }
+
+    val count = uiState.stampedList.size
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -53,7 +57,7 @@ fun MyStampScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(id = R.string.oreum_my_stamp_title, nickname),
+                text = stringResource(id = R.string.oreum_my_stamp_title, uiState.nickname),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.width(20.dp))
@@ -71,20 +75,30 @@ fun MyStampScreen(
             )
         }
 
-        if (count == 0) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = stringResource(id = R.string.oreum_empty_list))
+        when {
+            uiState.isLoading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
             }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 10.dp)
-            ) {
-                items(stampedList) { item ->
-                    StampItem(item) {
-                        onNavigateToWriteReview(item.oreumIdx, item.oreumName)
+
+            count == 0 -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = stringResource(id = R.string.oreum_empty_list))
+                }
+            }
+
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 10.dp)
+                ) {
+                    items(uiState.stampedList) { item ->
+                        StampItem(item) {
+                            onNavigateToWriteReview(item.oreumIdx, item.oreumName)
+                        }
                     }
                 }
             }

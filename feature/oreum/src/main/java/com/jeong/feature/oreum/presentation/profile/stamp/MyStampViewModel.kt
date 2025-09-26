@@ -2,51 +2,66 @@ package com.jeong.feature.oreum.presentation.profile.stamp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.domain.entity.MyStampItem
-import com.jeong.domain.repository.OreumRepository
-import com.jeong.domain.repository.UserInteractionRepository
+import com.jeong.feature.oreum.domain.usecase.GetCurrentUserNicknameUseCase
+import com.jeong.feature.oreum.domain.usecase.LoadStampedOreumsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyStampViewModel @Inject constructor(
-    private val oreumRepository: OreumRepository,
-    private val interactionRepository: UserInteractionRepository
+    private val loadStampedOreumsUseCase: LoadStampedOreumsUseCase,
+    private val getCurrentUserNicknameUseCase: GetCurrentUserNicknameUseCase
 ) : ViewModel() {
 
-    private val _stampedList = MutableStateFlow<List<MyStampItem>>(emptyList())
-    val stampedList: StateFlow<List<MyStampItem>> = _stampedList
-
-    private val _nickname = MutableStateFlow("")
-    val nickname: StateFlow<String> = _nickname
+    private val _uiState = MutableStateFlow(MyStampUiState())
+    val uiState: StateFlow<MyStampUiState> = _uiState.asStateFlow()
 
     init {
-        loadUserNickname()
+        refreshNickname()
     }
 
     fun loadStampedList() {
         viewModelScope.launch {
-            val result = oreumRepository.loadOreumListIfNeeded()
-            if (result.isFailure) return@launch
-            val oreumList = oreumRepository.getCachedOreumList()
-            val stamped = oreumList.filter { it.userStamped }.map {
-                MyStampItem(
-                    userId = 0,
-                    oreumIdx = it.idx,
-                    oreumName = it.oreumKname,
-                    stampBoolean = true
-                )
-            }
-            _stampedList.value = stamped
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            loadStampedOreumsUseCase()
+                .onSuccess { stamps ->
+                    _uiState.update {
+                        it.copy(
+                            stampedList = stamps,
+                            isLoading = false,
+                            errorMessage = null
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = error.message
+                        )
+                    }
+                }
         }
     }
 
-    private fun loadUserNickname() {
+    private fun refreshNickname() {
         viewModelScope.launch {
-            _nickname.value = interactionRepository.getCurrentUserNickname()
+            getCurrentUserNicknameUseCase()
+                .onSuccess { nickname ->
+                    _uiState.update { it.copy(nickname = nickname) }
+                }
+                .onFailure { error ->
+                    _uiState.update { it.copy(errorMessage = error.message) }
+                }
         }
+    }
+
+    fun clearError() {
+        _uiState.update { it.copy(errorMessage = null) }
     }
 }

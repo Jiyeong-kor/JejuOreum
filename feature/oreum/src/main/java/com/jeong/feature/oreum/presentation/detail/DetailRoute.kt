@@ -25,12 +25,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +47,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.jeong.data.local.PermissionManager
 import com.jeong.domain.entity.ResultSummary
@@ -66,16 +67,16 @@ fun DetailRoute(
     onFavoriteToggled: (String) -> Unit,
     initialOreum: ResultSummary? = null
 ) {
-    val oreumDetail by viewModel.oreumDetail.collectAsState()
-    val isFavorite by viewModel.isFavorite.collectAsState()
-    val hasStamp by viewModel.hasStamp.collectAsState()
-    val reviewList by viewModel.reviewList.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val oreumDetail = uiState.oreumDetail
+    val isFavorite = uiState.isFavorite
+    val hasStamp = uiState.hasStamp
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var savedLocationGranted by remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(initialOreum) {
-        initialOreum?.let(viewModel::setOreumDetail)
+        initialOreum?.let(viewModel::initialize)
     }
 
     LaunchedEffect(Unit) {
@@ -100,29 +101,32 @@ fun DetailRoute(
             when (event) {
                 is DetailViewModel.DetailEvent.StampSuccess -> {
                     showToast(context.getString(R.string.oreum_stamp_success_message))
-                    onFavoriteToggled(viewModel.oreumDetail.value?.idx.toString())
+                    onFavoriteToggled(viewModel.uiState.value.oreumDetail?.idx.toString())
                 }
 
                 is DetailViewModel.DetailEvent.StampFailure -> {
                     val message = event.message
-                        ?: context.getString(R.string.oreum_unknown_error_message)
                     showToast(message)
                 }
             }
         }
     }
 
+    LaunchedEffect(uiState.errorMessage) {
+        uiState.errorMessage?.let { message ->
+            showToast(message)
+            viewModel.clearError()
+        }
+    }
     DetailScreen(
-        oreumDetail = oreumDetail,
-        isFavorite = isFavorite,
-        hasStamp = hasStamp,
-        reviewList = reviewList,
+        uiState = uiState,
         onFavoriteToggled = {
             val oreumIdx = oreumDetail?.idx?.toString() ?: return@DetailScreen
-            viewModel.toggleFavorite(oreumIdx)
+            val wasFavorite = isFavorite
+            viewModel.toggleFavorite()
             showToast(
                 context.getString(
-                    if (!isFavorite) R.string.oreum_favorite_added_message
+                    if (!wasFavorite) R.string.oreum_favorite_added_message
                     else R.string.oreum_favorite_removed_message
                 )
             )
@@ -165,19 +169,16 @@ fun DetailRoute(
 
 @Composable
 private fun DetailScreen(
-    oreumDetail: ResultSummary?,
-    isFavorite: Boolean,
-    hasStamp: Boolean,
-    reviewList: List<ReviewItem>,
+    uiState: DetailUiState,
     onFavoriteToggled: () -> Unit,
     onStampClick: () -> Unit,
-    onNavigateToWriteReview: (Int, String) -> Unit,
+    onNavigateToWriteReview: (Int, String) -> Unit
 ) {
     Scaffold(
         bottomBar = {
             BottomButtonSection(
-                isFavorite = isFavorite,
-                hasStamp = hasStamp,
+                isFavorite = uiState.isFavorite,
+                hasStamp = uiState.hasStamp,
                 onFavoriteClick = onFavoriteToggled,
                 onStampClick = onStampClick
             )
@@ -189,7 +190,15 @@ private fun DetailScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            oreumDetail?.let { oreum ->
+            if (uiState.isLoading) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            }
+
+            uiState.oreumDetail?.let { oreum ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -234,8 +243,8 @@ private fun DetailScreen(
             }
 
             ReviewSection(
-                reviews = reviewList,
-                oreumId = oreumDetail?.idx?.toString() ?: "",
+                reviews = uiState.reviewList,
+                oreumId = uiState.oreumDetail?.idx?.toString() ?: ""
             )
         }
     }
