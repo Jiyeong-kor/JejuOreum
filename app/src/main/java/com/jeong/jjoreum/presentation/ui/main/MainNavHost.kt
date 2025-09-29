@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +32,8 @@ import com.jeong.feature.oreum.presentation.profile.MyRoute
 import com.jeong.feature.oreum.presentation.review.WriteReviewRoute
 import com.jeong.feature.oreum.presentation.review.WriteReviewViewModel
 import com.jeong.jjoreum.R
-import com.jeong.jjoreum.presentation.ui.join.JoinRoute
+import com.jeong.feature.join.navigation.JoinNavigation
+import com.jeong.feature.join.navigation.joinScreen
 
 @Composable
 fun MainNavHost(startDestination: String) {
@@ -112,16 +113,14 @@ fun MainNavHost(startDestination: String) {
             startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("join") {
-                JoinRoute(
-                    onNavigateToMain = {
-                        navController.navigate(OreumNavigation.MAP) {
-                            popUpTo("join") { inclusive = true }
-                            launchSingleTop = true
-                        }
+            joinScreen(
+                onNavigateToMain = {
+                    navController.navigate(OreumNavigation.MAP) {
+                        popUpTo(JoinNavigation.ROUTE) { inclusive = true }
+                        launchSingleTop = true
                     }
-                )
-            }
+                })
+
             composable(OreumNavigation.MAP) {
                 MapRoute(
                     onNavigateToWriteReview = { idx, name ->

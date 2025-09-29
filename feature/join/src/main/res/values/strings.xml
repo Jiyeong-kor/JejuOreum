@@ -1,0 +1,16 @@
+<resources>
+    <string name="join_form_title">반가워요!\n닉네임을 정해볼까요?</string>
+    <string name="nickname_rule">3~15자의 한글, 영문, 숫자만 사용하여 만들어주세요</string>
+    <string name="nickname_available">사용 가능한 닉네임입니다.</string>
+    <string name="nickname_already_exists">이미 존재하는 닉네임입니다</string>
+    <string name="nickname_check_error">닉네임 확인 중 오류 발생</string>
+    <string name="term_title">약관 동의</string>
+    <string name="term_text">제주오름 개인정보 이용 동의(필수)</string>
+    <string name="term_arrow_desc">약관 자세히 알아보기</string>
+    <string name="join_term_content_title">제주오름 이용약관</string>
+    <string name="join_form_btn_next">다음</string>
+    <string name="back_button_desc">뒤로 가기</string>
+    <string name="auth_failed">사용자 인증에 실패했습니다. 앱을 다시 시작해주세요.</string>
+    <string name="signup_success">회원가입이 완료되었습니다!</string>
+    <string name="nickname_save_failed">회원가입에 실패하였습니다. 앱을 다시 시작해주세요.</string>
+</resources>

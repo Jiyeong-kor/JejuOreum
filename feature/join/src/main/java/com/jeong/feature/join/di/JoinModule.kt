@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.di
+package com.jeong.feature.join.di
 
 import com.jeong.domain.repository.UserAuthRepository
 import com.jeong.domain.repository.UserProfileRepository
@@ -21,7 +21,8 @@ object JoinModule {
     @Provides
     fun provideCheckNicknameAvailabilityUseCase(
         userProfileRepository: UserProfileRepository,
-    ): CheckNicknameAvailabilityUseCase = CheckNicknameAvailabilityUseCase(userProfileRepository)
+    ): CheckNicknameAvailabilityUseCase =
+        CheckNicknameAvailabilityUseCase(userProfileRepository)
 
     @Provides
     fun provideSaveNicknameUseCase(

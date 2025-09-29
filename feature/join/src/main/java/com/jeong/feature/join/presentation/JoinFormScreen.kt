@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.join
+package com.jeong.feature.join.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.jeong.domain.model.NicknameValidationResult
-import com.jeong.jjoreum.R
+import com.jeong.feature.join.R
 
 @Composable
 fun JoinFormScreen(

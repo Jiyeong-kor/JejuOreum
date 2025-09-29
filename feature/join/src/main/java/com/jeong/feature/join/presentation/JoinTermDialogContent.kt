@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.join
+package com.jeong.feature.join.presentation
 
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.jeong.jjoreum.R
+import com.jeong.feature.join.R
 
 @Composable
 fun JoinTermDialogContent(onClose: () -> Unit) {
@@ -32,7 +32,7 @@ fun JoinTermDialogContent(onClose: () -> Unit) {
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
-                    painter = painterResource(id = android.R.drawable.ic_menu_close_clear_cancel),
+                    painter = painterResource(id = R.drawable.ic_menu_close_clear_cancel),
                     contentDescription = stringResource(id = R.string.back_button_desc)
                 )
             }

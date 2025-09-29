@@ -18,6 +18,8 @@ import com.jeong.core.ui.theme.JJOreumTheme
 import com.jeong.feature.splash.presentation.SplashViewModel
 import com.jeong.jjoreum.util.NetworkManager
 import dagger.hilt.android.AndroidEntryPoint
+import com.jeong.feature.join.navigation.JoinNavigation
+import com.jeong.feature.oreum.navigation.OreumNavigation
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -43,8 +45,8 @@ class MainActivity : ComponentActivity() {
                 val uiState by viewModel.uiState.collectAsState()
                 uiState.destination?.let { destination ->
                     val startDestination = when (destination) {
-                        SplashDestination.Join -> "join"
-                        SplashDestination.Map -> "map"
+                        SplashDestination.Join -> JoinNavigation.ROUTE
+                        SplashDestination.Map -> OreumNavigation.MAP
                     }
                     MainNavHost(startDestination)
                 }

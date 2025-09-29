@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.join
+package com.jeong.feature.join.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,10 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.core.ui.extensions.toastMessage
-import com.jeong.jjoreum.R
+import com.jeong.feature.join.R
 
 @Composable
 fun JoinRoute(
