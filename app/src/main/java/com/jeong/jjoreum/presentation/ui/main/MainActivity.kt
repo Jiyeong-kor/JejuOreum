@@ -13,7 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jeong.core.ui.dialog.NetworkDialog
-import com.jeong.feature.splash.presentation.SplashUiState
+import com.jeong.feature.splash.domain.model.SplashDestination
 import com.jeong.core.ui.theme.JJOreumTheme
 import com.jeong.feature.splash.presentation.SplashViewModel
 import com.jeong.jjoreum.util.NetworkManager
@@ -28,34 +28,34 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { viewModel.isLoading.value }
+        splashScreen.setKeepOnScreenCondition { viewModel.uiState.value.isLoading }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         networkManager.registerNetworkCallback(
-            onAvailable = { showNetworkDialog = false }, onLost = { showNetworkDialog = true }
-        )
+            onAvailable = { showNetworkDialog = false },
+            onLost = { showNetworkDialog = true })
         if (!networkManager.checkNetworkState()) {
             showNetworkDialog = true
         }
-        viewModel.checkUserStatus()
+        viewModel.initialize()
         setContent {
             JJOreumTheme {
                 val uiState by viewModel.uiState.collectAsState()
-                uiState?.let { state ->
-                    val startDestination = when (state) {
-                        SplashUiState.GoToJoin -> "join"
-                        SplashUiState.GoToMap -> "map"
+                uiState.destination?.let { destination ->
+                    val startDestination = when (destination) {
+                        SplashDestination.Join -> "join"
+                        SplashDestination.Map -> "map"
                     }
                     MainNavHost(startDestination)
-                    if (showNetworkDialog) {
-                        NetworkDialog(
-                            onRetryClick = {
-                                if (networkManager.checkNetworkState()) {
-                                    showNetworkDialog = false
-                                }
+                }
+                if (showNetworkDialog) {
+                    NetworkDialog(
+                        onRetryClick = {
+                            if (networkManager.checkNetworkState()) {
+                                showNetworkDialog = false
+                                viewModel.initialize()
                             }
-                        )
-                    }
+                        })
                 }
             }
         }

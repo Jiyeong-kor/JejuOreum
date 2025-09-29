@@ -1,6 +1,9 @@
 package com.jeong.feature.splash.presentation
 
-sealed class SplashUiState {
-    data object GoToMap : SplashUiState()
-    data object GoToJoin : SplashUiState()
-}
+import com.jeong.feature.splash.domain.model.SplashDestination
+
+data class SplashUiState(
+    val isLoading: Boolean = true,
+    val destination: SplashDestination? = null,
+    val errorMessage: String? = null,
+)
