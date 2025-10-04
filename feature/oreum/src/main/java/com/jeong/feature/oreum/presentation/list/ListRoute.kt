@@ -48,25 +48,32 @@ fun ListRoute(
     showToast: (String) -> Unit,
     viewModel: ListViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.state.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.events.collectLatest { event ->
-            when (event) {
-                ListEvent.StampSuccess -> {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                ListUiEffect.StampSuccess -> {
                     showToast(context.getString(R.string.oreum_stamp_success_message))
                 }
 
-                is ListEvent.StampFailure -> {
+                is ListUiEffect.StampFailure -> {
                     val message =
-                        event.reason ?: context.getString(R.string.oreum_unknown_error_message)
+                        effect.reason ?: context.getString(R.string.oreum_unknown_error_message)
                     showToast(message)
                 }
 
-                is ListEvent.LoadFailed -> {
+                is ListUiEffect.LoadFailed -> {
                     val message =
-                        event.reason ?: context.getString(R.string.oreum_unknown_error_message)
+                        effect.reason ?: context.getString(R.string.oreum_unknown_error_message)
+                    showToast(message)
+                }
+
+                is ListUiEffect.FavoriteUpdateFailed -> {
+                    val message =
+                        effect.reason
+                            ?: context.getString(R.string.oreum_unknown_error_message)
                     showToast(message)
                 }
             }
@@ -76,8 +83,8 @@ fun ListRoute(
     ListScreen(
         state = uiState,
         onItemClick = onItemClick,
-        onFavoriteClick = viewModel::onFavoriteClick,
-        onStampClick = viewModel::onStampClick
+        onFavoriteClick = { viewModel.onEvent(ListUiEvent.FavoriteToggled(it)) },
+        onStampClick = { viewModel.onEvent(ListUiEvent.StampRequested(it)) }
     )
 }
 
@@ -89,7 +96,7 @@ private fun ListScreen(
     onStampClick: (OreumSummaryUiModel) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        if (state.oreums.isEmpty() && !state.isLoading) {
+        if (state.isEmpty) {
             EmptyState()
         } else {
             LazyColumn(
@@ -113,10 +120,10 @@ private fun ListScreen(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
-                if (state.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
             }
+        }
+        if (state.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

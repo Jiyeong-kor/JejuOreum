@@ -1,13 +1,17 @@
 package com.jeong.data.model
 
 data class OreumEntity(
-    val id: String,
-    val name: String,
-    val location: String,
-    val description: String,
-    val elevation: Double,
-    val difficulty: String,
-    val thumbnailUrl: String,
-    val imageUrls: List<String>,
-    val isFavorite: Boolean
+    val idx: Int,
+    val oreumEname: String,
+    val oreumKname: String,
+    val oreumAddr: String,
+    val oreumAltitu: Double,
+    val x: Double,
+    val y: Double,
+    val explain: String,
+    val imgPath: String,
+    val totalFavorites: Int,
+    val totalStamps: Int,
+    val userLiked: Boolean,
+    val userStamped: Boolean
 )

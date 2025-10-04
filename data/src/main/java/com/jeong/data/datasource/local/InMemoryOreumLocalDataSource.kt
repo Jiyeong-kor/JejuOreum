@@ -15,18 +15,18 @@ class InMemoryOreumLocalDataSource @Inject constructor() : OreumLocalDataSource 
     override fun observeOreums(): Flow<List<OreumEntity>> = cachedOreums.asStateFlow()
 
     override suspend fun upsertAll(entities: List<OreumEntity>) {
-        cachedOreums.value = entities.associateBy { it.id }
+        cachedOreums.value = entities.associateBy { it.idx }
             .let { current ->
-                val merged = cachedOreums.value.associateBy { it.id } + current
-                merged.values.sortedBy { it.name }
+                val merged = cachedOreums.value.associateBy { it.idx } + current
+                merged.values.sortedBy { it.oreumKname.ifBlank { it.oreumEname } }
             }
     }
 
     override suspend fun upsert(entity: OreumEntity) {
-        val current = cachedOreums.value.associateBy { it.id } + (entity.id to entity)
-        cachedOreums.value = current.values.sortedBy { it.name }
+        val current = cachedOreums.value.associateBy { it.idx } + (entity.idx to entity)
+        cachedOreums.value = current.values.sortedBy { it.oreumKname.ifBlank { it.oreumEname } }
     }
 
     override suspend fun findById(id: String): OreumEntity? =
-        cachedOreums.value.firstOrNull { it.id == id }
+        cachedOreums.value.firstOrNull { it.idx.toString() == id }
 }

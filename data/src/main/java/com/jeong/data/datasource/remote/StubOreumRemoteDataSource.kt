@@ -1,69 +1,73 @@
 package com.jeong.data.datasource.remote
 
-import com.jeong.data.model.OreumResponse
+import com.jeong.domain.entity.ResultSummary
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 @Singleton
 class StubOreumRemoteDataSource @Inject constructor() : OreumRemoteDataSource {
 
-    private val oreums = listOf(
-        OreumResponse(
-            id = "oreum-001",
-            name = "Seongsan Ilchulbong",
-            location = "Seogwipo-si",
-            description = "A UNESCO World Heritage site formed by hydrovolcanic eruptions.",
-            elevation = 182.0,
-            difficulty = "EASY",
-            thumbnailUrl = "https://example.com/images/oreum-001-thumb.jpg",
-            images = listOf(
-                "https://example.com/images/oreum-001-1.jpg",
-                "https://example.com/images/oreum-001-2.jpg",
-            ),
-            isFavorite = true
+    private val oreums: Map<String, ResultSummary> = listOf(
+        ResultSummary(
+            idx = 1,
+            oreumEname = "Seongsan Ilchulbong",
+            oreumKname = "성산일출봉",
+            oreumAddr = "제주특별자치도 서귀포시 성산읍",
+            oreumAltitu = 182.0,
+            x = 126.941906,
+            y = 33.459045,
+            explain = "A UNESCO World Heritage tuff cone famous for sunrise views.",
+            imgPath = "https://example.com/images/oreum-001-thumb.jpg",
+            totalFavorites = 1240,
+            totalStamps = 845,
+            userLiked = true,
+            userStamped = false,
         ),
-        OreumResponse(
-            id = "oreum-002",
-            name = "Darangshi Oreum",
-            location = "Jeju-si",
-            description = "A parasitic cone with a crater lake and panoramic island views.",
-            elevation = 382.0,
-            difficulty = "MODERATE",
-            thumbnailUrl = "https://example.com/images/oreum-002-thumb.jpg",
-            images = listOf(
-                "https://example.com/images/oreum-002-1.jpg",
-                "https://example.com/images/oreum-002-2.jpg",
-            ),
-            isFavorite = false
+        ResultSummary(
+            idx = 2,
+            oreumEname = "Darangshi Oreum",
+            oreumKname = "다랑쉬오름",
+            oreumAddr = "제주특별자치도 제주시 구좌읍",
+            oreumAltitu = 382.0,
+            x = 126.833648,
+            y = 33.478212,
+            explain = "Parasitic cone with crater lake and panoramic views of the island.",
+            imgPath = "https://example.com/images/oreum-002-thumb.jpg",
+            totalFavorites = 980,
+            totalStamps = 623,
+            userLiked = false,
+            userStamped = false
         ),
-        OreumResponse(
-            id = "oreum-003",
-            name = "Geomun Oreum",
-            location = "Jeju-si",
-            description = "A lava tube system surrounded by dense cedar forests.",
-            elevation = 456.0,
-            difficulty = "HARD",
-            thumbnailUrl = "https://example.com/images/oreum-003-thumb.jpg",
-            images = listOf(
-                "https://example.com/images/oreum-003-1.jpg",
-                "https://example.com/images/oreum-003-2.jpg",
-            ),
-            isFavorite = false
-        )
-    )
+        ResultSummary(
+            idx = 3,
+            oreumEname = "Geomun Oreum",
+            oreumKname = "거문오름",
+            oreumAddr = "제주특별자치도 제주시 조천읍",
+            oreumAltitu = 456.0,
+            x = 126.716263,
+            y = 33.524006,
+            explain = "Lava tube system surrounded by dense cedar forests and hiking trails.",
+            imgPath = "https://example.com/images/oreum-003-thumb.jpg",
+            totalFavorites = 1575,
+            totalStamps = 1011,
+            userLiked = false,
+            userStamped = false
+        ),
+    ).associateBy { it.idx.toString() }
 
-    override suspend fun fetchOreums(): List<OreumResponse> =
+
+    override suspend fun fetchOreums(): List<ResultSummary> =
         withContext(Dispatchers.Default) {
-            delay(250) // Simulate network latency
-            oreums
+            delay(250)
+            oreums.values.map { it.copy() }
         }
 
-    override suspend fun fetchOreum(id: String): OreumResponse? =
+    override suspend fun fetchOreum(id: String): ResultSummary? =
         withContext(Dispatchers.Default) {
             delay(150)
-            oreums.firstOrNull { it.id == id }
+            oreums[id]?.copy()
         }
 }

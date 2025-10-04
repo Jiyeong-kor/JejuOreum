@@ -3,18 +3,25 @@ package com.jeong.data.repository
 import com.jeong.core.utils.coroutines.CoroutineDispatcherProvider
 import com.jeong.data.datasource.local.OreumLocalDataSource
 import com.jeong.data.datasource.remote.OreumRemoteDataSource
-import com.jeong.data.mapper.toDomain
+import com.jeong.data.mapper.toDomainOreum
+import com.jeong.data.mapper.toDomainSummary
 import com.jeong.data.mapper.toEntity
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.error.DomainError
 import com.jeong.domain.model.Oreum
 import com.jeong.domain.repository.OreumRepository
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Singleton
@@ -24,33 +31,81 @@ class OreumRepositoryImpl @Inject constructor(
     private val dispatcherProvider: CoroutineDispatcherProvider,
 ) : OreumRepository {
 
-    override fun observeOreums(): Flow<Result<List<Oreum>>> =
+    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.io)
+
+    override val oreumListFlow: StateFlow<List<ResultSummary>> =
         localDataSource.observeOreums()
-            .map { oreums -> Result.success(oreums.map { it.toDomain() }) }
-            .onStart {
-                runCatching { refreshOreums() }
-                    .onFailure { emit(Result.failure(it)) }
-            }
-            .catch { emit(Result.failure(it)) }
+            .map { entities -> entities.map { it.toDomainSummary() } }
+            .stateIn(
+                scope = scope,
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList()
+            )
 
-    override suspend fun getOreumDetail(id: String): Result<Oreum> = runCatching {
-        withContext(dispatcherProvider.io) {
-            val cached = localDataSource.findById(id)
-            if (cached != null) {
-                return@withContext cached.toDomain()
-            }
-
-            val remote = remoteDataSource.fetchOreum(id)
-                ?: throw DomainError.NotFound(id)
-
-            val entity = remote.toEntity()
-            localDataSource.upsert(entity)
-            entity.toDomain()
-        }
+    init {
+        scope.launch { loadOreumListIfNeeded() }
     }
 
-    private suspend fun refreshOreums() = withContext(dispatcherProvider.io) {
-        val remoteOreums = remoteDataSource.fetchOreums()
-        localDataSource.upsertAll(remoteOreums.map { it.toEntity() })
+    override fun observeOreums(): Flow<Result<List<Oreum>>> = flow {
+        loadOreumListIfNeeded().onFailure { emit(Result.failure(it)) }
+        emitAll(
+            oreumListFlow.map { summaries ->
+                Result.success(summaries.map { it.toDomainOreum() })
+            }
+        )
+    }
+
+    override suspend fun getOreumDetail(id: String): Result<Oreum> =
+        runCatching { fetchSingleOreumById(id).toDomainOreum() }
+
+    override suspend fun loadOreumListIfNeeded(): Result<Unit> =
+        withContext(dispatcherProvider.io) {
+            runCatching {
+                if (oreumListFlow.value.isEmpty()) {
+                    refreshFromRemote()
+                }
+            }
+        }
+
+    override suspend fun refreshAllOreumsWithNewUserData() {
+        withContext(dispatcherProvider.io) { refreshFromRemote() }
+    }
+
+    override fun getCachedOreumList(): List<ResultSummary> = oreumListFlow.value
+
+    override suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary =
+        withContext(dispatcherProvider.io) {
+            oreumListFlow.value.firstOrNull { it.idx.toString() == oreumIdx }
+                ?: remoteDataSource.fetchOreum(oreumIdx)?.also { summary ->
+                    localDataSource.upsert(summary.toEntity())
+                }
+                ?: throw DomainError.NotFound(oreumIdx)
+        }
+
+    private suspend fun refreshFromRemote() {
+        val remote = remoteDataSource.fetchOreums()
+        val merged = mergeUserState(remote, oreumListFlow.value)
+        localDataSource.upsertAll(merged.map { it.toEntity() })
+    }
+
+    private fun mergeUserState(
+        remote: List<ResultSummary>,
+        local: List<ResultSummary>
+    ): List<ResultSummary> {
+        if (local.isEmpty()) return remote
+        val localByIdx = local.associateBy { it.idx }
+        return remote.map { summary ->
+            val cached = localByIdx[summary.idx]
+            if (cached != null) {
+                summary.copy(
+                    userLiked = cached.userLiked,
+                    userStamped = cached.userStamped,
+                    totalFavorites = if (summary.totalFavorites == 0) cached.totalFavorites else summary.totalFavorites,
+                    totalStamps = if (summary.totalStamps == 0) cached.totalStamps else summary.totalStamps,
+                )
+            } else {
+                summary
+            }
+        }
     }
 }

@@ -1,7 +1,8 @@
 package com.jeong.feature.oreum.presentation.list
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jeong.core.ui.viewmodel.BaseViewModel
+import com.jeong.core.utils.coroutines.CoroutineDispatcherProvider
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.usecase.ToggleFavoriteUseCase
 import com.jeong.domain.usecase.oreum.GetUserStampStatusesUseCase
@@ -11,16 +12,12 @@ import com.jeong.domain.usecase.oreum.TryStampUseCase
 import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
@@ -28,44 +25,96 @@ class ListViewModel @Inject constructor(
     observeOreumSummariesUseCase: ObserveOreumSummariesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val tryStampUseCase: TryStampUseCase,
-    private val getUserStampStatusesUseCase: GetUserStampStatusesUseCase
-) : ViewModel() {
+    private val getUserStampStatusesUseCase: GetUserStampStatusesUseCase,
+    private val dispatcherProvider: CoroutineDispatcherProvider,
+) : BaseViewModel<ListUiEvent, ListUiEffect, ListUiState>(ListUiState(isLoading = true)) {
+
     private val oreumListFlow: StateFlow<List<ResultSummary>> = observeOreumSummariesUseCase()
-
-    private val _uiState = MutableStateFlow(ListUiState())
-    val uiState: StateFlow<ListUiState> = _uiState.asStateFlow()
-
-    private val _events = MutableSharedFlow<ListEvent>()
-    val events: SharedFlow<ListEvent> = _events.asSharedFlow()
+    private var observeJob: Job? = null
+    private var cachedStampStatuses: Map<String, Boolean> = emptyMap()
 
     init {
-        observeOreums()
-        refreshOreumsIfNeeded()
+        onEvent(ListUiEvent.ScreenInitialized)
     }
 
-    fun onFavoriteClick(summary: OreumSummaryUiModel) {
-        viewModelScope.launch {
-            val newTotal = toggleFavoriteUseCase(
-                oreumIdx = summary.idx.toString(),
-                newIsFavorite = !summary.userLiked,
-            )
-            _uiState.update { state ->
-                state.copy(
-                    oreums = state.oreums.map { item ->
-                        if (item.idx == summary.idx) {
-                            item.copy(
-                                userLiked = !summary.userLiked,
-                                totalFavorites = newTotal,
-                            )
-                        } else item
-                    },
-                )
+    override fun onCleared() {
+        observeJob?.cancel()
+        observeJob = null
+        super.onCleared()
+    }
+
+    override fun handleEvent(event: ListUiEvent) {
+        when (event) {
+            ListUiEvent.ScreenInitialized -> initialize()
+            is ListUiEvent.FavoriteToggled -> handleFavoriteToggle(event.summary)
+            is ListUiEvent.StampRequested -> handleStampRequest(event.summary)
+            ListUiEvent.RefreshRequested -> refreshOreums(force = true)
+        }
+    }
+
+    private fun initialize() {
+        startObservation()
+        refreshOreums(force = false)
+    }
+
+    private fun startObservation() {
+        if (observeJob != null) return
+        observeJob = viewModelScope.launch(dispatcherProvider.io) {
+            oreumListFlow.collectLatest { summaries ->
+                val statuses = refreshStampStatuses()
+                val uiModels = summaries.mapToUi(statuses)
+                withContext(dispatcherProvider.main) {
+                    setState { copy(oreums = uiModels, isLoading = false) }
+                }
             }
         }
     }
 
-    fun onStampClick(summary: OreumSummaryUiModel) {
-        viewModelScope.launch {
+    private fun refreshOreums(force: Boolean) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            if (force) {
+                withContext(dispatcherProvider.main) { setState { copy(isLoading = true) } }
+            }
+            val result = loadOreumSummariesUseCase()
+            if (result.isFailure) {
+                sendEffect { ListUiEffect.LoadFailed(result.exceptionOrNull()?.message) }
+                withContext(dispatcherProvider.main) { setState { copy(isLoading = false) } }
+            }
+        }
+    }
+
+    private fun handleFavoriteToggle(summary: OreumSummaryUiModel) {
+        viewModelScope.launch(dispatcherProvider.io) {
+            runCatching {
+                toggleFavoriteUseCase(
+                    oreumIdx = summary.idx.toString(),
+                    newIsFavorite = !summary.userLiked,
+                )
+            }.onSuccess { newTotal ->
+                withContext(dispatcherProvider.main) {
+                    setState {
+                        copy(
+                            oreums = oreums.map { item ->
+                                if (item.idx == summary.idx) {
+                                    item.copy(
+                                        userLiked = !summary.userLiked,
+                                        totalFavorites = newTotal,
+                                    )
+                                } else {
+                                    item
+                                }
+                            }
+                        )
+                    }
+                }
+            }.onFailure { throwable ->
+                sendEffect { ListUiEffect.FavoriteUpdateFailed(throwable.message) }
+            }
+        }
+    }
+
+    private fun handleStampRequest(summary: OreumSummaryUiModel) {
+        viewModelScope.launch(dispatcherProvider.io) {
             val result = tryStampUseCase(
                 oreumIdx = summary.idx.toString(),
                 oreumName = summary.oreumKname,
@@ -73,67 +122,42 @@ class ListViewModel @Inject constructor(
                 oreumLng = summary.x,
             )
             if (result.isSuccess) {
-                updateStampStatuses()
-                _events.emit(ListEvent.StampSuccess)
+                refreshStampStatuses(force = true)
+                withContext(dispatcherProvider.main) {
+                    setState {
+                        copy(
+                            oreums = oreums.map { item ->
+                                if (item.idx == summary.idx) {
+                                    item.copy(userStamped = true)
+                                } else {
+                                    item
+                                }
+                            }
+                        )
+                    }
+                }
+                sendEffect { ListUiEffect.StampSuccess }
             } else {
-                _events.emit(
-                    ListEvent.StampFailure(
-                        result.exceptionOrNull()?.message,
-                    ),
-                )
+                sendEffect { ListUiEffect.StampFailure(result.exceptionOrNull()?.message) }
             }
         }
     }
 
-    private fun observeOreums() {
-        viewModelScope.launch {
-            oreumListFlow.collectLatest { summaries ->
-                val enriched = applyStampStatuses(summaries)
-                _uiState.update { state ->
-                    state.copy(
-                        oreums = enriched,
-                        isLoading = false,
-                    )
-                }
-            }
+    private suspend fun refreshStampStatuses(force: Boolean = false): Map<String, Boolean> {
+        if (!force && cachedStampStatuses.isNotEmpty()) {
+            return cachedStampStatuses
         }
+        cachedStampStatuses = runCatching {
+            withContext(dispatcherProvider.io) { getUserStampStatusesUseCase() }
+        }.getOrDefault(emptyMap())
+        return cachedStampStatuses
     }
 
-    private fun refreshOreumsIfNeeded() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            val result = loadOreumSummariesUseCase()
-            if (result.isFailure) {
-                _uiState.update { state ->
-                    state.copy(isLoading = false)
-                }
-                _events.emit(
-                    ListEvent.LoadFailed(result.exceptionOrNull()?.message),
-                )
-            }
-        }
-    }
-
-    private suspend fun applyStampStatuses(oreums: List<ResultSummary>): List<OreumSummaryUiModel> {
-        val statuses = fetchStampStatuses()
-        return oreums.map { summary ->
+    private fun List<ResultSummary>.mapToUi(statuses: Map<String, Boolean>):
+            List<OreumSummaryUiModel> =
+        map { summary ->
             val key = summary.idx.toString()
-            summary.copy(userStamped = statuses[key] ?: summary.userStamped).toUiModel()
+            val stamped = statuses[key] ?: summary.userStamped
+            summary.copy(userStamped = stamped).toUiModel()
         }
-    }
-
-    private suspend fun updateStampStatuses() {
-        val statuses = fetchStampStatuses()
-        _uiState.update { state ->
-            state.copy(
-                oreums = state.oreums.map { summary ->
-                    val key = summary.idx.toString()
-                    summary.copy(userStamped = statuses[key] ?: summary.userStamped)
-                },
-            )
-        }
-    }
-
-    private suspend fun fetchStampStatuses(): Map<String, Boolean> =
-        runCatching { getUserStampStatusesUseCase() }.getOrDefault(emptyMap())
 }
