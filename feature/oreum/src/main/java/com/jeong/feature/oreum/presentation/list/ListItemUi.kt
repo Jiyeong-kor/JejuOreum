@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,16 +24,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.R
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 
 @Composable
 internal fun OreumListItem(
-    oreum: ResultSummary,
+    oreum: OreumSummaryUiModel,
     modifier: Modifier = Modifier,
-    onItemClick: (ResultSummary) -> Unit,
-    onFavoriteClick: (ResultSummary) -> Unit,
-    onStampClick: (ResultSummary) -> Unit,
+    onItemClick: (OreumSummaryUiModel) -> Unit,
+    onFavoriteClick: (OreumSummaryUiModel) -> Unit,
+    onStampClick: (OreumSummaryUiModel) -> Unit
 ) {
     Box(
         modifier = modifier

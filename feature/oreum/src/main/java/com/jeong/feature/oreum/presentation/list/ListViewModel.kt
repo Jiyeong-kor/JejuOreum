@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.usecase.ToggleFavoriteUseCase
-import com.jeong.feature.oreum.domain.usecase.GetUserStampStatusesUseCase
-import com.jeong.feature.oreum.domain.usecase.LoadOreumSummariesUseCase
-import com.jeong.feature.oreum.domain.usecase.ObserveOreumSummariesUseCase
-import com.jeong.feature.oreum.domain.usecase.TryStampUseCase
+import com.jeong.domain.usecase.oreum.GetUserStampStatusesUseCase
+import com.jeong.domain.usecase.oreum.LoadOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.ObserveOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.TryStampUseCase
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +43,7 @@ class ListViewModel @Inject constructor(
         refreshOreumsIfNeeded()
     }
 
-    fun onFavoriteClick(summary: ResultSummary) {
+    fun onFavoriteClick(summary: OreumSummaryUiModel) {
         viewModelScope.launch {
             val newTotal = toggleFavoriteUseCase(
                 oreumIdx = summary.idx.toString(),
@@ -62,7 +64,7 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    fun onStampClick(summary: ResultSummary) {
+    fun onStampClick(summary: OreumSummaryUiModel) {
         viewModelScope.launch {
             val result = tryStampUseCase(
                 oreumIdx = summary.idx.toString(),
@@ -112,11 +114,11 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun applyStampStatuses(oreums: List<ResultSummary>): List<ResultSummary> {
+    private suspend fun applyStampStatuses(oreums: List<ResultSummary>): List<OreumSummaryUiModel> {
         val statuses = fetchStampStatuses()
         return oreums.map { summary ->
             val key = summary.idx.toString()
-            summary.copy(userStamped = statuses[key] ?: summary.userStamped)
+            summary.copy(userStamped = statuses[key] ?: summary.userStamped).toUiModel()
         }
     }
 

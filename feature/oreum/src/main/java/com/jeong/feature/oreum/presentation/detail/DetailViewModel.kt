@@ -2,15 +2,16 @@ package com.jeong.feature.oreum.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.usecase.IsLocationPermissionGrantedUseCase
-import com.jeong.domain.usecase.ToggleFavoriteUseCase
 import com.jeong.domain.usecase.UpdateLocationPermissionUseCase
-import com.jeong.feature.oreum.domain.usecase.FetchOreumDetailUseCase
-import com.jeong.feature.oreum.domain.usecase.GetOreumFavoriteStatusUseCase
-import com.jeong.feature.oreum.domain.usecase.GetOreumReviewsUseCase
-import com.jeong.feature.oreum.domain.usecase.GetOreumStampStatusUseCase
-import com.jeong.feature.oreum.domain.usecase.TryStampUseCase
+import com.jeong.domain.usecase.oreum.FetchOreumDetailUseCase
+import com.jeong.domain.usecase.oreum.GetOreumFavoriteStatusUseCase
+import com.jeong.domain.usecase.oreum.GetOreumReviewsUseCase
+import com.jeong.domain.usecase.oreum.GetOreumStampStatusUseCase
+import com.jeong.domain.usecase.oreum.ToggleFavoriteUseCase
+import com.jeong.domain.usecase.oreum.TryStampUseCase
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +50,7 @@ class DetailViewModel @Inject constructor(
         loadLocationPermissionState()
     }
 
-    fun initialize(oreum: ResultSummary) {
+    fun initialize(oreum: OreumSummaryUiModel) {
         viewModelScope.launch {
             val oreumIdx = oreum.idx.toString()
             _uiState.update {
@@ -71,11 +72,12 @@ class DetailViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
         fetchOreumDetailUseCase(oreumIdx)
             .onSuccess { detail ->
+                val uiDetail = detail.toUiModel()
                 _uiState.update {
                     it.copy(
-                        oreumDetail = detail,
-                        isFavorite = detail.userLiked,
-                        hasStamp = detail.userStamped,
+                        oreumDetail = uiDetail,
+                        isFavorite = uiDetail.userLiked,
+                        hasStamp = uiDetail.userStamped,
                         isLoading = false
                     )
                 }

@@ -1,4 +1,4 @@
-package com.jeong.feature.oreum.domain.usecase
+package com.jeong.domain.usecase.oreum
 
 import com.jeong.domain.repository.StampRepository
 import javax.inject.Inject

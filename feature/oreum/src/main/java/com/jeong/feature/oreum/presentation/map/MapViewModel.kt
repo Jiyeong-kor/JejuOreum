@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.domain.entity.GeoBounds
 import com.jeong.domain.entity.GeoPoint
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.entity.quantized
-import com.jeong.feature.oreum.domain.usecase.FilterOreumsWithinBoundsUseCase
-import com.jeong.feature.oreum.domain.usecase.FindOreumByLocationUseCase
-import com.jeong.feature.oreum.domain.usecase.ObserveOreumSummariesUseCase
-import com.jeong.feature.oreum.domain.usecase.SearchOreumsUseCase
+import com.jeong.domain.usecase.oreum.FilterOreumsWithinBoundsUseCase
+import com.jeong.domain.usecase.oreum.FindOreumByLocationUseCase
+import com.jeong.domain.usecase.oreum.ObserveOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.SearchOreumsUseCase
+import com.jeong.domain.entity.ResultSummary
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,8 +45,8 @@ class MapViewModel @Inject constructor(
     private val _visiblePins = MutableStateFlow<List<MapPinUi>>(emptyList())
     val visiblePins: StateFlow<List<MapPinUi>> = _visiblePins.asStateFlow()
 
-    private val _selectedOreum = MutableStateFlow<ResultSummary?>(null)
-    val selectedOreum: StateFlow<ResultSummary?> = _selectedOreum.asStateFlow()
+    private val _selectedOreum = MutableStateFlow<OreumSummaryUiModel?>(null)
+    val selectedOreum: StateFlow<OreumSummaryUiModel?> = _selectedOreum.asStateFlow()
 
     private val _cameraState = MutableStateFlow(restoreCameraFromSavedState())
     val cameraState: StateFlow<CameraSnapshot?> = _cameraState.asStateFlow()
@@ -63,7 +65,7 @@ class MapViewModel @Inject constructor(
                 _uiState.value = when {
                     query.isBlank() -> MapUiState.Hidden
                     results.isEmpty() -> MapUiState.NoResults
-                    else -> MapUiState.SearchResults(results)
+                    else -> MapUiState.SearchResults(results.map { it.toUiModel() })
                 }
             }
         }
@@ -86,10 +88,11 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun selectOreumAt(point: GeoPoint): ResultSummary? {
+    fun selectOreumAt(point: GeoPoint): OreumSummaryUiModel? {
         val oreum = findOreumByLocationUseCase(oreumList.value, point)
-        _selectedOreum.value = oreum
-        return oreum
+        val uiModel = oreum?.toUiModel()
+        _selectedOreum.value = uiModel
+        return uiModel
     }
 
     fun clearSelection() {

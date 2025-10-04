@@ -4,14 +4,14 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.R
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import com.jeong.feature.oreum.presentation.profile.favorite.MyFavoriteScreen
 import com.jeong.feature.oreum.presentation.profile.stamp.MyStampScreen
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MyRoute(
-    onFavoriteItemClick: (ResultSummary) -> Unit,
+    onFavoriteItemClick: (OreumSummaryUiModel) -> Unit,
     onNavigateToWriteReview: (Int, String) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
@@ -30,7 +30,7 @@ fun MyRoute(
     )
 
     Column {
-        TabRow(selectedTabIndex = pagerState.currentPage) {
+        PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
             titles.forEachIndexed { index, title ->
                 Tab(
                     selected = pagerState.currentPage == index,

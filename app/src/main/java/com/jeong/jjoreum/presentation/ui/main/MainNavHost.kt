@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +23,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.navigation.OreumNavigation
 import com.jeong.feature.oreum.presentation.detail.DetailRoute
 import com.jeong.feature.oreum.presentation.list.ListRoute
@@ -34,6 +33,7 @@ import com.jeong.feature.oreum.presentation.review.WriteReviewViewModel
 import com.jeong.jjoreum.R
 import com.jeong.feature.join.navigation.JoinNavigation
 import com.jeong.feature.join.navigation.joinScreen
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 
 @Composable
 fun MainNavHost(startDestination: String) {
@@ -162,7 +162,7 @@ fun MainNavHost(startDestination: String) {
             ) { backStackEntry ->
                 val json = backStackEntry.arguments?.getString(OreumNavigation.DETAIL_ARG)
                     ?: return@composable
-                val oreum = Gson().fromJson(json, ResultSummary::class.java)
+                val oreum = Gson().fromJson(json, OreumSummaryUiModel::class.java)
                 val context = LocalContext.current
                 DetailRoute(
                     initialOreum = oreum,

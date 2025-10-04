@@ -14,14 +14,14 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.presentation.detail.DetailRoute
 import com.jeong.feature.oreum.presentation.detail.DetailViewModel
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailSheet(
-    overlay: ResultSummary?,
+    overlay: OreumSummaryUiModel?,
     detailVm: DetailViewModel,
     controller: MapController?,
     onDismiss: () -> Unit,

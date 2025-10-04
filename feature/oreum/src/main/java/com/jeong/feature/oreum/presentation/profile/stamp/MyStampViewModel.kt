@@ -2,15 +2,15 @@ package com.jeong.feature.oreum.presentation.profile.stamp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.feature.oreum.domain.usecase.GetCurrentUserNicknameUseCase
-import com.jeong.feature.oreum.domain.usecase.LoadStampedOreumsUseCase
+import com.jeong.domain.usecase.oreum.GetCurrentUserNicknameUseCase
+import com.jeong.domain.usecase.oreum.LoadStampedOreumsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class MyStampViewModel @Inject constructor(

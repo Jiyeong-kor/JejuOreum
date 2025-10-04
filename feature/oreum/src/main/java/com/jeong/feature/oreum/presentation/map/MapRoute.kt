@@ -19,10 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.presentation.detail.DetailViewModel
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 
 private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
@@ -49,7 +49,7 @@ fun MapRoute(
 
     val focus = LocalFocusManager.current
 
-    var detailOverlay by remember { mutableStateOf<ResultSummary?>(null) }
+    var detailOverlay by remember { mutableStateOf<OreumSummaryUiModel?>(null) }
     var controller by remember { mutableStateOf<MapController?>(null) }
 
     BackHandler(enabled = uiState is MapUiState.SearchResults || uiState is MapUiState.NoResults) {
@@ -104,5 +104,5 @@ fun MapRoute(
     }
 }
 
-private fun ResultSummary.asLatLng(): com.kakao.vectormap.LatLng =
+private fun OreumSummaryUiModel.asLatLng(): com.kakao.vectormap.LatLng =
     com.kakao.vectormap.LatLng.from(y, x)

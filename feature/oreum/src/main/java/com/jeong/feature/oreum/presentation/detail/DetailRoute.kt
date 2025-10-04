@@ -46,9 +46,9 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.entity.ReviewItem
 import com.jeong.feature.oreum.R
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,7 +59,7 @@ fun DetailRoute(
     onNavigateToWriteReview: (Int, String) -> Unit,
     showToast: (String) -> Unit,
     onFavoriteToggled: (String) -> Unit,
-    initialOreum: ResultSummary? = null
+    initialOreum: OreumSummaryUiModel? = null
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val oreumDetail = uiState.oreumDetail

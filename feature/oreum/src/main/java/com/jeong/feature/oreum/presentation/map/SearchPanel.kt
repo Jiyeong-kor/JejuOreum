@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.jeong.domain.entity.ResultSummary
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import com.jeong.feature.oreum.R
 
 @Composable
@@ -36,7 +36,7 @@ fun SearchPanel(
     query: String,
     uiState: MapUiState,
     onQueryChange: (String) -> Unit,
-    onResultClick: (ResultSummary) -> Unit,
+    onResultClick: (OreumSummaryUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val focus = LocalFocusManager.current

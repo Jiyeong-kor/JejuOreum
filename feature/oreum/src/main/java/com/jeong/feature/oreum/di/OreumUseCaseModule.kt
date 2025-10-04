@@ -1,32 +1,32 @@
 package com.jeong.feature.oreum.di
 
 import com.jeong.domain.repository.OreumRepository
+import com.jeong.domain.repository.PermissionRepository
 import com.jeong.domain.repository.ReviewRepository
 import com.jeong.domain.repository.StampRepository
 import com.jeong.domain.repository.UserInteractionRepository
-import com.jeong.domain.usecase.ToggleFavoriteUseCase
-import com.jeong.feature.oreum.domain.usecase.FetchOreumDetailUseCase
-import com.jeong.feature.oreum.domain.usecase.FilterOreumsWithinBoundsUseCase
-import com.jeong.feature.oreum.domain.usecase.FindOreumByLocationUseCase
-import com.jeong.feature.oreum.domain.usecase.GetCurrentUserNicknameUseCase
-import com.jeong.feature.oreum.domain.usecase.GetOreumFavoriteStatusUseCase
-import com.jeong.feature.oreum.domain.usecase.GetOreumReviewsUseCase
-import com.jeong.feature.oreum.domain.usecase.GetOreumStampStatusUseCase
-import com.jeong.feature.oreum.domain.usecase.GetUserStampStatusesUseCase
-import com.jeong.feature.oreum.domain.usecase.LoadOreumSummariesUseCase
-import com.jeong.feature.oreum.domain.usecase.LoadStampedOreumsUseCase
-import com.jeong.feature.oreum.domain.usecase.ObserveFavoriteOreumsUseCase
-import com.jeong.feature.oreum.domain.usecase.ObserveOreumSummariesUseCase
-import com.jeong.feature.oreum.domain.usecase.RefreshOreumSummariesUseCase
-import com.jeong.feature.oreum.domain.usecase.SearchOreumsUseCase
-import com.jeong.feature.oreum.domain.usecase.TryStampUseCase
+import com.jeong.domain.usecase.IsLocationPermissionGrantedUseCase
+import com.jeong.domain.usecase.UpdateLocationPermissionUseCase
+import com.jeong.domain.usecase.oreum.FetchOreumDetailUseCase
+import com.jeong.domain.usecase.oreum.FilterOreumsWithinBoundsUseCase
+import com.jeong.domain.usecase.oreum.FindOreumByLocationUseCase
+import com.jeong.domain.usecase.oreum.GetCurrentUserNicknameUseCase
+import com.jeong.domain.usecase.oreum.GetOreumFavoriteStatusUseCase
+import com.jeong.domain.usecase.oreum.GetOreumReviewsUseCase
+import com.jeong.domain.usecase.oreum.GetOreumStampStatusUseCase
+import com.jeong.domain.usecase.oreum.GetUserStampStatusesUseCase
+import com.jeong.domain.usecase.oreum.LoadOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.LoadStampedOreumsUseCase
+import com.jeong.domain.usecase.oreum.ObserveFavoriteOreumsUseCase
+import com.jeong.domain.usecase.oreum.ObserveOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.RefreshOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.SearchOreumsUseCase
+import com.jeong.domain.usecase.oreum.ToggleFavoriteUseCase
+import com.jeong.domain.usecase.oreum.TryStampUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import com.jeong.domain.repository.PermissionRepository
-import com.jeong.domain.usecase.IsLocationPermissionGrantedUseCase
-import com.jeong.domain.usecase.UpdateLocationPermissionUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)

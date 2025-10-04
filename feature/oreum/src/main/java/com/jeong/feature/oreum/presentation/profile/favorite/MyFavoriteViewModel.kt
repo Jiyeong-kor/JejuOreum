@@ -2,17 +2,18 @@ package com.jeong.feature.oreum.presentation.profile.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.domain.usecase.ToggleFavoriteUseCase
-import com.jeong.feature.oreum.domain.usecase.LoadOreumSummariesUseCase
-import com.jeong.feature.oreum.domain.usecase.ObserveFavoriteOreumsUseCase
-import com.jeong.feature.oreum.domain.usecase.RefreshOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.LoadOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.ObserveFavoriteOreumsUseCase
+import com.jeong.domain.usecase.oreum.RefreshOreumSummariesUseCase
+import com.jeong.domain.usecase.oreum.ToggleFavoriteUseCase
+import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class MyFavoriteViewModel @Inject constructor(
@@ -47,7 +48,7 @@ class MyFavoriteViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        favorites = favorites,
+                        favorites = favorites.map { oreum -> oreum.toUiModel() },
                         errorMessage = null
                     )
                 }

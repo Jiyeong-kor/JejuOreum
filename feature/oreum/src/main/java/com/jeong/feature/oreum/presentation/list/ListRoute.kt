@@ -36,15 +36,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.jeong.domain.entity.ResultSummary
 import com.jeong.feature.oreum.R
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ListRoute(
-    onItemClick: (ResultSummary) -> Unit,
+    onItemClick: (OreumSummaryUiModel) -> Unit,
     showToast: (String) -> Unit,
     viewModel: ListViewModel = hiltViewModel()
 ) {
@@ -84,9 +84,9 @@ fun ListRoute(
 @Composable
 private fun ListScreen(
     state: ListUiState,
-    onItemClick: (ResultSummary) -> Unit,
-    onFavoriteClick: (ResultSummary) -> Unit,
-    onStampClick: (ResultSummary) -> Unit
+    onItemClick: (OreumSummaryUiModel) -> Unit,
+    onFavoriteClick: (OreumSummaryUiModel) -> Unit,
+    onStampClick: (OreumSummaryUiModel) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.oreums.isEmpty() && !state.isLoading) {
@@ -140,10 +140,10 @@ private fun EmptyState() {
 
 @Composable
 private fun OreumListItem(
-    oreum: ResultSummary,
-    onItemClick: (ResultSummary) -> Unit,
-    onFavoriteClick: (ResultSummary) -> Unit,
-    onStampClick: (ResultSummary) -> Unit,
+    oreum: OreumSummaryUiModel,
+    onItemClick: (OreumSummaryUiModel) -> Unit,
+    onFavoriteClick: (OreumSummaryUiModel) -> Unit,
+    onStampClick: (OreumSummaryUiModel) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -196,7 +196,7 @@ private fun OreumListItem(
 }
 
 @Composable
-private fun ColumnWithDescription(oreum: ResultSummary) {
+private fun ColumnWithDescription(oreum: OreumSummaryUiModel) {
     Column {
         Text(
             text = oreum.oreumKname,
