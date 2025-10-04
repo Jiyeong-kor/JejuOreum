@@ -1,12 +1,14 @@
 package com.jeong.domain.repository
 
-import com.jeong.domain.entity.ResultSummary
-import kotlinx.coroutines.flow.StateFlow
+import com.jeong.domain.error.DomainError
+import com.jeong.domain.model.Oreum
+import kotlinx.coroutines.flow.Flow
 
 interface OreumRepository {
-    val oreumListFlow: StateFlow<List<ResultSummary>>
-    suspend fun loadOreumListIfNeeded(): Result<Unit>
-    fun getCachedOreumList(): List<ResultSummary>
-    suspend fun fetchSingleOreumById(oreumIdx: String): ResultSummary
-    suspend fun refreshAllOreumsWithNewUserData()
+    fun observeOreums(): Flow<Result<List<Oreum>>>
+    suspend fun getOreumDetail(id: String): Result<Oreum>
+
+    companion object {
+        fun notFound(id: String): Result<Nothing> = Result.failure(DomainError.NotFound(id))
+    }
 }

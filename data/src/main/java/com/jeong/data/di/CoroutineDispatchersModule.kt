@@ -1,0 +1,19 @@
+package com.jeong.data.di
+
+import com.jeong.core.utils.coroutines.CoroutineDispatcherProvider
+import com.jeong.core.utils.coroutines.DefaultCoroutineDispatcherProvider
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object CoroutineDispatchersModule {
+
+    @Provides
+    @Singleton
+    fun providesCoroutineDispatcherProvider(): CoroutineDispatcherProvider =
+        DefaultCoroutineDispatcherProvider()
+}

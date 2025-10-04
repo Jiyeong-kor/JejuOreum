@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -45,6 +47,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)
+    implementation(libs.hilt.android)
     implementation(libs.javax.inject)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.play.services)
@@ -53,5 +56,6 @@ dependencies {
     implementation(libs.timber)
     implementation(project(":core:utils"))
     implementation(project(":domain"))
+    ksp(libs.hilt.android.compiler)
     testImplementation(libs.junit)
 }

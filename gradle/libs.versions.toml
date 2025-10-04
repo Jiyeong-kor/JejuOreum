@@ -28,14 +28,15 @@ kotlin-ksp = "2.2.20-2.0.3"
 kotlinxCoroutinesCore = "1.10.2"
 kotlinxCoroutinesPlayServices = "1.10.2"
 kotlinxCoroutinesTest = "1.10.2"
+kotlinxCoroutinesAndroid = "1.10.2"
 lifecycleLivedataKtx = "2.9.4"
 lifecycleRuntimeCompose = "2.9.4"
 lifecycleViewmodelKtx = "2.9.4"
 loggingInterceptor = "5.1.0"
-lottie = "6.6.9"
-lottieCompose = "6.6.9"
+lottie = "6.6.10"
+lottieCompose = "6.6.10"
 material = "1.13.0"
-mockk = "1.14.5"
+mockk = "1.14.6"
 navigationCompose = "2.9.5"
 okhttp = "5.1.0"
 playServicesBasement = "18.9.0"
@@ -83,6 +84,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 kakao-v2-all = { module = "com.kakao.sdk:v2-all", version.ref = "kakaoV2All" }
 kakao-vectormap = { module = "com.kakao.maps.open:android", version.ref = "kakaoVectormap" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
