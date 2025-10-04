@@ -2,10 +2,10 @@ package com.jeong.feature.oreum.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jeong.core.ui.viewmodel.BaseViewModel
-import com.jeong.domain.usecase.GetOreumDetailUseCase
-import com.jeong.domain.usecase.ObserveOreumsUseCase
+import com.jeong.feature.oreum.domain.OreumOverviewInteractor
+import com.jeong.feature.oreum.domain.model.OreumOverview
+import com.jeong.feature.oreum.presentation.mapper.OreumUiMapper
 import com.jeong.feature.oreum.presentation.model.OreumUiModel
-import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class OreumViewModel @Inject constructor(
-    private val observeOreumsUseCase: ObserveOreumsUseCase,
-    private val getOreumDetailUseCase: GetOreumDetailUseCase
+    private val interactor: OreumOverviewInteractor,
+    private val uiMapper: OreumUiMapper
 ) : BaseViewModel<OreumEvent, OreumEffect, OreumUiState>(OreumUiState()) {
 
     private var observeJob: Job? = null
@@ -39,15 +39,16 @@ class OreumViewModel @Inject constructor(
         observeJob = viewModelScope.launch {
             setState { copy(isLoading = true, errorMessage = null) }
 
-            observeOreumsUseCase(Unit)
+            interactor.observeOreumOverviews()
                 .collectLatest { result ->
                     result
-                        .onSuccess { oreums ->
+                        .onSuccess { overviews ->
+                            val uiModels = overviews.toUiModels()
                             setState {
                                 copy(
                                     isLoading = false,
                                     errorMessage = null,
-                                    oreums = oreums.toUiState()
+                                    oreums = uiModels
                                 )
                             }
                         }
@@ -65,8 +66,10 @@ class OreumViewModel @Inject constructor(
 
     private fun fetchOreumDetail(oreumId: String) {
         viewModelScope.launch {
-            getOreumDetailUseCase(oreumId)
-                .onSuccess { sendEffect { OreumEffect.NavigateToDetail(it.id) } }
+            interactor.getOreumOverview(oreumId)
+                .onSuccess { overview ->
+                    sendEffect { OreumEffect.NavigateToDetail(overview.id) }
+                }
                 .onFailure { throwable ->
                     sendEffect {
                         OreumEffect.ShowError(
@@ -77,6 +80,5 @@ class OreumViewModel @Inject constructor(
         }
     }
 
-    private fun List<com.jeong.domain.model.Oreum>.toUiState(): List<OreumUiModel> =
-        map { it.toUiModel() }
+    private fun List<OreumOverview>.toUiModels(): List<OreumUiModel> = map(uiMapper::map)
 }
