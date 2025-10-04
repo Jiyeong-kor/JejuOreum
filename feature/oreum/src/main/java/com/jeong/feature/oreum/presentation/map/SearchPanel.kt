@@ -28,13 +28,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import com.jeong.feature.oreum.R
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 
 @Composable
 fun SearchPanel(
     query: String,
-    uiState: MapUiState,
+    state: MapUiState,
     onQueryChange: (String) -> Unit,
     onResultClick: (OreumSummaryUiModel) -> Unit,
     modifier: Modifier = Modifier
@@ -63,8 +63,8 @@ fun SearchPanel(
             )
         )
 
-        when (uiState) {
-            is MapUiState.SearchResults -> {
+        when (state.panelState) {
+            MapPanelState.Results -> {
                 Spacer(Modifier.height(8.dp))
                 Box(
                     Modifier
@@ -77,7 +77,7 @@ fun SearchPanel(
                             .fillMaxSize()
                             .background(Color.White)
                     ) {
-                        items(uiState.list, key = { "${'$'}{it.x},${'$'}{it.y}" }) { item ->
+                        items(state.searchResults, key = { "${'$'}{it.x},${'$'}{it.y}" }) { item ->
                             Column(
                                 Modifier
                                     .fillMaxWidth()
@@ -118,7 +118,7 @@ fun SearchPanel(
                 }
             }
 
-            is MapUiState.NoResults -> {
+            MapPanelState.NoResults -> {
                 Spacer(Modifier.height(8.dp))
                 Box(
                     Modifier
@@ -129,7 +129,7 @@ fun SearchPanel(
                 ) { Text(stringResource(id = R.string.oreum_search_empty)) }
             }
 
-            is MapUiState.Hidden, is MapUiState.Idle -> Unit
+            MapPanelState.Hidden -> Unit
         }
     }
 }

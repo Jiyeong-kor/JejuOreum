@@ -39,8 +39,9 @@ fun MapViewHost(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val visiblePins by viewModel.visiblePins.collectAsStateWithLifecycle()
-    val cameraState by viewModel.cameraState.collectAsStateWithLifecycle()
+    val mapState by viewModel.state.collectAsStateWithLifecycle()
+    val visiblePins = mapState.visiblePins
+    val cameraState = mapState.cameraSnapshot
 
     var renderer by remember { mutableStateOf<MapRenderer?>(null) }
     var kakaoMap by remember { mutableStateOf<KakaoMap?>(null) }
@@ -57,7 +58,7 @@ fun MapViewHost(
             when (event) {
                 Lifecycle.Event.ON_RESUME -> mapView.resume()
                 Lifecycle.Event.ON_PAUSE -> mapView.pause()
-                Lifecycle.Event.ON_STOP -> viewModel.clearSelection()
+                Lifecycle.Event.ON_STOP -> viewModel.onEvent(MapEvent.SelectionCleared)
                 else -> Unit
             }
         }
@@ -135,16 +136,16 @@ fun MapViewHost(
                         val sw = map.fromScreenPoint(vp.left, vp.bottom)
                         val ne = map.fromScreenPoint(vp.right, vp.top)
                         if (sw != null && ne != null) {
-                            viewModel.updateVisibleOreumWithin(asGeoBounds(sw, ne))
+                            viewModel.onEvent(MapEvent.ViewportUpdated(asGeoBounds(sw, ne)))
                         }
                         map.setOnPoiClickListener { _, latLng, _, _ ->
                             renderer?.selectMarkerAt(latLng)
                             renderer?.moveCameraTo(latLng)
-                            viewModel.selectOreumAt(latLng.asGeoPoint())
+                            viewModel.onEvent(MapEvent.MarkerSelected(latLng.asGeoPoint()))
                         }
                         map.setOnViewportClickListener { _, _, _ ->
                             renderer?.clearSelection()
-                            viewModel.clearSelection()
+                            viewModel.onEvent(MapEvent.SelectionCleared)
                             onMapTap()
                         }
                         map.setOnCameraMoveEndListener { m, _, _ ->
@@ -152,14 +153,18 @@ fun MapViewHost(
                             val sw2 = m.fromScreenPoint(v.left, v.bottom)
                             val ne2 = m.fromScreenPoint(v.right, v.top)
                             if (sw2 != null && ne2 != null) {
-                                viewModel.updateVisibleOreumWithin(
-                                    asGeoBounds(sw2, ne2)
+                                viewModel.onEvent(
+                                    MapEvent.ViewportUpdated(
+                                        asGeoBounds(sw2, ne2)
+                                    )
                                 )
                             }
                             val cx = (v.left + v.right) / 2
                             val cy = (v.top + v.bottom) / 2
                             m.fromScreenPoint(cx, cy)?.let { c ->
-                                viewModel.saveCamera(c.asGeoPoint(), m.zoomLevel)
+                                viewModel.onEvent(
+                                    MapEvent.CameraSaved(c.asGeoPoint(), m.zoomLevel)
+                                )
                             }
                         }
                     }

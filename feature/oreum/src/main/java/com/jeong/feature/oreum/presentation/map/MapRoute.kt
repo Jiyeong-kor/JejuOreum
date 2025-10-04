@@ -21,8 +21,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.domain.entity.GeoPoint
 import com.jeong.feature.oreum.presentation.detail.DetailViewModel
 import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
+
+private val T.searchQuery: Any
 
 private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
@@ -43,18 +46,17 @@ fun MapRoute(
     val mapViewModel: MapViewModel = hiltViewModel(activity)
     val detailViewModel: DetailViewModel = hiltViewModel(activity)
 
-    val uiState by mapViewModel.uiState.collectAsStateWithLifecycle()
-    val selectedOreum by mapViewModel.selectedOreum.collectAsStateWithLifecycle()
-    val query by mapViewModel.searchQuery.collectAsStateWithLifecycle()
+    val mapState by mapViewModel.state.collectAsStateWithLifecycle()
+    val selectedOreum = mapState.selectedOreum
+    val query = mapState.searchQuery
 
     val focus = LocalFocusManager.current
 
     var detailOverlay by remember { mutableStateOf<OreumSummaryUiModel?>(null) }
     var controller by remember { mutableStateOf<MapController?>(null) }
 
-    BackHandler(enabled = uiState is MapUiState.SearchResults || uiState is MapUiState.NoResults) {
-        mapViewModel.onSearchQueryChanged("")
-        mapViewModel.closeSearchPanel()
+    BackHandler(enabled = mapState.isShowingResults || mapState.isShowingEmptyResult) {
+        mapViewModel.onEvent(MapEvent.SearchPanelClosed)
         focus.clearFocus()
     }
 
@@ -67,21 +69,21 @@ fun MapRoute(
             onMapReady = { controller = it },
             onMapTap = {
                 detailOverlay = null
-                mapViewModel.closeSearchPanel()
-                mapViewModel.onSearchQueryChanged("")
+                mapViewModel.onEvent(MapEvent.SelectionCleared)
+                mapViewModel.onEvent(MapEvent.SearchPanelClosed)
                 focus.clearFocus()
             }
         )
         SearchPanel(
             query = query,
-            uiState = uiState,
-            onQueryChange = { q -> mapViewModel.onSearchQueryChanged(q) },
+            state = mapState,
+            onQueryChange = { q -> mapViewModel.onEvent(MapEvent.SearchQueryChanged(q)) },
             onResultClick = { item ->
                 controller?.selectMarkerAt(item.asLatLng())
                 controller?.moveCameraTo(item.asLatLng())
                 detailOverlay = item
-                mapViewModel.onSearchQueryChanged("")
-                mapViewModel.closeSearchPanel()
+                mapViewModel.onEvent(MapEvent.MarkerSelected(item.asGeoPoint()))
+                mapViewModel.onEvent(MapEvent.SearchPanelClosed)
                 focus.clearFocus()
             },
             modifier = Modifier
@@ -96,7 +98,7 @@ fun MapRoute(
             controller = controller,
             onDismiss = {
                 detailOverlay = null
-                mapViewModel.clearSelection()
+                mapViewModel.onEvent(MapEvent.SelectionCleared)
             },
             onNavigateToWriteReview = onNavigateToWriteReview,
             onFavoriteToggled = onFavoriteToggled
@@ -106,3 +108,5 @@ fun MapRoute(
 
 private fun OreumSummaryUiModel.asLatLng(): com.kakao.vectormap.LatLng =
     com.kakao.vectormap.LatLng.from(y, x)
+
+private fun OreumSummaryUiModel.asGeoPoint(): GeoPoint = GeoPoint(y, x)

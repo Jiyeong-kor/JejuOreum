@@ -1,32 +1,28 @@
 package com.jeong.feature.oreum.presentation.map
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jeong.core.ui.viewmodel.BaseViewModel
+import com.jeong.core.utils.coroutines.CoroutineDispatcherProvider
 import com.jeong.domain.entity.GeoBounds
 import com.jeong.domain.entity.GeoPoint
+import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.entity.quantized
 import com.jeong.domain.usecase.oreum.FilterOreumsWithinBoundsUseCase
 import com.jeong.domain.usecase.oreum.FindOreumByLocationUseCase
 import com.jeong.domain.usecase.oreum.ObserveOreumSummariesUseCase
 import com.jeong.domain.usecase.oreum.SearchOreumsUseCase
-import com.jeong.domain.entity.ResultSummary
-import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 private const val KEY_CAM_LAT = "cam_lat"
 private const val KEY_CAM_LON = "cam_lon"
 private const val KEY_CAM_ZOOM = "cam_zoom"
-
-data class CameraSnapshot(val center: GeoPoint, val zoomLevel: Int)
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
@@ -34,47 +30,71 @@ class MapViewModel @Inject constructor(
     private val filterOreumsWithinBoundsUseCase: FilterOreumsWithinBoundsUseCase,
     private val searchOreumsUseCase: SearchOreumsUseCase,
     private val findOreumByLocationUseCase: FindOreumByLocationUseCase,
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+    private val savedStateHandle: SavedStateHandle,
+    private val dispatcherProvider: CoroutineDispatcherProvider,
+) : BaseViewModel<MapEvent, MapEffect, MapUiState>(
+    initialState = MapUiState(cameraSnapshot = restoreCameraFromSavedState(savedStateHandle))
+) {
 
     private val oreumList: StateFlow<List<ResultSummary>> = observeOreumSummariesUseCase()
 
-    private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Hidden)
-    val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
-
-    private val _visiblePins = MutableStateFlow<List<MapPinUi>>(emptyList())
-    val visiblePins: StateFlow<List<MapPinUi>> = _visiblePins.asStateFlow()
-
-    private val _selectedOreum = MutableStateFlow<OreumSummaryUiModel?>(null)
-    val selectedOreum: StateFlow<OreumSummaryUiModel?> = _selectedOreum.asStateFlow()
-
-    private val _cameraState = MutableStateFlow(restoreCameraFromSavedState())
-    val cameraState: StateFlow<CameraSnapshot?> = _cameraState.asStateFlow()
-
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
     private val pinCache = mutableMapOf<GeoPoint, MapPinUi>()
     private var lastBounds: GeoBounds? = null
+    private var searchJob: Job? = null
 
-    fun onSearchQueryChanged(query: String) {
-        _searchQuery.value = query
-        viewModelScope.launch(Dispatchers.Default) {
-            val results = searchOreumsUseCase(oreumList.value, query)
-            withContext(Dispatchers.Main) {
-                _uiState.value = when {
-                    query.isBlank() -> MapUiState.Hidden
-                    results.isEmpty() -> MapUiState.NoResults
-                    else -> MapUiState.SearchResults(results.map { it.toUiModel() })
+    override fun handleEvent(event: MapEvent) {
+        when (event) {
+            is MapEvent.SearchQueryChanged -> handleSearchQuery(event.query)
+            is MapEvent.ViewportUpdated -> handleViewport(event.bounds)
+            is MapEvent.MarkerSelected -> handleMarkerSelection(event.point)
+            MapEvent.SelectionCleared -> clearSelection()
+            MapEvent.SearchPanelClosed -> closeSearchPanel()
+            is MapEvent.CameraSaved -> persistCamera(event.center, event.zoomLevel)
+        }
+    }
+
+    private fun handleSearchQuery(query: String) {
+        searchJob?.cancel()
+        if (query.isBlank()) {
+            searchJob = null
+            setState {
+                copy(
+                    searchQuery = "",
+                    panelState = MapPanelState.Hidden,
+                    searchResults = emptyList(),
+                )
+            }
+            return
+        }
+        setState { copy(searchQuery = query) }
+        searchJob = viewModelScope.launch(dispatcherProvider.computation) {
+            try {
+                val results = searchOreumsUseCase(oreumList.value, query)
+                    .map { it.toUiModel() }
+                val panelState = if (results.isEmpty()) {
+                    MapPanelState.NoResults
+                } else {
+                    MapPanelState.Results
                 }
+                withContext(dispatcherProvider.main) {
+                    setState {
+                        copy(
+                            searchQuery = query,
+                            searchResults = results,
+                            panelState = panelState,
+                        )
+                    }
+                }
+            } finally {
+                searchJob = null
             }
         }
     }
 
-    fun updateVisibleOreumWithin(bounds: GeoBounds) {
+    private fun handleViewport(bounds: GeoBounds) {
         if (bounds == lastBounds) return
         lastBounds = bounds
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(dispatcherProvider.computation) {
             val visible = filterOreumsWithinBoundsUseCase(oreumList.value, bounds)
             val pins = visible.map { summary ->
                 val point = GeoPoint(summary.y, summary.x).quantized()
@@ -82,40 +102,57 @@ class MapViewModel @Inject constructor(
                     MapPinUi(summary.oreumKname, summary.y, summary.x)
                 }
             }
-            if (pins != _visiblePins.value) {
-                withContext(Dispatchers.Main) { _visiblePins.value = pins }
+            if (pins != state.value.visiblePins) {
+                withContext(dispatcherProvider.main) {
+                    setState { copy(visiblePins = pins) }
+                }
             }
         }
     }
 
-    fun selectOreumAt(point: GeoPoint): OreumSummaryUiModel? {
-        val oreum = findOreumByLocationUseCase(oreumList.value, point)
-        val uiModel = oreum?.toUiModel()
-        _selectedOreum.value = uiModel
-        return uiModel
+    private fun handleMarkerSelection(point: GeoPoint) {
+        viewModelScope.launch(dispatcherProvider.computation) {
+            val oreum = findOreumByLocationUseCase(oreumList.value, point)
+            val uiModel = oreum?.toUiModel()
+            withContext(dispatcherProvider.main) {
+                setState { copy(selectedOreum = uiModel) }
+            }
+        }
     }
 
-    fun clearSelection() {
-        _selectedOreum.value = null
+    private fun clearSelection() {
+        setState { copy(selectedOreum = null) }
     }
 
-    fun closeSearchPanel() {
-        _uiState.value = MapUiState.Hidden
+    private fun closeSearchPanel() {
+        searchJob?.cancel()
+        searchJob = null
+        setState {
+            copy(
+                searchQuery = "",
+                panelState = MapPanelState.Hidden,
+                searchResults = emptyList(),
+            )
+        }
     }
 
-    fun saveCamera(center: GeoPoint, zoomLevel: Int) {
-        _cameraState.value = CameraSnapshot(center, zoomLevel)
+    private fun persistCamera(center: GeoPoint, zoomLevel: Int) {
+        setState { copy(cameraSnapshot = CameraSnapshot(center, zoomLevel)) }
         savedStateHandle[KEY_CAM_LAT] = center.lat
         savedStateHandle[KEY_CAM_LON] = center.lon
         savedStateHandle[KEY_CAM_ZOOM] = zoomLevel
     }
 
-    private fun restoreCameraFromSavedState(): CameraSnapshot? {
-        val lat = savedStateHandle.get<Double>(KEY_CAM_LAT)
-        val lon = savedStateHandle.get<Double>(KEY_CAM_LON)
-        val zoom = savedStateHandle.get<Int>(KEY_CAM_ZOOM)
-        return if (lat != null && lon != null && zoom != null) {
-            CameraSnapshot(GeoPoint(lat, lon), zoom)
-        } else null
+    companion object {
+        private fun restoreCameraFromSavedState(savedStateHandle: SavedStateHandle): CameraSnapshot? {
+            val lat = savedStateHandle.get<Double>(KEY_CAM_LAT)
+            val lon = savedStateHandle.get<Double>(KEY_CAM_LON)
+            val zoom = savedStateHandle.get<Int>(KEY_CAM_ZOOM)
+            return if (lat != null && lon != null && zoom != null) {
+                CameraSnapshot(GeoPoint(lat, lon), zoom)
+            } else {
+                null
+            }
+        }
     }
 }
