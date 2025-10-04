@@ -1,18 +1,17 @@
 package com.jeong.feature.oreum.presentation.detail
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.domain.entity.ResultSummary
+import com.jeong.domain.usecase.IsLocationPermissionGrantedUseCase
 import com.jeong.domain.usecase.ToggleFavoriteUseCase
-import com.jeong.feature.oreum.R
+import com.jeong.domain.usecase.UpdateLocationPermissionUseCase
 import com.jeong.feature.oreum.domain.usecase.FetchOreumDetailUseCase
 import com.jeong.feature.oreum.domain.usecase.GetOreumFavoriteStatusUseCase
 import com.jeong.feature.oreum.domain.usecase.GetOreumReviewsUseCase
 import com.jeong.feature.oreum.domain.usecase.GetOreumStampStatusUseCase
 import com.jeong.feature.oreum.domain.usecase.TryStampUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -31,7 +30,8 @@ class DetailViewModel @Inject constructor(
     private val getOreumReviewsUseCase: GetOreumReviewsUseCase,
     private val tryStampUseCase: TryStampUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    @param:ApplicationContext private val context: Context
+    private val isLocationPermissionGrantedUseCase: IsLocationPermissionGrantedUseCase,
+    private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState())
@@ -39,11 +39,15 @@ class DetailViewModel @Inject constructor(
 
     sealed class DetailEvent {
         data object StampSuccess : DetailEvent()
-        data class StampFailure(val message: String) : DetailEvent()
+        data class StampFailure(val message: String?) : DetailEvent()
     }
 
     private val _event = MutableSharedFlow<DetailEvent>()
     val event: SharedFlow<DetailEvent> = _event.asSharedFlow()
+
+    init {
+        loadLocationPermissionState()
+    }
 
     fun initialize(oreum: ResultSummary) {
         viewModelScope.launch {
@@ -165,14 +169,38 @@ class DetailViewModel @Inject constructor(
                 refreshStampStatus(oreum.idx.toString())
                 _event.emit(DetailEvent.StampSuccess)
             }.onFailure { error ->
-                val message = error.message
-                    ?: context.getString(R.string.oreum_unknown_error_message)
-                _event.emit(DetailEvent.StampFailure(message))
+                _event.emit(DetailEvent.StampFailure(error.message))
             }
         }
     }
 
     fun clearError() {
         _uiState.update { it.copy(errorMessage = null) }
+    }
+
+    fun onLocationPermissionResult(granted: Boolean) {
+        viewModelScope.launch {
+            updateLocationPermissionUseCase(granted)
+                .onSuccess {
+                    _uiState.update { state ->
+                        state.copy(isLocationPermissionGranted = granted)
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.update { it.copy(errorMessage = error.message) }
+                }
+        }
+    }
+
+    private fun loadLocationPermissionState() {
+        viewModelScope.launch {
+            isLocationPermissionGrantedUseCase()
+                .onSuccess { granted ->
+                    _uiState.update { it.copy(isLocationPermissionGranted = granted) }
+                }
+                .onFailure { error ->
+                    _uiState.update { it.copy(errorMessage = error.message) }
+                }
+        }
     }
 }

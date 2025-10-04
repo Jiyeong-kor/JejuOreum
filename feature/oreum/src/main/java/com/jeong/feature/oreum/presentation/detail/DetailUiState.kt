@@ -9,5 +9,6 @@ data class DetailUiState(
     val isFavorite: Boolean = false,
     val hasStamp: Boolean = false,
     val reviewList: List<ReviewItem> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isLocationPermissionGranted: Boolean? = null
 )

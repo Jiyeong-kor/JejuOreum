@@ -32,10 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,14 +43,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.jeong.data.local.PermissionManager
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.entity.ReviewItem
 import com.jeong.feature.oreum.R
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -71,24 +65,17 @@ fun DetailRoute(
     val oreumDetail = uiState.oreumDetail
     val isFavorite = uiState.isFavorite
     val hasStamp = uiState.hasStamp
+    val locationPermissionGranted = uiState.isLocationPermissionGranted
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    var savedLocationGranted by remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(initialOreum) {
         initialOreum?.let(viewModel::initialize)
     }
 
-    LaunchedEffect(Unit) {
-        savedLocationGranted = PermissionManager.isLocationGranted(context)
-    }
-
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        coroutineScope.launch { PermissionManager.setLocationGranted(context, isGranted) }
-        savedLocationGranted = isGranted
-
+        viewModel.onLocationPermissionResult(isGranted)
         if (isGranted) {
             viewModel.stampOreum()
         } else {
@@ -105,7 +92,8 @@ fun DetailRoute(
                 }
 
                 is DetailViewModel.DetailEvent.StampFailure -> {
-                    val message = event.message
+                    val message =
+                        event.message ?: context.getString(R.string.oreum_unknown_error_message)
                     showToast(message)
                 }
             }
@@ -148,7 +136,7 @@ fun DetailRoute(
                     }
 
                     else -> {
-                        when (savedLocationGranted) {
+                        when (locationPermissionGranted) {
                             false -> showToast(
                                 context.getString(
                                     R.string.oreum_permission_required_message

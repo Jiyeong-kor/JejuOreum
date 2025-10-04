@@ -24,6 +24,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import com.jeong.domain.repository.PermissionRepository
+import com.jeong.domain.usecase.IsLocationPermissionGrantedUseCase
+import com.jeong.domain.usecase.UpdateLocationPermissionUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -107,4 +110,14 @@ object OreumUseCaseModule {
     fun provideGetCurrentUserNicknameUseCase(
         userInteractionRepository: UserInteractionRepository,
     ): GetCurrentUserNicknameUseCase = GetCurrentUserNicknameUseCase(userInteractionRepository)
+
+    @Provides
+    fun provideIsLocationPermissionGrantedUseCase(
+        permissionRepository: PermissionRepository,
+    ): IsLocationPermissionGrantedUseCase = IsLocationPermissionGrantedUseCase(permissionRepository)
+
+    @Provides
+    fun provideUpdateLocationPermissionUseCase(
+        permissionRepository: PermissionRepository,
+    ): UpdateLocationPermissionUseCase = UpdateLocationPermissionUseCase(permissionRepository)
 }
