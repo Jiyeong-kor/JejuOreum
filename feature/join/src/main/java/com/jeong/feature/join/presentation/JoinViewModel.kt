@@ -3,10 +3,10 @@ package com.jeong.feature.join.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.domain.model.NicknameValidationResult
-import com.jeong.domain.usecase.CheckNicknameAvailabilityUseCase
-import com.jeong.domain.usecase.EnsureAnonymousUserUseCase
-import com.jeong.domain.usecase.SaveNicknameUseCase
-import com.jeong.domain.usecase.ValidateNicknameUseCase
+import com.jeong.feature.join.domain.AnonymousUserInitializer
+import com.jeong.feature.join.domain.NicknameAvailabilityChecker
+import com.jeong.feature.join.domain.NicknameSaver
+import com.jeong.feature.join.domain.NicknameValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -22,10 +22,10 @@ import timber.log.Timber
 
 @HiltViewModel
 class JoinViewModel @Inject constructor(
-    private val validateNicknameUseCase: ValidateNicknameUseCase,
-    private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
-    private val saveNicknameUseCase: SaveNicknameUseCase,
-    private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
+    private val nicknameValidator: NicknameValidator,
+    private val nicknameAvailabilityChecker: NicknameAvailabilityChecker,
+    private val nicknameSaver: NicknameSaver,
+    private val anonymousUserInitializer: AnonymousUserInitializer
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(JoinUiState())
@@ -41,7 +41,7 @@ class JoinViewModel @Inject constructor(
     }
 
     fun onNicknameChanged(input: String) {
-        val validationResult = validateNicknameUseCase(input)
+        val validationResult = nicknameValidator.validate(input)
         availabilityJob?.cancel()
 
         _uiState.update { state ->
@@ -69,7 +69,7 @@ class JoinViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
-            val result = saveNicknameUseCase(currentState.nickname)
+            val result = nicknameSaver.save(currentState.nickname)
             _uiState.update { it.copy(isSaving = false) }
 
             result.fold(
@@ -86,7 +86,7 @@ class JoinViewModel @Inject constructor(
 
     private fun ensureAnonymousUser() {
         viewModelScope.launch {
-            ensureAnonymousUserUseCase()
+            anonymousUserInitializer.ensure()
                 .onFailure { throwable ->
                     Timber.e(throwable, "Failed to authenticate user")
                     _events.emit(JoinEvent.AuthenticationFailed)
@@ -96,7 +96,7 @@ class JoinViewModel @Inject constructor(
 
     private fun checkNicknameAvailability(nickname: String) {
         availabilityJob = viewModelScope.launch {
-            val result = checkNicknameAvailabilityUseCase(nickname)
+            val result = nicknameAvailabilityChecker.check(nickname)
             _uiState.update { state ->
                 if (state.nickname != nickname) {
                     state
