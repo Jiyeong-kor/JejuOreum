@@ -1,7 +1,7 @@
 package com.jeong.feature.join.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jeong.core.ui.viewmodel.BaseViewModel
 import com.jeong.domain.model.NicknameValidationResult
 import com.jeong.feature.join.domain.AnonymousUserInitializer
 import com.jeong.feature.join.domain.NicknameAvailabilityChecker
@@ -10,13 +10,6 @@ import com.jeong.feature.join.domain.NicknameValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -25,28 +18,36 @@ class JoinViewModel @Inject constructor(
     private val nicknameValidator: NicknameValidator,
     private val nicknameAvailabilityChecker: NicknameAvailabilityChecker,
     private val nicknameSaver: NicknameSaver,
-    private val anonymousUserInitializer: AnonymousUserInitializer
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(JoinUiState())
-    val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
-
-    private val _events = MutableSharedFlow<JoinEvent>()
-    val events: SharedFlow<JoinEvent> = _events.asSharedFlow()
+    private val anonymousUserInitializer: AnonymousUserInitializer,
+) : BaseViewModel<JoinUiEvent, JoinSideEffect, JoinUiState>(JoinUiState()) {
 
     private var availabilityJob: Job? = null
 
     init {
-        ensureAnonymousUser()
+        onEvent(JoinUiEvent.Initialize)
     }
 
-    fun onNicknameChanged(input: String) {
+    override fun onCleared() {
+        availabilityJob?.cancel()
+        availabilityJob = null
+        super.onCleared()
+    }
+
+    override fun handleEvent(event: JoinUiEvent) {
+        when (event) {
+            JoinUiEvent.Initialize -> ensureAnonymousUser()
+            is JoinUiEvent.NicknameChanged -> handleNicknameChanged(event.value)
+            JoinUiEvent.SubmitNickname -> handleSubmit()
+        }
+    }
+
+    private fun handleNicknameChanged(input: String) {
         val validationResult = nicknameValidator.validate(input)
         availabilityJob?.cancel()
 
-        _uiState.update { state ->
-            val hasInteracted = state.hasUserInteracted || validationResult.value.isNotEmpty()
-            state.copy(
+        setState {
+            val hasInteracted = hasUserInteracted || validationResult.value.isNotEmpty()
+            copy(
                 nickname = validationResult.value,
                 hasUserInteracted = hasInteracted,
                 validation = validationResult,
@@ -63,22 +64,22 @@ class JoinViewModel @Inject constructor(
         }
     }
 
-    fun submitNickname() {
-        val currentState = _uiState.value
+    private fun handleSubmit() {
+        val currentState = state.value
         if (!currentState.canSubmit) return
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isSaving = true) }
+            setState { copy(isSaving = true) }
             val result = nicknameSaver.save(currentState.nickname)
-            _uiState.update { it.copy(isSaving = false) }
+            setState { copy(isSaving = false) }
 
             result.fold(
                 onSuccess = { account ->
-                    _events.emit(JoinEvent.NicknameSaved(account.nickname.orEmpty()))
+                    sendEffect { JoinSideEffect.NicknameSaved(account.nickname.orEmpty()) }
                 },
                 onFailure = { throwable ->
                     Timber.e(throwable, "Failed to save nickname")
-                    _events.emit(JoinEvent.NicknameSaveFailed)
+                    sendEffect { JoinSideEffect.NicknameSaveFailed }
                 }
             )
         }
@@ -89,7 +90,7 @@ class JoinViewModel @Inject constructor(
             anonymousUserInitializer.ensure()
                 .onFailure { throwable ->
                     Timber.e(throwable, "Failed to authenticate user")
-                    _events.emit(JoinEvent.AuthenticationFailed)
+                    sendEffect { JoinSideEffect.AuthenticationFailed }
                 }
         }
     }
@@ -97,21 +98,21 @@ class JoinViewModel @Inject constructor(
     private fun checkNicknameAvailability(nickname: String) {
         availabilityJob = viewModelScope.launch {
             val result = nicknameAvailabilityChecker.check(nickname)
-            _uiState.update { state ->
-                if (state.nickname != nickname) {
-                    state
+            setState {
+                if (this.nickname != nickname) {
+                    this
                 } else {
                     result.fold(
                         onSuccess = { isAvailable ->
                             if (isAvailable) {
-                                state.copy(availability = NicknameAvailabilityState.Available)
+                                copy(availability = NicknameAvailabilityState.Available)
                             } else {
-                                state.copy(availability = NicknameAvailabilityState.Unavailable)
+                                copy(availability = NicknameAvailabilityState.Unavailable)
                             }
                         },
                         onFailure = { throwable ->
                             Timber.e(throwable, "Nickname availability check failed")
-                            state.copy(availability = NicknameAvailabilityState.Error(throwable))
+                            copy(availability = NicknameAvailabilityState.Error(throwable))
                         }
                     )
                 }

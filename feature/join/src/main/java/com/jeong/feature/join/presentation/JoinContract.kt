@@ -1,5 +1,8 @@
 package com.jeong.feature.join.presentation
 
+import com.jeong.core.ui.state.UiEffect
+import com.jeong.core.ui.state.UiEvent
+import com.jeong.core.ui.state.UiState
 import com.jeong.domain.model.NicknameValidationResult
 
 sealed interface NicknameAvailabilityState {
@@ -16,13 +19,19 @@ data class JoinUiState(
     val validation: NicknameValidationResult = NicknameValidationResult.Empty(),
     val availability: NicknameAvailabilityState = NicknameAvailabilityState.Idle,
     val isSaving: Boolean = false,
-) {
+) : UiState {
     val canSubmit: Boolean
         get() = availability is NicknameAvailabilityState.Available && !isSaving
 }
 
-sealed interface JoinEvent {
-    data object AuthenticationFailed : JoinEvent
-    data class NicknameSaved(val nickname: String) : JoinEvent
-    data object NicknameSaveFailed : JoinEvent
+sealed interface JoinUiEvent : UiEvent {
+    data object Initialize : JoinUiEvent
+    data class NicknameChanged(val value: String) : JoinUiEvent
+    data object SubmitNickname : JoinUiEvent
+}
+
+sealed interface JoinSideEffect : UiEffect {
+    data object AuthenticationFailed : JoinSideEffect
+    data class NicknameSaved(val nickname: String) : JoinSideEffect
+    data object NicknameSaveFailed : JoinSideEffect
 }

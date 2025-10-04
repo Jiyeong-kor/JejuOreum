@@ -21,21 +21,21 @@ fun JoinRoute(
     val context = LocalContext.current
     var isTermChecked by remember { mutableStateOf(false) }
     var showTermDialog by remember { mutableStateOf(false) }
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                JoinEvent.AuthenticationFailed -> {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                JoinSideEffect.AuthenticationFailed -> {
                     context.toastMessage(R.string.auth_failed)
                 }
 
-                is JoinEvent.NicknameSaved -> {
+                is JoinSideEffect.NicknameSaved -> {
                     context.toastMessage(R.string.signup_success)
                     onNavigateToMain()
                 }
 
-                JoinEvent.NicknameSaveFailed -> {
+                JoinSideEffect.NicknameSaveFailed -> {
                     context.toastMessage(R.string.nickname_save_failed)
                 }
             }
@@ -45,12 +45,13 @@ fun JoinRoute(
     JoinFormScreen(
         uiState = uiState,
         isTermChecked = isTermChecked,
-        onNicknameChange = viewModel::onNicknameChanged,
-        onTermCheckedChange = { isChecked -> isTermChecked = isChecked },
+        onNicknameChange = { value ->
+            viewModel.onEvent(JoinUiEvent.NicknameChanged(value))
+        }, onTermCheckedChange = { isChecked -> isTermChecked = isChecked },
         onTermClick = { showTermDialog = true },
         onSubmit = {
             if (isTermChecked) {
-                viewModel.submitNickname()
+                viewModel.onEvent(JoinUiEvent.SubmitNickname)
             }
         }
     )
