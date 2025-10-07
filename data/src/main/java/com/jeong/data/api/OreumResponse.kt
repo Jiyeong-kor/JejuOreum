@@ -5,6 +5,6 @@ import com.jeong.domain.entity.ResultSummary
 
 data class OreumData(
     val resultCode: String,
-    @SerializedName("resultMsg") val resultMsg: String,
+    @field:SerializedName("resultMsg") val resultMsg: String,
     val resultSummary: List<ResultSummary>
 )

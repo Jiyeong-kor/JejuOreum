@@ -1,4 +1,4 @@
-package com.jeong.jjoreum.presentation.ui.main
+package com.jeong.feature.main.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.jeong.core.ui.viewmodel.BaseViewModel
@@ -44,23 +44,21 @@ class MainViewModel @Inject constructor(
     }
 
     private fun applyStatus(status: NetworkStatus, fromUser: Boolean = false) {
-        val showDialog = shouldShowDialog(status)
-        val shouldNotifyRestored = !showDialog && (state.value.showNetworkDialog || fromUser)
+        val shouldShowDialog = when (status) {
+            NetworkStatus.Available, NetworkStatus.Losing, NetworkStatus.Unknown -> false
+            NetworkStatus.Lost, NetworkStatus.Unavailable -> true
+        }
+        val notifyRestored = !shouldShowDialog && (state.value.showNetworkDialog || fromUser)
 
         setState {
             copy(
                 networkStatus = status,
-                showNetworkDialog = showDialog,
+                showNetworkDialog = shouldShowDialog
             )
         }
 
-        if (shouldNotifyRestored) {
+        if (notifyRestored) {
             sendEffect { MainSideEffect.NetworkRestored }
         }
-    }
-
-    private fun shouldShowDialog(status: NetworkStatus): Boolean = when (status) {
-        NetworkStatus.Available, NetworkStatus.Losing, NetworkStatus.Unknown -> false
-        NetworkStatus.Lost, NetworkStatus.Unavailable -> true
     }
 }

@@ -117,6 +117,7 @@ dependencies {
     implementation(project(":feature:oreum"))
     implementation(project(":feature:splash"))
     implementation(project(":feature:join"))
+    implementation(project(":feature:main"))
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.play.services)

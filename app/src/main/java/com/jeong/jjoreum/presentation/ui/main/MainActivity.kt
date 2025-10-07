@@ -16,6 +16,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jeong.core.ui.dialog.NetworkDialog
 import com.jeong.core.ui.theme.JJOreumTheme
 import com.jeong.feature.join.navigation.JoinNavigation
+import com.jeong.feature.main.presentation.MainRoute
+import com.jeong.feature.main.presentation.MainSideEffect
+import com.jeong.feature.main.presentation.MainUiEvent
 import com.jeong.feature.oreum.navigation.OreumNavigation
 import com.jeong.feature.splash.domain.model.SplashDestination
 import com.jeong.feature.splash.presentation.SplashSideEffect
@@ -23,6 +26,7 @@ import com.jeong.feature.splash.presentation.SplashUiEvent
 import com.jeong.feature.splash.presentation.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -43,25 +47,23 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(Unit) {
                     splashViewModel.onEvent(SplashUiEvent.Initialize)
-                }
-
-                LaunchedEffect(Unit) {
-                    splashViewModel.effect.collectLatest { effect ->
-                        when (effect) {
-                            is SplashSideEffect.NavigateTo -> {
-                                startDestination = when (effect.destination) {
-                                    SplashDestination.Join -> JoinNavigation.ROUTE
-                                    SplashDestination.Map -> OreumNavigation.MAP
+                    launch {
+                        splashViewModel.effect.collectLatest { effect ->
+                            when (effect) {
+                                is SplashSideEffect.NavigateTo -> {
+                                    startDestination = when (effect.destination) {
+                                        SplashDestination.Join -> JoinNavigation.ROUTE
+                                        SplashDestination.Map -> OreumNavigation.MAP
+                                    }
                                 }
                             }
                         }
                     }
-                }
-
-                LaunchedEffect(Unit) {
-                    mainViewModel.effect.collectLatest { effect ->
-                        when (effect) {
-                            MainSideEffect.NetworkRestored -> splashViewModel.onEvent(SplashUiEvent.Initialize)
+                    launch {
+                        mainViewModel.effect.collectLatest { effect ->
+                            when (effect) {
+                                MainSideEffect.NetworkRestored -> splashViewModel.onEvent(SplashUiEvent.Initialize)
+                            }
                         }
                     }
                 }
@@ -74,7 +76,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 startDestination?.let { destination ->
-                    MainNavHost(destination)
+                    MainRoute(destination)
                 }
                 if (mainUiState.showNetworkDialog) {
                     NetworkDialog(onRetryClick = {

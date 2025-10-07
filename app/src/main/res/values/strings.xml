@@ -14,11 +14,6 @@
     <string name="permission_sub_location">현재 위치 수신</string>
     <string name="permission_btn">확인</string>
 
-    <!-- map -->
-    <string name="map_title">오름 지도</string>
-    <string name="list_title">오름 목록</string>
-    <string name="my_title">나의 오름</string>
-
     <!-- detail -->
     <string name="review_title">오름 후기</string>
     <string name="detail_stamp">스탬프 찍기</string>
