@@ -2,14 +2,8 @@ package com.jeong.feature.oreum.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.domain.usecase.IsLocationPermissionGrantedUseCase
-import com.jeong.domain.usecase.UpdateLocationPermissionUseCase
-import com.jeong.domain.usecase.oreum.FetchOreumDetailUseCase
-import com.jeong.domain.usecase.oreum.GetOreumFavoriteStatusUseCase
-import com.jeong.domain.usecase.oreum.GetOreumReviewsUseCase
-import com.jeong.domain.usecase.oreum.GetOreumStampStatusUseCase
-import com.jeong.domain.usecase.oreum.ToggleFavoriteUseCase
-import com.jeong.domain.usecase.oreum.TryStampUseCase
+import com.jeong.feature.oreum.domain.OreumDetailInteractor
+import com.jeong.feature.oreum.domain.model.OreumStampRequest
 import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import com.jeong.feature.oreum.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,14 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val fetchOreumDetailUseCase: FetchOreumDetailUseCase,
-    private val getOreumFavoriteStatusUseCase: GetOreumFavoriteStatusUseCase,
-    private val getOreumStampStatusUseCase: GetOreumStampStatusUseCase,
-    private val getOreumReviewsUseCase: GetOreumReviewsUseCase,
-    private val tryStampUseCase: TryStampUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val isLocationPermissionGrantedUseCase: IsLocationPermissionGrantedUseCase,
-    private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase
+    private val oreumDetailInteractor: OreumDetailInteractor,
+    private val stateReducer: DetailStateReducer
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState())
@@ -51,16 +39,9 @@ class DetailViewModel @Inject constructor(
     }
 
     fun initialize(oreum: OreumSummaryUiModel) {
+        val oreumIdx = oreum.idx.toString()
+        _uiState.update { stateReducer.initialize(it, oreum) }
         viewModelScope.launch {
-            val oreumIdx = oreum.idx.toString()
-            _uiState.update {
-                it.copy(
-                    oreumDetail = oreum,
-                    isFavorite = oreum.userLiked,
-                    hasStamp = oreum.userStamped,
-                    errorMessage = null
-                )
-            }
             refreshOreumDetail(oreumIdx)
             refreshFavoriteStatus(oreumIdx)
             refreshStampStatus(oreumIdx)
@@ -69,88 +50,50 @@ class DetailViewModel @Inject constructor(
     }
 
     private suspend fun refreshOreumDetail(oreumIdx: String) {
-        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-        fetchOreumDetailUseCase(oreumIdx)
+        _uiState.update(stateReducer::onLoading)
+        oreumDetailInteractor.fetchOreumDetail(oreumIdx)
+            .map { it.toUiModel() }
             .onSuccess { detail ->
-                val uiDetail = detail.toUiModel()
-                _uiState.update {
-                    it.copy(
-                        oreumDetail = uiDetail,
-                        isFavorite = uiDetail.userLiked,
-                        hasStamp = uiDetail.userStamped,
-                        isLoading = false
-                    )
-                }
+                _uiState.update { stateReducer.onDetailLoaded(it, detail) }
             }
             .onFailure { error ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = error.message
-                    )
-                }
+                _uiState.update { stateReducer.onDetailLoadFailed(it, error.message) }
             }
     }
 
     private suspend fun refreshFavoriteStatus(oreumIdx: String) {
-        getOreumFavoriteStatusUseCase(oreumIdx)
+        oreumDetailInteractor.fetchFavoriteStatus(oreumIdx)
             .onSuccess { isFavorite ->
-                _uiState.update { state ->
-                    state.copy(
-                        isFavorite = isFavorite,
-                        oreumDetail = state.oreumDetail?.copy(userLiked = isFavorite)
-                    )
-                }
+                _uiState.update { stateReducer.onFavoriteStatusChanged(it, isFavorite) }
             }
-            .onFailure { error ->
-                _uiState.update { it.copy(errorMessage = error.message) }
-            }
+            .onFailure(::handleError)
     }
 
     private suspend fun refreshStampStatus(oreumIdx: String) {
-        getOreumStampStatusUseCase(oreumIdx)
+        oreumDetailInteractor.fetchStampStatus(oreumIdx)
             .onSuccess { hasStamp ->
-                _uiState.update { state ->
-                    state.copy(
-                        hasStamp = hasStamp,
-                        oreumDetail = state.oreumDetail?.copy(userStamped = hasStamp)
-                    )
-                }
-            }
-            .onFailure { error ->
-                _uiState.update { it.copy(errorMessage = error.message) }
-            }
+                _uiState.update { stateReducer.onStampStatusChanged(it, hasStamp) }
+            }.onFailure(::handleError)
     }
 
     private suspend fun refreshReviews(oreumIdx: String) {
-        getOreumReviewsUseCase(oreumIdx)
+        oreumDetailInteractor.fetchReviews(oreumIdx)
             .onSuccess { reviews ->
-                _uiState.update { it.copy(reviewList = reviews) }
-            }
-            .onFailure { error ->
-                _uiState.update { it.copy(errorMessage = error.message) }
-            }
+                _uiState.update { stateReducer.onReviewsLoaded(it, reviews) }
+            }.onFailure(::handleError)
     }
 
     fun toggleFavorite() {
         val oreumIdx = _uiState.value.oreumDetail?.idx?.toString() ?: return
         viewModelScope.launch {
             val newIsFavorite = !_uiState.value.isFavorite
-            runCatching { toggleFavoriteUseCase(oreumIdx, newIsFavorite) }
+            oreumDetailInteractor.toggleFavorite(oreumIdx, newIsFavorite)
                 .onSuccess { newTotal ->
-                    _uiState.update { state ->
-                        state.copy(
-                            isFavorite = newIsFavorite,
-                            oreumDetail = state.oreumDetail?.copy(
-                                userLiked = newIsFavorite,
-                                totalFavorites = newTotal
-                            )
-                        )
+                    _uiState.update {
+                        stateReducer.onFavoriteToggled(it, newIsFavorite, newTotal)
                     }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(errorMessage = error.message) }
-                }
+                .onFailure(::handleError)
         }
     }
 
@@ -162,11 +105,13 @@ class DetailViewModel @Inject constructor(
     fun stampOreum() {
         val oreum = _uiState.value.oreumDetail ?: return
         viewModelScope.launch {
-            tryStampUseCase(
-                oreumIdx = oreum.idx.toString(),
-                oreumName = oreum.oreumKname,
-                oreumLat = oreum.y,
-                oreumLng = oreum.x
+            oreumDetailInteractor.tryStamp(
+                OreumStampRequest(
+                    oreumIdx = oreum.idx.toString(),
+                    oreumName = oreum.oreumKname,
+                    latitude = oreum.y,
+                    longitude = oreum.x
+                )
             ).onSuccess {
                 refreshStampStatus(oreum.idx.toString())
                 _event.emit(DetailEvent.StampSuccess)
@@ -177,32 +122,33 @@ class DetailViewModel @Inject constructor(
     }
 
     fun clearError() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update(stateReducer::clearError)
     }
 
     fun onLocationPermissionResult(granted: Boolean) {
         viewModelScope.launch {
-            updateLocationPermissionUseCase(granted)
+            oreumDetailInteractor.updateLocationPermission(granted)
                 .onSuccess {
-                    _uiState.update { state ->
-                        state.copy(isLocationPermissionGranted = granted)
+                    _uiState.update {
+                        stateReducer.onLocationPermissionChanged(it, granted)
                     }
                 }
-                .onFailure { error ->
-                    _uiState.update { it.copy(errorMessage = error.message) }
-                }
+                .onFailure(::handleError)
         }
     }
 
     private fun loadLocationPermissionState() {
         viewModelScope.launch {
-            isLocationPermissionGrantedUseCase()
+            oreumDetailInteractor.loadLocationPermissionState()
                 .onSuccess { granted ->
-                    _uiState.update { it.copy(isLocationPermissionGranted = granted) }
-                }
-                .onFailure { error ->
-                    _uiState.update { it.copy(errorMessage = error.message) }
-                }
+                    _uiState.update {
+                        stateReducer.onLocationPermissionChanged(it, granted)
+                    }
+                }.onFailure(::handleError)
         }
+    }
+
+    private fun handleError(error: Throwable) {
+        _uiState.update { stateReducer.onError(it, error.message) }
     }
 }
