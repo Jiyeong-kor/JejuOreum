@@ -1,6 +1,5 @@
 package com.jeong.feature.main.presentation
 
-import android.net.Uri
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -26,7 +25,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.gson.Gson
 import com.jeong.feature.join.navigation.JoinNavigation
 import com.jeong.feature.join.navigation.joinScreen
 import com.jeong.feature.main.R
@@ -34,16 +32,15 @@ import com.jeong.feature.oreum.navigation.OreumNavigation
 import com.jeong.feature.oreum.presentation.detail.DetailRoute
 import com.jeong.feature.oreum.presentation.list.ListRoute
 import com.jeong.feature.oreum.presentation.map.MapRoute
+import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 import com.jeong.feature.oreum.presentation.profile.MyRoute
 import com.jeong.feature.oreum.presentation.review.WriteReviewRoute
 import com.jeong.feature.oreum.presentation.review.WriteReviewViewModel
-import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
 
 @Composable
 fun MainRoute(startDestination: String) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val gson = remember { Gson() }
     val navItems = remember { BottomNavigationItem.defaults }
     val currentRoute = backStackEntry?.destination?.route ?: startDestination
     val showBottomBar = navItems.any { it.route == currentRoute }
@@ -82,8 +79,7 @@ fun MainRoute(startDestination: String) {
             composable(OreumNavigation.LIST) {
                 ListRoute(
                     onItemClick = { oreum ->
-                        val json = Uri.encode(gson.toJson(oreum))
-                        navController.navigate(OreumNavigation.detailRoute(json))
+                        navController.navigateToDetail(oreum)
                     },
                     showToast = { message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -93,25 +89,22 @@ fun MainRoute(startDestination: String) {
             composable(OreumNavigation.MY) {
                 MyRoute(
                     onFavoriteItemClick = { oreum ->
-                        val json = Uri.encode(gson.toJson(oreum))
-                        navController.navigate(OreumNavigation.detailRoute(json))
+                        navController.navigateToDetail(oreum)
                     },
                     onNavigateToWriteReview = { idx, name ->
                         navController.navigate(OreumNavigation.writeReviewRoute(idx, name))
                     }
                 )
             }
-            composable(
-                route = "${OreumNavigation.DETAIL}/{${OreumNavigation.DETAIL_ARG}}",
-                arguments = listOf(
-                    navArgument(OreumNavigation.DETAIL_ARG) { type = NavType.StringType }
-                )
-            ) { entry ->
-                val json =
-                    entry.arguments?.getString(OreumNavigation.DETAIL_ARG) ?: return@composable
-                val oreum = gson.fromJson(json, OreumSummaryUiModel::class.java)
+            composable(OreumNavigation.DETAIL) { entry ->
+                val initialOreum = remember(entry, navController.previousBackStackEntry) {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.remove<OreumSummaryUiModel>(OreumNavigation.DETAIL_OREUM_KEY)
+                        ?: entry.savedStateHandle.get<OreumSummaryUiModel>(OreumNavigation.DETAIL_OREUM_KEY)
+                }
                 DetailRoute(
-                    initialOreum = oreum,
+                    initialOreum = initialOreum,
                     onNavigateToWriteReview = { idx, name ->
                         navController.navigate(OreumNavigation.writeReviewRoute(idx, name))
                     },
@@ -211,4 +204,11 @@ private fun NavController.navigateToRoot(route: String) {
         launchSingleTop = true
         restoreState = true
     }
+}
+
+private fun NavController.navigateToDetail(oreum: OreumSummaryUiModel) {
+    currentBackStackEntry
+        ?.savedStateHandle
+        ?.set(OreumNavigation.DETAIL_OREUM_KEY, oreum)
+    navigate(OreumNavigation.DETAIL)
 }

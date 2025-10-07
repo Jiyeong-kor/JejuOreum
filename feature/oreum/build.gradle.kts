@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.kotlin.plugin.compose)
+    kotlin("plugin.parcelize")
 }
 
 android {

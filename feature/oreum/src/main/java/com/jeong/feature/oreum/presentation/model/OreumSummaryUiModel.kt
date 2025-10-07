@@ -1,7 +1,10 @@
 package com.jeong.feature.oreum.presentation.model
 
+import android.os.Parcelable
 import com.jeong.domain.entity.ResultSummary
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class OreumSummaryUiModel(
     val idx: Int = -1,
     val oreumEname: String = "",
@@ -16,7 +19,7 @@ data class OreumSummaryUiModel(
     val totalStamps: Int = 0,
     val userLiked: Boolean = false,
     val userStamped: Boolean = false
-)
+) : Parcelable
 
 fun ResultSummary.toUiModel(): OreumSummaryUiModel = OreumSummaryUiModel(
     idx = idx,
