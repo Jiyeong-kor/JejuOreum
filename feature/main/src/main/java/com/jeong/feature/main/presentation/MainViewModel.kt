@@ -2,8 +2,9 @@ package com.jeong.feature.main.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.jeong.core.ui.viewmodel.BaseViewModel
-import com.jeong.core.utils.network.NetworkMonitor
 import com.jeong.core.utils.network.NetworkStatus
+import com.jeong.feature.main.domain.usecase.GetCurrentConnectivityStatusUseCase
+import com.jeong.feature.main.domain.usecase.ObserveConnectivityStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
@@ -11,7 +12,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val networkMonitor: NetworkMonitor
+    private val observeConnectivityStatusUseCase: ObserveConnectivityStatusUseCase,
+    private val getCurrentConnectivityStatusUseCase: GetCurrentConnectivityStatusUseCase
 ) : BaseViewModel<MainUiEvent, MainSideEffect, MainUiState>(MainUiState()) {
 
     init {
@@ -26,19 +28,19 @@ class MainViewModel @Inject constructor(
 
     private fun onRetry() {
         viewModelScope.launch {
-            val status = networkMonitor.getCurrentStatus()
+            val status = getCurrentConnectivityStatusUseCase()
             applyStatus(status, fromUser = true)
         }
     }
 
     private fun observeNetwork() {
         viewModelScope.launch {
-            networkMonitor.observe().collectLatest { status ->
+            observeConnectivityStatusUseCase().collectLatest { status ->
                 applyStatus(status)
             }
         }
         viewModelScope.launch {
-            val status = networkMonitor.getCurrentStatus()
+            val status = getCurrentConnectivityStatusUseCase()
             applyStatus(status)
         }
     }
