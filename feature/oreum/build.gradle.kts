@@ -1,34 +1,12 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.kotlin.plugin.compose)
+    id("jejuoreum.android.library")
+    id("jejuoreum.compose")
+    id("jejuoreum.hilt")
     kotlin("plugin.parcelize")
 }
 
 android {
-    namespace = "com.jeong.feature.oreum"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 23
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
-kotlin {
-    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
-    jvmToolchain(17)
+    namespace = "com.jeong.jejuoreum.feature.oreum"
 }
 
 dependencies {
@@ -44,7 +22,6 @@ dependencies {
     implementation(libs.coil3.coil)
     implementation(libs.coil3.coil.compose)
     implementation(libs.firebase.auth.ktx)
-    implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kakao.vectormap)
     implementation(libs.kotlinx.coroutines.core)
@@ -54,6 +31,5 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:utils"))
     implementation(project(":domain"))
-    ksp(libs.hilt.android.compiler)
     testImplementation(libs.junit)
 }

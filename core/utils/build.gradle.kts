@@ -1,9 +1,5 @@
 plugins {
-    kotlin("jvm")
-}
-
-kotlin {
-    jvmToolchain(17)
+    id("jejuoreum.kotlin.library")
 }
 
 dependencies {

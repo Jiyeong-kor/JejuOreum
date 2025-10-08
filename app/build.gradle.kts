@@ -1,23 +1,18 @@
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.kotlin.plugin.compose)
+    id("jejuoreum.android.application")
+    id("jejuoreum.compose")
+    id("jejuoreum.hilt")
     id("kotlin-parcelize")
 }
 
 android {
-    namespace = "com.jeong.jjoreum"
-    compileSdk = 36
+    namespace = "com.jeong.jejuoreum.app"
 
     defaultConfig {
         applicationId = "com.jeong.jjoreum"
-        minSdk = 23
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -44,34 +39,12 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    buildFeatures {
-        buildConfig = true
-        compose = true
-    }
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
-    jvmToolchain(17)
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
 }
 
 dependencies {
 
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    implementation(kotlin("test"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.core.ktx)
@@ -118,7 +91,6 @@ dependencies {
     implementation(project(":feature:splash"))
     implementation(project(":feature:join"))
     implementation(project(":feature:main"))
-    ksp(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.play.services)
     testImplementation(libs.kotlinx.coroutines.test)

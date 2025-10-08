@@ -1,6 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -27,13 +28,31 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "JejuOreum"
-include(":app")
-include(":domain")
-include(":data")
-include(":core:ui")
-include(":core:utils")
-include(":core:navigation")
-include(":feature:splash")
-include(":feature:oreum")
-include(":feature:join")
-include(":feature:main")
+
+include(
+    ":app",
+    ":core:common",
+    ":core:designsystem",
+    ":core:navigation",
+    ":core:testing",
+    ":core:ui",
+    ":core:utils",
+    ":data",
+    ":data:local",
+    ":data:oreum",
+    ":data:remote",
+    ":data:review",
+    ":data:user",
+    ":domain",
+    ":domain:oreum",
+    ":domain:review",
+    ":domain:user",
+    ":feature:detail",
+    ":feature:join",
+    ":feature:main",
+    ":feature:map",
+    ":feature:onboarding",
+    ":feature:oreum",
+    ":feature:profile",
+    ":feature:splash"
+)

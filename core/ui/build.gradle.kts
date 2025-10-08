@@ -1,18 +1,10 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.plugin.compose)
+    id("jejuoreum.android.library")
+    id("jejuoreum.compose")
 }
 
 android {
-    namespace = "com.jeong.core.ui"
-    compileSdk = 36
-    buildFeatures { compose = true }
-}
-
-kotlin {
-    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
-    jvmToolchain(17)
+    namespace = "com.jeong.jejuoreum.core.ui"
 }
 
 dependencies {
