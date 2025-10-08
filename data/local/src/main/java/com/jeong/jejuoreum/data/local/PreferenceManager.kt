@@ -1,0 +1,27 @@
+package com.jeong.jejuoreum.data.local
+
+import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import com.jeong.jejuoreum.data.local.PreferenceKeys.PREF_KEY_NICKNAME
+import javax.inject.Inject
+import kotlin.text.get
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+
+private val Context.dataStore by preferencesDataStore(name = "settings")
+
+class PreferenceManager @Inject constructor(context: Context) {
+    private val dataStore = context.dataStore
+    private val nicknameKey = stringPreferencesKey(PREF_KEY_NICKNAME)
+    val nicknameFlow = dataStore.data.map { it[nicknameKey] ?: "" }
+
+    suspend fun getNickname(): String = nicknameFlow.first()
+
+    suspend fun setNickname(nickname: String) {
+        dataStore.edit { it[nicknameKey] = nickname }
+    }
+
+    suspend fun isUserRegistered(): Boolean = getNickname().isNotBlank()
+}

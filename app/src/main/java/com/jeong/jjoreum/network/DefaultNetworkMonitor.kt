@@ -6,8 +6,8 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
-import com.jeong.core.utils.network.NetworkMonitor
-import com.jeong.core.utils.network.NetworkStatus
+import com.jeong.jejuoreum.data.remote.NetworkMonitor
+import com.jeong.jejuoreum.data.remote.NetworkStatus
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.channels.ProducerScope

@@ -1,7 +1,7 @@
 package com.jeong.feature.oreum.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.jeong.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.feature.oreum.domain.OreumOverviewInteractor
 import com.jeong.feature.oreum.domain.model.OreumOverview
 import com.jeong.feature.oreum.presentation.mapper.OreumUiMapper

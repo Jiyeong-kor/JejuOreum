@@ -1,7 +1,7 @@
 package com.jeong.feature.oreum.presentation.list
 
 import androidx.lifecycle.viewModelScope
-import com.jeong.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.core.utils.coroutines.CoroutineDispatcherProvider
 import com.jeong.domain.entity.ResultSummary
 import com.jeong.domain.usecase.ToggleFavoriteUseCase

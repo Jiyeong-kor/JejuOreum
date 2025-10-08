@@ -4,15 +4,15 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.data.local.PreferenceManager
+import com.jeong.jejuoreum.data.local.PreferenceManager
+import com.jeong.jejuoreum.data.local.PreferenceManager
+import com.jeong.jjoreum.network.DefaultNetworkMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import com.jeong.core.utils.network.NetworkMonitor
-import com.jeong.jjoreum.network.DefaultNetworkMonitor
 
 @Module
 @InstallIn(SingletonComponent::class)

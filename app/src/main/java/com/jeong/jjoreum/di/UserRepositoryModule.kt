@@ -1,9 +1,9 @@
 package com.jeong.jjoreum.di
 
-import com.jeong.data.repository.UserAuthRepositoryImpl
-import com.jeong.data.repository.UserProfileRepositoryImpl
-import com.jeong.domain.repository.UserAuthRepository
-import com.jeong.domain.repository.UserProfileRepository
+import com.jeong.jejuoreum.data.user.repository.UserAuthRepositoryImpl
+import com.jeong.jejuoreum.data.user.repository.UserProfileRepositoryImpl
+import com.jeong.jejuoreum.domain.user.repository.UserAuthRepository
+import com.jeong.jejuoreum.domain.user.repository.UserProfileRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

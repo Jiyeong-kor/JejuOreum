@@ -31,6 +31,4 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.play.services.basement)
     implementation(libs.timber)
-    implementation(project(":core:utils"))
-    implementation(project(":domain"))
 }
