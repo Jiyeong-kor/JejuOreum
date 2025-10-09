@@ -2,7 +2,6 @@ package com.jeong.jejuoreum.feature.map.presentation.map
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
@@ -13,6 +12,7 @@ import com.jeong.jejuoreum.domain.oreum.usecase.FindOreumByLocationUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase
 import com.jeong.jejuoreum.feature.map.presentation.model.toUiModel
+import com.jeong.jejuoreum.feature.map.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job

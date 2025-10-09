@@ -1,8 +1,5 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
-import com.jeong.jejuoreum.core.ui.state.UiEffect
-import com.jeong.jejuoreum.core.ui.state.UiEvent
-import com.jeong.jejuoreum.core.ui.state.UiState
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
@@ -14,7 +11,7 @@ data class MapUiState(
     val visiblePins: List<MapPinUi> = emptyList(),
     val selectedOreum: OreumSummaryUiModel? = null,
     val cameraSnapshot: CameraSnapshot? = null
-) : UiState {
+) {
     val isSearchPanelVisible: Boolean
         get() = panelState != MapPanelState.Hidden
 
@@ -31,7 +28,7 @@ sealed interface MapPanelState {
     data object NoResults : MapPanelState
 }
 
-sealed interface MapEvent : UiEvent {
+sealed interface MapEvent {
     data class SearchQueryChanged(val query: String) : MapEvent
     data class ViewportUpdated(val bounds: GeoBounds) : MapEvent
     data class MarkerSelected(val point: GeoPoint) : MapEvent
@@ -40,6 +37,6 @@ sealed interface MapEvent : UiEvent {
     data class CameraSaved(val center: GeoPoint, val zoomLevel: Int) : MapEvent
 }
 
-sealed interface MapEffect : UiEffect
+sealed interface MapEffect
 
 data class CameraSnapshot(val center: GeoPoint, val zoomLevel: Int)

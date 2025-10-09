@@ -8,6 +8,10 @@ plugins {
 android {
     namespace = "com.jeong.jejuoreum.data.remote"
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         val localProperties = Properties().apply {
             val file = rootProject.file("local.properties")

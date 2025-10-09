@@ -1,20 +1,17 @@
 package com.jeong.jejuoreum.feature.splash.presentation
 
-import com.jeong.jejuoreum.core.ui.state.UiEffect
-import com.jeong.jejuoreum.core.ui.state.UiEvent
-import com.jeong.jejuoreum.core.ui.state.UiState
 import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination
 
 data class SplashUiState(
     val isLoading: Boolean = true,
     val errorMessage: String? = null
-) : UiState
+) 
 
-sealed interface SplashUiEvent : UiEvent {
+sealed interface SplashUiEvent {
     data object Initialize : SplashUiEvent
     data object ErrorConsumed : SplashUiEvent
 }
 
-sealed interface SplashSideEffect : UiEffect {
+sealed interface SplashSideEffect {
     data class NavigateTo(val destination: SplashDestination) : SplashSideEffect
 }

@@ -10,4 +10,6 @@ android {
 
 dependencies {
     implementation(project(":core:navigation"))
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.kotlinx.coroutines.android)
 }

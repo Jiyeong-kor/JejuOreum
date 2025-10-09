@@ -1,11 +1,11 @@
 package com.jeong.jejuoreum.feature.map.presentation.oreum
 
 import androidx.lifecycle.viewModelScope
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.feature.map.domain.OreumOverviewInteractor
 import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
 import com.jeong.jejuoreum.feature.map.presentation.mapper.OreumUiMapper
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
+import com.jeong.jejuoreum.feature.map.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
