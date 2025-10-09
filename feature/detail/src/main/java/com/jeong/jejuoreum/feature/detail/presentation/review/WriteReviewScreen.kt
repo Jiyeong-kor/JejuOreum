@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.review
+package com.jeong.jejuoreum.feature.detail.presentation.review
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -37,8 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
-import com.jeong.jejuoreum.domain.entity.ReviewItem
-import com.jeong.jejuoreum.feature.oreum.R
+import com.jeong.jejuoreum.domain.review.entity.ReviewItem
+import com.jeong.jejuoreum.feature.detail.R
 
 @Composable
 fun WriteReviewRoute(

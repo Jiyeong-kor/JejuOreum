@@ -1,12 +1,12 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.profile.favorite
+package com.jeong.jejuoreum.feature.profile.presentation.profile.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.jejuoreum.domain.usecase.oreum.LoadOreumSummariesUseCase
-import com.jeong.jejuoreum.domain.usecase.oreum.ObserveFavoriteOreumsUseCase
-import com.jeong.jejuoreum.domain.usecase.oreum.RefreshOreumSummariesUseCase
-import com.jeong.jejuoreum.domain.usecase.oreum.ToggleFavoriteUseCase
-import com.jeong.jejuoreum.feature.oreum.presentation.model.toUiModel
+import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.ToggleFavoriteUseCase
+import com.jeong.jejuoreum.feature.map.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

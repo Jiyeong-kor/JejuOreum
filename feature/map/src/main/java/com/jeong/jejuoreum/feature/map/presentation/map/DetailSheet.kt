@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.map.presentation.map
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -14,9 +14,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.jeong.jejuoreum.feature.oreum.presentation.detail.DetailRoute
-import com.jeong.jejuoreum.feature.oreum.presentation.detail.DetailViewModel
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
+import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailViewModel
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.domain.model
+package com.jeong.jejuoreum.domain.user.model
 
 enum class NicknameValidationError {
     TOO_SHORT,

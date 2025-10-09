@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.domain.usecase
+package com.jeong.jejuoreum.domain.user.usecase
 
-import com.jeong.jejuoreum.domain.repository.UserAuthRepository
+import com.jeong.jejuoreum.domain.user.repository.UserAuthRepository
 
 class GetCurrentUserIdUseCase(
     private val userAuthRepository: UserAuthRepository,

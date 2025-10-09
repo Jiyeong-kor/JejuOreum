@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.domain.entity
+package com.jeong.jejuoreum.domain.oreum.entity
 
 /**
  * 사용자가 획득한 스탬프 정보를 저장하는 데이터 클래스

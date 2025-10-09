@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.domain.entity
+package com.jeong.jejuoreum.domain.oreum.entity
 
 data class ResultSummary(
     val idx: Int = -1,

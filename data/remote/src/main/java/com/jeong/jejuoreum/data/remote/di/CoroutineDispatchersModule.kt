@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.data.di
+package com.jeong.jejuoreum.data.remote.di
 
-import com.jeong.jejuoreum.core.utils.coroutines.CoroutineDispatcherProvider
-import com.jeong.jejuoreum.core.utils.coroutines.DefaultCoroutineDispatcherProvider
+import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
+import com.jeong.jejuoreum.core.common.coroutines.DefaultCoroutineDispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,10 +1,13 @@
-package com.jeong.jejuoreum.feature.main.presentation
+package com.jeong.jejuoreum.feature.map.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.jeong.jejuoreum.app.presentation.main.MainSideEffect
+import com.jeong.jejuoreum.app.presentation.main.MainUiEvent
+import com.jeong.jejuoreum.app.presentation.main.MainUiState
 import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
-import com.jeong.jejuoreum.core.utils.network.NetworkStatus
-import com.jeong.jejuoreum.feature.main.domain.usecase.GetCurrentConnectivityStatusUseCase
-import com.jeong.jejuoreum.feature.main.domain.usecase.ObserveConnectivityStatusUseCase
+import com.jeong.jejuoreum.data.remote.NetworkStatus
+import com.jeong.jejuoreum.feature.map.domain.usecase.GetCurrentConnectivityStatusUseCase
+import com.jeong.jejuoreum.feature.map.domain.usecase.ObserveConnectivityStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest

@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.data.datasource.remote
+package com.jeong.jejuoreum.data.remote.oreum.datasource
 
-import com.jeong.jejuoreum.domain.entity.ResultSummary
+import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers

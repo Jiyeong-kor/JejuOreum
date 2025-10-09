@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.domain.usecase
+package com.jeong.jejuoreum.domain.user.usecase
 
-import com.jeong.jejuoreum.domain.repository.UserProfileRepository
+import com.jeong.jejuoreum.domain.user.repository.UserProfileRepository
 
 class CheckNicknameAvailabilityUseCase(
     private val userProfileRepository: UserProfileRepository,

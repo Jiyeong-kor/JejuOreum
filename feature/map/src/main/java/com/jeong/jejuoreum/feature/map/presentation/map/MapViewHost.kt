@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.map.presentation.map
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

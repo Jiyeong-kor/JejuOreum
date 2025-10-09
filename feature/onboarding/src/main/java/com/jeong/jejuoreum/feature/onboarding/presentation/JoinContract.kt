@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.join.presentation
+package com.jeong.jejuoreum.feature.onboarding.presentation
 
 import com.jeong.jejuoreum.core.ui.state.UiEffect
 import com.jeong.jejuoreum.core.ui.state.UiEvent

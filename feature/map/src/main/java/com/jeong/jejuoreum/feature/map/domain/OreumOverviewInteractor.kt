@@ -1,9 +1,9 @@
-package com.jeong.jejuoreum.feature.oreum.domain
+package com.jeong.jejuoreum.feature.map.domain
 
-import com.jeong.jejuoreum.feature.oreum.domain.mapper.OreumOverviewMapper
-import com.jeong.jejuoreum.feature.oreum.domain.model.OreumOverview
-import com.jeong.jejuoreum.domain.usecase.GetOreumDetailUseCase
-import com.jeong.jejuoreum.domain.usecase.ObserveOreumsUseCase
+import com.jeong.jejuoreum.feature.map.domain.mapper.OreumOverviewMapper
+import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
+import com.jeong.jejuoreum.domain.oreum.usecase.GetOreumDetailUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumsUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.model
+package com.jeong.jejuoreum.feature.map.presentation.model
 
-import com.jeong.jejuoreum.domain.model.OreumDifficulty
+import com.jeong.jejuoreum.domain.oreum.model.OreumDifficulty
 
 data class OreumUiModel(
     val id: String,

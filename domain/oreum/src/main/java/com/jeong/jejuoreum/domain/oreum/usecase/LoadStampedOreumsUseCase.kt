@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.domain.usecase.oreum
+package com.jeong.jejuoreum.domain.oreum.usecase
 
-import com.jeong.jejuoreum.domain.entity.MyStampItem
-import com.jeong.jejuoreum.domain.repository.OreumRepository
+import com.jeong.jejuoreum.domain.oreum.entity.MyStampItem
+import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
 import javax.inject.Inject
 
 class LoadStampedOreumsUseCase @Inject constructor(

@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.map.presentation.map
 
-import com.jeong.jejuoreum.domain.entity.GeoBounds
-import com.jeong.jejuoreum.domain.entity.GeoPoint
+import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
+import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.kakao.vectormap.LatLng
 
 internal fun LatLng.asGeoPoint(): GeoPoint = GeoPoint(getLatitude(), getLongitude())

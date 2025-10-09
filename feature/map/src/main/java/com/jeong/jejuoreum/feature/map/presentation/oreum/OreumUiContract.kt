@@ -1,9 +1,9 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.viewmodel
+package com.jeong.jejuoreum.feature.map.presentation.viewmodel
 
 import com.jeong.jejuoreum.core.ui.state.UiEffect
 import com.jeong.jejuoreum.core.ui.state.UiEvent
 import com.jeong.jejuoreum.core.ui.state.UiState
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumUiModel
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
 
 sealed interface OreumEvent : UiEvent {
     data object ScreenInitialized : OreumEvent

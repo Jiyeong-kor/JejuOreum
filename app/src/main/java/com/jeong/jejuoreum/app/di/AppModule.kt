@@ -1,12 +1,12 @@
-package com.jeong.jejuoreum.di
+package com.jeong.jejuoreum.app.di
 
 import android.content.Context
 import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jeong.jejuoreum.app.network.DefaultNetworkMonitor
 import com.jeong.jejuoreum.data.local.PreferenceManager
-import com.jeong.jejuoreum.data.local.PreferenceManager
-import com.jeong.jejuoreum.network.DefaultNetworkMonitor
+import com.jeong.jejuoreum.data.remote.NetworkMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

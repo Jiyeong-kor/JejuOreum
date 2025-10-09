@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.domain.model
+package com.jeong.jejuoreum.feature.detail.domain.model
 
 data class OreumStampRequest(
     val oreumIdx: String,

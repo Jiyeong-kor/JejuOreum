@@ -1,9 +1,9 @@
-package com.jeong.jejuoreum.data.di
+package com.jeong.jejuoreum.data.user.di
 
 import com.jeong.jejuoreum.data.local.permission.PermissionLocalDataSource
 import com.jeong.jejuoreum.data.local.permission.PreferencePermissionLocalDataSource
-import com.jeong.jejuoreum.data.repository.PermissionRepositoryImpl
-import com.jeong.jejuoreum.domain.repository.PermissionRepository
+import com.jeong.jejuoreum.data.user.repository.PermissionRepositoryImpl
+import com.jeong.jejuoreum.domain.user.repository.PermissionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

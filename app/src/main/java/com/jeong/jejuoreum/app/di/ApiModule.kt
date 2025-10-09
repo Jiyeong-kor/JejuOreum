@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.di
+package com.jeong.jejuoreum.app.di
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,9 +7,9 @@ import coil3.ImageLoader
 import coil3.asImage
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.crossfade
+import com.jeong.jejuoreum.app.BuildConfig
+import com.jeong.jejuoreum.app.R
 import com.jeong.jejuoreum.data.remote.oreum.api.OreumRetrofitInterface
-import com.jeong.jejuoreum.BuildConfig
-import com.jeong.jejuoreum.R
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

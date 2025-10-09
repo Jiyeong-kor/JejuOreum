@@ -1,11 +1,11 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.review
+package com.jeong.jejuoreum.feature.detail.presentation.review
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.jeong.jejuoreum.domain.entity.ReviewItem
-import com.jeong.jejuoreum.domain.repository.ReviewRepository
+import com.jeong.jejuoreum.domain.review.entity.ReviewItem
+import com.jeong.jejuoreum.domain.review.repository.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

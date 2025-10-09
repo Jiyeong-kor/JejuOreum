@@ -1,11 +1,11 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.detail
+package com.jeong.jejuoreum.feature.detail.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jeong.jejuoreum.feature.oreum.domain.OreumDetailInteractor
-import com.jeong.jejuoreum.feature.oreum.domain.model.OreumStampRequest
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
-import com.jeong.jejuoreum.feature.oreum.presentation.model.toUiModel
+import com.jeong.jejuoreum.feature.detail.domain.OreumDetailInteractor
+import com.jeong.jejuoreum.feature.detail.domain.model.OreumStampRequest
+import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.feature.detail.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,10 +1,10 @@
-package com.jeong.jejuoreum.data.repository
+package com.jeong.jejuoreum.data.review.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jejuoreum.domain.entity.ReviewItem
-import com.jeong.jejuoreum.domain.repository.ReviewRepository
-import com.jeong.jejuoreum.data.FirestoreConstants
+import com.jeong.jejuoreum.data.remote.firestore.FirestoreConstants
+import com.jeong.jejuoreum.domain.review.entity.ReviewItem
+import com.jeong.jejuoreum.domain.review.repository.ReviewRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton

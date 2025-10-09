@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.domain.repository
+package com.jeong.jejuoreum.domain.user.repository
 
-import com.jeong.jejuoreum.domain.entity.UserAccount
+import com.jeong.jejuoreum.domain.user.entity.UserAccount
 
 interface UserProfileRepository {
     suspend fun isNicknameAvailable(nickname: String): Result<Boolean>

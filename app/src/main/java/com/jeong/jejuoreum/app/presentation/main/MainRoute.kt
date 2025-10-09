@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.main.presentation
+package com.jeong.jejuoreum.app.presentation.main
 
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -25,17 +25,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jeong.jejuoreum.feature.join.navigation.JoinNavigation
-import com.jeong.jejuoreum.feature.join.navigation.joinScreen
-import com.jeong.jejuoreum.feature.main.R
-import com.jeong.jejuoreum.feature.oreum.navigation.OreumNavigation
-import com.jeong.jejuoreum.feature.oreum.presentation.detail.DetailRoute
-import com.jeong.jejuoreum.feature.oreum.presentation.list.ListRoute
-import com.jeong.jejuoreum.feature.oreum.presentation.map.MapRoute
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
-import com.jeong.jejuoreum.feature.oreum.presentation.profile.MyRoute
-import com.jeong.jejuoreum.feature.oreum.presentation.review.WriteReviewRoute
-import com.jeong.jejuoreum.feature.oreum.presentation.review.WriteReviewViewModel
+import com.jeong.jejuoreum.app.R
+import com.jeong.jejuoreum.core.navigation.OreumNavigation
+import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
+import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewRoute
+import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewViewModel
+import com.jeong.jejuoreum.feature.map.presentation.map.MapRoute
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.feature.onboarding.navigation.JoinNavigation
+import com.jeong.jejuoreum.feature.onboarding.navigation.joinScreen
+import com.jeong.jejuoreum.feature.profile.presentation.profile.MyRoute
 
 @Composable
 fun MainRoute(startDestination: String) {
@@ -77,11 +76,8 @@ fun MainRoute(startDestination: String) {
                 )
             }
             composable(OreumNavigation.LIST) {
-                ListRoute(
-                    onItemClick = { oreum ->
-                        navController.navigateToDetail(oreum)
-                    },
-                    showToast = { message ->
+                ListPlaceholderRoute(
+                    onShowMessage = { message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 )
@@ -196,6 +192,14 @@ private data class BottomNavigationItem(
                 ),
             )
     }
+}
+
+@Composable
+private fun ListPlaceholderRoute(onShowMessage: (String) -> Unit) {
+    LaunchedEffect(Unit) {
+        onShowMessage("List feature migration pending")
+    }
+    Text(text = "List feature migration pending")
 }
 
 private fun NavController.navigateToRoot(route: String) {

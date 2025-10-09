@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.feature.main.domain.usecase
+package com.jeong.jejuoreum.feature.map.domain.usecase
 
-import com.jeong.jejuoreum.core.utils.network.NetworkStatus
-import com.jeong.jejuoreum.feature.main.domain.repository.ConnectivityRepository
+import com.jeong.jejuoreum.data.remote.NetworkStatus
+import com.jeong.jejuoreum.feature.map.domain.repository.ConnectivityRepository
 import javax.inject.Inject
 
 class GetCurrentConnectivityStatusUseCase @Inject constructor(

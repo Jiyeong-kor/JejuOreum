@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.profile.favorite
+package com.jeong.jejuoreum.feature.profile.presentation.profile.favorite
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,9 +20,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jeong.jejuoreum.feature.oreum.R
-import com.jeong.jejuoreum.feature.oreum.presentation.list.OreumListItem
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.feature.profile.R
+import com.jeong.jejuoreum.feature.profile.presentation.list.OreumListItem
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
 
 @Composable
 fun MyFavoriteScreen(

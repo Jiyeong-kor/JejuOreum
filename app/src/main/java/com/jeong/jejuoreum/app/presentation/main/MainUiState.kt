@@ -1,9 +1,9 @@
-package com.jeong.jejuoreum.feature.main.presentation
+package com.jeong.jejuoreum.app.presentation.main
 
 import com.jeong.jejuoreum.core.ui.state.UiEffect
 import com.jeong.jejuoreum.core.ui.state.UiEvent
 import com.jeong.jejuoreum.core.ui.state.UiState
-import com.jeong.jejuoreum.core.utils.network.NetworkStatus
+import com.jeong.jejuoreum.data.remote.NetworkStatus
 
 data class MainUiState(
     val networkStatus: NetworkStatus = NetworkStatus.Unknown,

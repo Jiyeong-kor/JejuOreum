@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.domain.repository
+package com.jeong.jejuoreum.domain.oreum.repository
 
 interface StampRepository {
     suspend fun tryStamp(

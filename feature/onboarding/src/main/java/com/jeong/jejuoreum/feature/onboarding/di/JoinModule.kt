@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.join.di
+package com.jeong.jejuoreum.feature.onboarding.di
 
 import com.jeong.jejuoreum.domain.user.repository.UserAuthRepository
 import com.jeong.jejuoreum.domain.user.repository.UserProfileRepository

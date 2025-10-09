@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.model
+package com.jeong.jejuoreum.feature.map.presentation.model
 
 import android.os.Parcelable
-import com.jeong.jejuoreum.domain.entity.ResultSummary
+import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

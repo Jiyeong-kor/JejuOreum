@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.map.presentation.map
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,8 +28,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.jeong.jejuoreum.feature.oreum.R
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.feature.map.R
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
 
 @Composable
 fun SearchPanel(

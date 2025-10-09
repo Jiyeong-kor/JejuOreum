@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.api
+package com.jeong.jejuoreum.data.remote.oreum.api
 
 import retrofit2.Response
 import retrofit2.http.GET

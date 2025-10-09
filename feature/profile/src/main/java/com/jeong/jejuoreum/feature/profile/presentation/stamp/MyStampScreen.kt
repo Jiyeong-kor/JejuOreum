@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.profile.stamp
+package com.jeong.jejuoreum.feature.profile.presentation.profile.stamp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jeong.jejuoreum.domain.entity.MyStampItem
-import com.jeong.jejuoreum.feature.oreum.R
+import com.jeong.jejuoreum.domain.oreum.entity.MyStampItem
+import com.jeong.jejuoreum.feature.profile.R
 
 @Composable
 fun MyStampScreen(

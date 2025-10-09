@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.detail
+package com.jeong.jejuoreum.feature.detail.presentation.detail
 
-import com.jeong.jejuoreum.domain.entity.ReviewItem
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.domain.review.entity.ReviewItem
+import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel
 import javax.inject.Inject
 
 class DetailStateReducer @Inject constructor() {

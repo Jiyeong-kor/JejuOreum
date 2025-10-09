@@ -50,5 +50,3 @@ include(
     ":feature:profile",
     ":feature:splash"
 )
-include(":feature:detail")
-include(":feature:map")

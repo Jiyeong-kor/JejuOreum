@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.domain.entity
+package com.jeong.jejuoreum.domain.review.entity
 
 data class ReviewItem(
     val userId: String = "",

@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.detail
+package com.jeong.jejuoreum.feature.detail.presentation.detail
 
 import android.Manifest
 import android.R.drawable.ic_menu_delete
@@ -46,9 +46,9 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.jeong.jejuoreum.domain.entity.ReviewItem
-import com.jeong.jejuoreum.feature.oreum.R
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.domain.review.entity.ReviewItem
+import com.jeong.jejuoreum.feature.detail.R
+import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

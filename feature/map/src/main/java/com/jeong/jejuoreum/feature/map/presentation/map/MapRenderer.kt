@@ -1,8 +1,8 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.map.presentation.map
 
-import com.jeong.jejuoreum.domain.entity.GeoPoint
-import com.jeong.jejuoreum.domain.entity.quantized
-import com.jeong.jejuoreum.feature.oreum.R
+import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
+import com.jeong.jejuoreum.domain.oreum.entity.quantized
+import com.jeong.jejuoreum.feature.map.R
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraUpdateFactory

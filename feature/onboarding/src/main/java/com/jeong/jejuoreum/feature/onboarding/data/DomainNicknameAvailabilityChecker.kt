@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.feature.join.data
+package com.jeong.jejuoreum.feature.onboarding.data
 
 import com.jeong.jejuoreum.domain.user.usecase.CheckNicknameAvailabilityUseCase
-import com.jeong.jejuoreum.feature.join.domain.NicknameAvailabilityChecker
+import com.jeong.jejuoreum.feature.onboarding.domain.NicknameAvailabilityChecker
 import javax.inject.Inject
 
 class DomainNicknameAvailabilityChecker @Inject constructor(

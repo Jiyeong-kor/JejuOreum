@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.feature.splash.di
 
-import com.jeong.jejuoreum.domain.repository.OreumRepository
-import com.jeong.jejuoreum.domain.usecase.oreum.PreloadOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
+import com.jeong.jejuoreum.domain.oreum.usecase.PreloadOreumSummariesUseCase
 import com.jeong.jejuoreum.feature.splash.domain.SplashInitializer
 import com.jeong.jejuoreum.feature.splash.domain.UserStatusChecker
 import com.jeong.jejuoreum.feature.splash.domain.usecase.PrepareSplashUseCase

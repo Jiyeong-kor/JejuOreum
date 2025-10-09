@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum
+package com.jeong.jejuoreum.app
 
 import android.app.Application
 import android.content.Context

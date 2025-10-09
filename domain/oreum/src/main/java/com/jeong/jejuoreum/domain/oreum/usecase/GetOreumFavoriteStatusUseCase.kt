@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.domain.usecase.oreum
+package com.jeong.jejuoreum.domain.oreum.usecase
 
-import com.jeong.jejuoreum.domain.repository.UserInteractionRepository
+import com.jeong.jejuoreum.domain.user.repository.UserInteractionRepository
 import javax.inject.Inject
 
 class GetOreumFavoriteStatusUseCase @Inject constructor(

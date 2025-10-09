@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.domain.repository
+package com.jeong.jejuoreum.domain.user.repository
 
 interface PermissionRepository {
     suspend fun isLocationPermissionGranted(): Result<Boolean>

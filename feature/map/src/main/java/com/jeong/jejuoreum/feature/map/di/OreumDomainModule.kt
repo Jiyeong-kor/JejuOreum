@@ -1,9 +1,9 @@
-package com.jeong.jejuoreum.feature.oreum.di
+package com.jeong.jejuoreum.feature.map.di
 
-import com.jeong.jejuoreum.feature.oreum.domain.DefaultOreumDetailInteractor
-import com.jeong.jejuoreum.feature.oreum.domain.DefaultOreumOverviewInteractor
-import com.jeong.jejuoreum.feature.oreum.domain.OreumDetailInteractor
-import com.jeong.jejuoreum.feature.oreum.domain.OreumOverviewInteractor
+import com.jeong.jejuoreum.feature.detail.domain.DefaultOreumDetailInteractor
+import com.jeong.jejuoreum.feature.detail.domain.OreumDetailInteractor
+import com.jeong.jejuoreum.feature.map.domain.DefaultOreumOverviewInteractor
+import com.jeong.jejuoreum.feature.map.domain.OreumOverviewInteractor
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.feature.oreum.presentation.mapper
+package com.jeong.jejuoreum.feature.map.presentation.mapper
 
-import com.jeong.jejuoreum.feature.oreum.domain.model.OreumOverview
-import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumUiModel
+import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
 import javax.inject.Inject
 
 class OreumUiMapper @Inject constructor() {

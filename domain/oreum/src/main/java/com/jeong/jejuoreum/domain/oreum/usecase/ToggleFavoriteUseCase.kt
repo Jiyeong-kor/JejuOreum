@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.domain.usecase.oreum
+package com.jeong.jejuoreum.domain.oreum.usecase
 
-import com.jeong.jejuoreum.domain.repository.OreumRepository
-import com.jeong.jejuoreum.domain.repository.UserInteractionRepository
+import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
+import com.jeong.jejuoreum.domain.user.repository.UserInteractionRepository
 
 class ToggleFavoriteUseCase(
     private val userInteractionRepository: UserInteractionRepository,

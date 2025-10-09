@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.splash.domain.usecase
 
-import com.jeong.jejuoreum.domain.usecase.oreum.PreloadOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.PreloadOreumSummariesUseCase
 import com.jeong.jejuoreum.feature.splash.domain.SplashInitializer
 import com.jeong.jejuoreum.feature.splash.domain.UserStatusChecker
 import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination

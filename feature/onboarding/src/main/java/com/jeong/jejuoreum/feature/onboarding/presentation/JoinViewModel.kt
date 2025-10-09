@@ -1,12 +1,12 @@
-package com.jeong.jejuoreum.feature.join.presentation
+package com.jeong.jejuoreum.feature.onboarding.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
-import com.jeong.jejuoreum.feature.join.domain.AnonymousUserInitializer
-import com.jeong.jejuoreum.feature.join.domain.NicknameAvailabilityChecker
-import com.jeong.jejuoreum.feature.join.domain.NicknameSaver
-import com.jeong.jejuoreum.feature.join.domain.NicknameValidator
+import com.jeong.jejuoreum.feature.onboarding.domain.AnonymousUserInitializer
+import com.jeong.jejuoreum.feature.onboarding.domain.NicknameAvailabilityChecker
+import com.jeong.jejuoreum.feature.onboarding.domain.NicknameSaver
+import com.jeong.jejuoreum.feature.onboarding.domain.NicknameValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job

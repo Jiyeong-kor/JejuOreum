@@ -1,16 +1,16 @@
-package com.jeong.jejuoreum.feature.oreum.di
+package com.jeong.jejuoreum.feature.map.di
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jejuoreum.data.repository.OreumRepositoryImpl
-import com.jeong.jejuoreum.data.repository.ReviewRepositoryImpl
-import com.jeong.jejuoreum.data.repository.StampRepositoryImpl
-import com.jeong.jejuoreum.data.repository.UserInteractionRepositoryImpl
-import com.jeong.jejuoreum.domain.repository.OreumRepository
-import com.jeong.jejuoreum.domain.repository.ReviewRepository
-import com.jeong.jejuoreum.domain.repository.StampRepository
-import com.jeong.jejuoreum.domain.repository.UserInteractionRepository
+import com.jeong.jejuoreum.data.oreum.repository.OreumRepositoryImpl
+import com.jeong.jejuoreum.data.review.repository.ReviewRepositoryImpl
+import com.jeong.jejuoreum.data.oreum.repository.StampRepositoryImpl
+import com.jeong.jejuoreum.data.user.repository.UserInteractionRepositoryImpl
+import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
+import com.jeong.jejuoreum.domain.review.repository.ReviewRepository
+import com.jeong.jejuoreum.domain.oreum.repository.StampRepository
+import com.jeong.jejuoreum.domain.user.repository.UserInteractionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

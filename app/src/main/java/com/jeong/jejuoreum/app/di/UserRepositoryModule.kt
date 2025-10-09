@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.di
+package com.jeong.jejuoreum.app.di
 
 import com.jeong.jejuoreum.data.user.repository.UserAuthRepositoryImpl
 import com.jeong.jejuoreum.data.user.repository.UserProfileRepositoryImpl

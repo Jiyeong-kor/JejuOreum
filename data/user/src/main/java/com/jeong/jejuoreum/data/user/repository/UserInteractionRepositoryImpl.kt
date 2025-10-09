@@ -1,11 +1,11 @@
-package com.jeong.jejuoreum.data.repository
+package com.jeong.jejuoreum.data.user.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
-import com.jeong.jejuoreum.domain.repository.UserInteractionRepository
-import com.jeong.jejuoreum.data.FirestoreConstants
+import com.jeong.jejuoreum.data.remote.firestore.FirestoreConstants
+import com.jeong.jejuoreum.domain.user.repository.UserInteractionRepository
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject

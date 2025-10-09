@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.presentation.ui.main
+package com.jeong.jejuoreum.app.presentation.main
 
 import android.os.Bundle
 import android.widget.Toast
@@ -16,9 +16,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.ui.dialog.NetworkDialog
 import com.jeong.jejuoreum.core.ui.theme.JJOreumTheme
-import com.jeong.jejuoreum.feature.map.presentation.MainRoute
-import com.jeong.jejuoreum.feature.map.presentation.MainSideEffect
-import com.jeong.jejuoreum.feature.map.presentation.MainUiEvent
+import com.jeong.jejuoreum.feature.map.presentation.MainViewModel
 import com.jeong.jejuoreum.feature.onboarding.navigation.JoinNavigation
 import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination
 import com.jeong.jejuoreum.feature.splash.presentation.SplashSideEffect

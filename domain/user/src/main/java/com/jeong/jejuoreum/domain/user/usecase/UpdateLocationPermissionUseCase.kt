@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.domain.usecase
+package com.jeong.jejuoreum.domain.user.usecase
 
-import com.jeong.jejuoreum.domain.repository.PermissionRepository
+import com.jeong.jejuoreum.domain.user.repository.PermissionRepository
 
 class UpdateLocationPermissionUseCase(
     private val permissionRepository: PermissionRepository,

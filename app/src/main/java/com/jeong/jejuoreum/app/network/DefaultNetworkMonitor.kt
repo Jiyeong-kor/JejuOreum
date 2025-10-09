@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.network
+package com.jeong.jejuoreum.app.network
 
 import android.content.Context
 import android.net.ConnectivityManager

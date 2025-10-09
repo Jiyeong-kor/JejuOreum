@@ -1,8 +1,8 @@
-package com.jeong.jejuoreum.data.repository
+package com.jeong.jejuoreum.data.user.repository
 
 import com.google.firebase.auth.FirebaseAuth
-import com.jeong.jejuoreum.domain.entity.UserAccount
-import com.jeong.jejuoreum.domain.repository.UserAuthRepository
+import com.jeong.jejuoreum.domain.user.entity.UserAccount
+import com.jeong.jejuoreum.domain.user.repository.UserAuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await

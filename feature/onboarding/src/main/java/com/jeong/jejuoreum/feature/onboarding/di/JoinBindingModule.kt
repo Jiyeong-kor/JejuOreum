@@ -1,13 +1,13 @@
-package com.jeong.jejuoreum.feature.join.di
+package com.jeong.jejuoreum.feature.onboarding.di
 
-import com.jeong.jejuoreum.feature.join.data.DomainAnonymousUserInitializer
-import com.jeong.jejuoreum.feature.join.data.DomainNicknameAvailabilityChecker
-import com.jeong.jejuoreum.feature.join.data.DomainNicknameSaver
-import com.jeong.jejuoreum.feature.join.data.DomainNicknameValidator
-import com.jeong.jejuoreum.feature.join.domain.AnonymousUserInitializer
-import com.jeong.jejuoreum.feature.join.domain.NicknameAvailabilityChecker
-import com.jeong.jejuoreum.feature.join.domain.NicknameSaver
-import com.jeong.jejuoreum.feature.join.domain.NicknameValidator
+import com.jeong.jejuoreum.feature.onboarding.data.DomainAnonymousUserInitializer
+import com.jeong.jejuoreum.feature.onboarding.data.DomainNicknameAvailabilityChecker
+import com.jeong.jejuoreum.feature.onboarding.data.DomainNicknameSaver
+import com.jeong.jejuoreum.feature.onboarding.data.DomainNicknameValidator
+import com.jeong.jejuoreum.feature.onboarding.domain.AnonymousUserInitializer
+import com.jeong.jejuoreum.feature.onboarding.domain.NicknameAvailabilityChecker
+import com.jeong.jejuoreum.feature.onboarding.domain.NicknameSaver
+import com.jeong.jejuoreum.feature.onboarding.domain.NicknameValidator
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
