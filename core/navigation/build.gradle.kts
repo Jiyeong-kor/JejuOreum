@@ -8,11 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:detail"))
-    implementation(project(":feature:map"))
-    implementation(project(":feature:onboarding"))
-    implementation(project(":feature:profile"))
-
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
