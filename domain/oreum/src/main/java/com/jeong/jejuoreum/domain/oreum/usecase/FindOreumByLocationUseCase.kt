@@ -1,8 +1,8 @@
-package com.jeong.domain.usecase.oreum
+package com.jeong.jejuoreum.domain.usecase.oreum
 
-import com.jeong.domain.entity.GeoPoint
-import com.jeong.domain.entity.ResultSummary
-import com.jeong.domain.entity.quantized
+import com.jeong.jejuoreum.domain.entity.GeoPoint
+import com.jeong.jejuoreum.domain.entity.ResultSummary
+import com.jeong.jejuoreum.domain.entity.quantized
 import javax.inject.Inject
 
 class FindOreumByLocationUseCase @Inject constructor() {

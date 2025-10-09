@@ -1,11 +1,11 @@
-package com.jeong.feature.join.di
+package com.jeong.jejuoreum.feature.join.di
 
-import com.jeong.domain.repository.UserAuthRepository
-import com.jeong.domain.repository.UserProfileRepository
-import com.jeong.domain.usecase.CheckNicknameAvailabilityUseCase
-import com.jeong.domain.usecase.EnsureAnonymousUserUseCase
-import com.jeong.domain.usecase.SaveNicknameUseCase
-import com.jeong.domain.usecase.ValidateNicknameUseCase
+import com.jeong.jejuoreum.domain.user.repository.UserAuthRepository
+import com.jeong.jejuoreum.domain.user.repository.UserProfileRepository
+import com.jeong.jejuoreum.domain.user.usecase.CheckNicknameAvailabilityUseCase
+import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
+import com.jeong.jejuoreum.domain.user.usecase.SaveNicknameUseCase
+import com.jeong.jejuoreum.domain.user.usecase.ValidateNicknameUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

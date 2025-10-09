@@ -1,10 +1,10 @@
-package com.jeong.feature.splash.di
+package com.jeong.jejuoreum.feature.splash.di
 
-import com.jeong.domain.repository.OreumRepository
-import com.jeong.domain.usecase.oreum.PreloadOreumSummariesUseCase
-import com.jeong.feature.splash.domain.SplashInitializer
-import com.jeong.feature.splash.domain.UserStatusChecker
-import com.jeong.feature.splash.domain.usecase.PrepareSplashUseCase
+import com.jeong.jejuoreum.domain.repository.OreumRepository
+import com.jeong.jejuoreum.domain.usecase.oreum.PreloadOreumSummariesUseCase
+import com.jeong.jejuoreum.feature.splash.domain.SplashInitializer
+import com.jeong.jejuoreum.feature.splash.domain.UserStatusChecker
+import com.jeong.jejuoreum.feature.splash.domain.usecase.PrepareSplashUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

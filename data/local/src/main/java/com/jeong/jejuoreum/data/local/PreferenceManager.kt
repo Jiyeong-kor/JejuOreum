@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.jeong.jejuoreum.data.local.PreferenceKeys.PREF_KEY_NICKNAME
 import javax.inject.Inject
-import kotlin.text.get
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

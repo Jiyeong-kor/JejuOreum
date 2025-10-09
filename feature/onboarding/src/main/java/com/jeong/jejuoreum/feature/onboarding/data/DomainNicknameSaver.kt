@@ -1,7 +1,7 @@
-package com.jeong.feature.join.data
+package com.jeong.jejuoreum.feature.join.data
 
-import com.jeong.domain.usecase.SaveNicknameUseCase
-import com.jeong.feature.join.domain.NicknameSaver
+import com.jeong.jejuoreum.domain.user.usecase.SaveNicknameUseCase
+import com.jeong.jejuoreum.feature.join.domain.NicknameSaver
 import javax.inject.Inject
 
 class DomainNicknameSaver @Inject constructor(

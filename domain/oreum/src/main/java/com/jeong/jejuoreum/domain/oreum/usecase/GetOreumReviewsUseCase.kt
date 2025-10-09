@@ -1,7 +1,7 @@
-package com.jeong.domain.usecase.oreum
+package com.jeong.jejuoreum.domain.usecase.oreum
 
-import com.jeong.domain.entity.ReviewItem
-import com.jeong.domain.repository.ReviewRepository
+import com.jeong.jejuoreum.domain.entity.ReviewItem
+import com.jeong.jejuoreum.domain.repository.ReviewRepository
 import javax.inject.Inject
 
 class GetOreumReviewsUseCase @Inject constructor(

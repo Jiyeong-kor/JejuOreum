@@ -1,4 +1,4 @@
-package com.jeong.domain.entity
+package com.jeong.jejuoreum.domain.entity
 
 import kotlin.math.pow
 import kotlin.math.round

@@ -1,9 +1,9 @@
-package com.jeong.feature.join.presentation
+package com.jeong.jejuoreum.feature.join.presentation
 
-import com.jeong.core.ui.state.UiEffect
-import com.jeong.core.ui.state.UiEvent
-import com.jeong.core.ui.state.UiState
-import com.jeong.domain.model.NicknameValidationResult
+import com.jeong.jejuoreum.core.ui.state.UiEffect
+import com.jeong.jejuoreum.core.ui.state.UiEvent
+import com.jeong.jejuoreum.core.ui.state.UiState
+import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
 
 sealed interface NicknameAvailabilityState {
     data object Idle : NicknameAvailabilityState

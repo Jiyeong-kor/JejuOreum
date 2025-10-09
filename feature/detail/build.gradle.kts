@@ -7,3 +7,7 @@ plugins {
 android {
     namespace = "com.jeong.jejuoreum.feature.detail"
 }
+
+dependencies {
+    implementation(project(":core:designsystem"))
+}

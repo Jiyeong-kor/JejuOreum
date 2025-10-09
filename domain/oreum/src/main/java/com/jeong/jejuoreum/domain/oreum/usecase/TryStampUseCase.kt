@@ -1,6 +1,6 @@
-package com.jeong.domain.usecase.oreum
+package com.jeong.jejuoreum.domain.usecase.oreum
 
-import com.jeong.domain.repository.StampRepository
+import com.jeong.jejuoreum.domain.repository.StampRepository
 import javax.inject.Inject
 
 class TryStampUseCase @Inject constructor(

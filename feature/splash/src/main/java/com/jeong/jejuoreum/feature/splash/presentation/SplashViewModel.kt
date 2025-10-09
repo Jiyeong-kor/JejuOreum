@@ -1,8 +1,8 @@
-package com.jeong.feature.splash.presentation
+package com.jeong.jejuoreum.feature.splash.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.jeong.core.ui.viewmodel.BaseViewModel
-import com.jeong.feature.splash.domain.usecase.PrepareSplashUseCase
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.feature.splash.domain.usecase.PrepareSplashUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch

@@ -1,9 +1,9 @@
-package com.jeong.feature.splash.data
+package com.jeong.jejuoreum.feature.splash.data
 
 import android.content.Context
 import com.google.android.gms.security.ProviderInstaller
-import com.jeong.feature.splash.BuildConfig
-import com.jeong.feature.splash.domain.SplashInitializer
+import com.jeong.jejuoreum.feature.splash.BuildConfig
+import com.jeong.jejuoreum.feature.splash.domain.SplashInitializer
 import com.kakao.vectormap.KakaoMapSdk
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber

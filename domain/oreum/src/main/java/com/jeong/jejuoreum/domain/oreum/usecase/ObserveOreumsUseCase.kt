@@ -1,7 +1,7 @@
-package com.jeong.domain.usecase
+package com.jeong.jejuoreum.domain.usecase
 
-import com.jeong.domain.model.Oreum
-import com.jeong.domain.repository.OreumRepository
+import com.jeong.jejuoreum.domain.model.Oreum
+import com.jeong.jejuoreum.domain.repository.OreumRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

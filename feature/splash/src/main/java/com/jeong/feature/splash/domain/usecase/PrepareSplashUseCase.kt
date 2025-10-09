@@ -1,9 +1,9 @@
-package com.jeong.feature.splash.domain.usecase
+package com.jeong.jejuoreum.feature.splash.domain.usecase
 
-import com.jeong.domain.usecase.oreum.PreloadOreumSummariesUseCase
-import com.jeong.feature.splash.domain.SplashInitializer
-import com.jeong.feature.splash.domain.UserStatusChecker
-import com.jeong.feature.splash.domain.model.SplashDestination
+import com.jeong.jejuoreum.domain.usecase.oreum.PreloadOreumSummariesUseCase
+import com.jeong.jejuoreum.feature.splash.domain.SplashInitializer
+import com.jeong.jejuoreum.feature.splash.domain.UserStatusChecker
+import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination
 import javax.inject.Inject
 
 class PrepareSplashUseCase @Inject constructor(

@@ -1,7 +1,7 @@
-package com.jeong.feature.join.data
+package com.jeong.jejuoreum.feature.join.data
 
-import com.jeong.domain.usecase.ValidateNicknameUseCase
-import com.jeong.feature.join.domain.NicknameValidator
+import com.jeong.jejuoreum.domain.user.usecase.ValidateNicknameUseCase
+import com.jeong.jejuoreum.feature.join.domain.NicknameValidator
 import javax.inject.Inject
 
 class DomainNicknameValidator @Inject constructor(

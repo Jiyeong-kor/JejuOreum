@@ -1,7 +1,7 @@
-package com.jeong.data.repository
+package com.jeong.jejuoreum.data.repository
 
-import com.jeong.data.local.permission.PermissionLocalDataSource
-import com.jeong.domain.repository.PermissionRepository
+import com.jeong.jejuoreum.data.local.permission.PermissionLocalDataSource
+import com.jeong.jejuoreum.domain.repository.PermissionRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -1,7 +1,7 @@
-package com.jeong.data.api
+package com.jeong.jejuoreum.data.api
 
 import com.google.gson.annotations.SerializedName
-import com.jeong.domain.entity.ResultSummary
+import com.jeong.jejuoreum.domain.entity.ResultSummary
 
 data class OreumData(
     val resultCode: String,

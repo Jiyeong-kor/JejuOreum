@@ -1,7 +1,7 @@
-package com.jeong.domain.usecase
+package com.jeong.jejuoreum.domain.usecase
 
-import com.jeong.domain.entity.UserAccount
-import com.jeong.domain.repository.UserProfileRepository
+import com.jeong.jejuoreum.domain.entity.UserAccount
+import com.jeong.jejuoreum.domain.repository.UserProfileRepository
 
 class SaveNicknameUseCase(
     private val userProfileRepository: UserProfileRepository,

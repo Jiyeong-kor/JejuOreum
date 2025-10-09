@@ -1,8 +1,8 @@
-package com.jeong.domain.repository
+package com.jeong.jejuoreum.domain.repository
 
-import com.jeong.domain.entity.ResultSummary
-import com.jeong.domain.error.DomainError
-import com.jeong.domain.model.Oreum
+import com.jeong.jejuoreum.domain.entity.ResultSummary
+import com.jeong.jejuoreum.domain.error.DomainError
+import com.jeong.jejuoreum.domain.model.Oreum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 

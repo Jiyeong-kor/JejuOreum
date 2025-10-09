@@ -1,10 +1,10 @@
-package com.jeong.feature.main.presentation
+package com.jeong.jejuoreum.feature.main.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.jeong.core.ui.viewmodel.BaseViewModel
-import com.jeong.core.utils.network.NetworkStatus
-import com.jeong.feature.main.domain.usecase.GetCurrentConnectivityStatusUseCase
-import com.jeong.feature.main.domain.usecase.ObserveConnectivityStatusUseCase
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.core.utils.network.NetworkStatus
+import com.jeong.jejuoreum.feature.main.domain.usecase.GetCurrentConnectivityStatusUseCase
+import com.jeong.jejuoreum.feature.main.domain.usecase.ObserveConnectivityStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest

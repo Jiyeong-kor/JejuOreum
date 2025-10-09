@@ -1,7 +1,7 @@
-package com.jeong.feature.join.data
+package com.jeong.jejuoreum.feature.join.data
 
-import com.jeong.domain.usecase.EnsureAnonymousUserUseCase
-import com.jeong.feature.join.domain.AnonymousUserInitializer
+import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
+import com.jeong.jejuoreum.feature.join.domain.AnonymousUserInitializer
 import javax.inject.Inject
 
 class DomainAnonymousUserInitializer @Inject constructor(

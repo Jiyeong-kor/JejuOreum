@@ -1,4 +1,4 @@
-package com.jeong.domain.model
+package com.jeong.jejuoreum.domain.model
 
 enum class OreumDifficulty {
     EASY,

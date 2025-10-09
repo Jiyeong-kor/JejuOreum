@@ -1,4 +1,4 @@
-package com.jeong.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.oreum.presentation.map
 
 data class MapPinUi(
     val title: String,

@@ -1,8 +1,8 @@
-package com.jeong.feature.join.navigation
+package com.jeong.jejuoreum.feature.join.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.jeong.feature.join.presentation.JoinRoute
+import com.jeong.jejuoreum.feature.join.presentation.JoinRoute
 
 object JoinNavigation {
     const val ROUTE: String = "join"

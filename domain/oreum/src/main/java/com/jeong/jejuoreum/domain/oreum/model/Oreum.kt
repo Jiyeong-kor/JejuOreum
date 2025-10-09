@@ -1,4 +1,4 @@
-package com.jeong.domain.model
+package com.jeong.jejuoreum.domain.model
 
 data class Oreum(
     val id: String,

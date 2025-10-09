@@ -1,16 +1,16 @@
-package com.jeong.feature.oreum.domain
+package com.jeong.jejuoreum.feature.oreum.domain
 
-import com.jeong.domain.entity.ResultSummary
-import com.jeong.domain.entity.ReviewItem
-import com.jeong.domain.usecase.IsLocationPermissionGrantedUseCase
-import com.jeong.domain.usecase.UpdateLocationPermissionUseCase
-import com.jeong.domain.usecase.oreum.FetchOreumDetailUseCase
-import com.jeong.domain.usecase.oreum.GetOreumFavoriteStatusUseCase
-import com.jeong.domain.usecase.oreum.GetOreumReviewsUseCase
-import com.jeong.domain.usecase.oreum.GetOreumStampStatusUseCase
-import com.jeong.domain.usecase.oreum.ToggleFavoriteUseCase
-import com.jeong.domain.usecase.oreum.TryStampUseCase
-import com.jeong.feature.oreum.domain.model.OreumStampRequest
+import com.jeong.jejuoreum.domain.entity.ResultSummary
+import com.jeong.jejuoreum.domain.entity.ReviewItem
+import com.jeong.jejuoreum.domain.usecase.IsLocationPermissionGrantedUseCase
+import com.jeong.jejuoreum.domain.usecase.UpdateLocationPermissionUseCase
+import com.jeong.jejuoreum.domain.usecase.oreum.FetchOreumDetailUseCase
+import com.jeong.jejuoreum.domain.usecase.oreum.GetOreumFavoriteStatusUseCase
+import com.jeong.jejuoreum.domain.usecase.oreum.GetOreumReviewsUseCase
+import com.jeong.jejuoreum.domain.usecase.oreum.GetOreumStampStatusUseCase
+import com.jeong.jejuoreum.domain.usecase.oreum.ToggleFavoriteUseCase
+import com.jeong.jejuoreum.domain.usecase.oreum.TryStampUseCase
+import com.jeong.jejuoreum.feature.oreum.domain.model.OreumStampRequest
 import javax.inject.Inject
 
 interface OreumDetailInteractor {

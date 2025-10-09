@@ -1,8 +1,8 @@
-package com.jeong.data.model.entity
+package com.jeong.jejuoreum.data.model.entity
 
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.IgnoreExtraProperties
-import com.jeong.data.FirestoreConstants
+import com.jeong.jejuoreum.data.FirestoreConstants
 
 @IgnoreExtraProperties
 data class JoinItem(

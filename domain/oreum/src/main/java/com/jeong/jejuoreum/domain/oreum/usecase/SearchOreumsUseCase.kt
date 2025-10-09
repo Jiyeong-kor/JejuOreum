@@ -1,6 +1,6 @@
-package com.jeong.domain.usecase.oreum
+package com.jeong.jejuoreum.domain.usecase.oreum
 
-import com.jeong.domain.entity.ResultSummary
+import com.jeong.jejuoreum.domain.entity.ResultSummary
 import javax.inject.Inject
 
 class SearchOreumsUseCase @Inject constructor() {

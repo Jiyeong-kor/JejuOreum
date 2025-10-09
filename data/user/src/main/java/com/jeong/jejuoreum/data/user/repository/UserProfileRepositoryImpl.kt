@@ -1,12 +1,12 @@
-package com.jeong.data.repository
+package com.jeong.jejuoreum.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.data.FirestoreConstants
-import com.jeong.data.local.PreferenceManager
-import com.jeong.data.model.entity.JoinItem
-import com.jeong.domain.entity.UserAccount
-import com.jeong.domain.repository.UserProfileRepository
+import com.jeong.jejuoreum.data.FirestoreConstants
+import com.jeong.jejuoreum.data.local.PreferenceManager
+import com.jeong.jejuoreum.data.model.entity.JoinItem
+import com.jeong.jejuoreum.domain.entity.UserAccount
+import com.jeong.jejuoreum.domain.repository.UserProfileRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await

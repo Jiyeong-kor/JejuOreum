@@ -1,9 +1,9 @@
-package com.jeong.feature.splash.presentation
+package com.jeong.jejuoreum.feature.splash.presentation
 
-import com.jeong.core.ui.state.UiEffect
-import com.jeong.core.ui.state.UiEvent
-import com.jeong.core.ui.state.UiState
-import com.jeong.feature.splash.domain.model.SplashDestination
+import com.jeong.jejuoreum.core.ui.state.UiEffect
+import com.jeong.jejuoreum.core.ui.state.UiEvent
+import com.jeong.jejuoreum.core.ui.state.UiState
+import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination
 
 data class SplashUiState(
     val isLoading: Boolean = true,

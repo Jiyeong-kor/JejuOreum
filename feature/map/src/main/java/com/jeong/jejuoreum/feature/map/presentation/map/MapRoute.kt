@@ -1,4 +1,4 @@
-package com.jeong.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.oreum.presentation.map
 
 import android.content.Context
 import android.content.ContextWrapper
@@ -21,9 +21,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jeong.domain.entity.GeoPoint
-import com.jeong.feature.oreum.presentation.detail.DetailViewModel
-import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.domain.entity.GeoPoint
+import com.jeong.jejuoreum.feature.oreum.presentation.detail.DetailViewModel
+import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
 
 private val T.searchQuery: Any
 

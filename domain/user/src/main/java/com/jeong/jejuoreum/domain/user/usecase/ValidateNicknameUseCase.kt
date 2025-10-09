@@ -1,7 +1,7 @@
-package com.jeong.domain.usecase
+package com.jeong.jejuoreum.domain.usecase
 
-import com.jeong.domain.model.NicknameValidationError
-import com.jeong.domain.model.NicknameValidationResult
+import com.jeong.jejuoreum.domain.model.NicknameValidationError
+import com.jeong.jejuoreum.domain.model.NicknameValidationResult
 
 class ValidateNicknameUseCase {
     operator fun invoke(input: String): NicknameValidationResult {

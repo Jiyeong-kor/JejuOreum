@@ -1,9 +1,9 @@
-package com.jeong.feature.splash.di
+package com.jeong.jejuoreum.feature.splash.di
 
-import com.jeong.feature.splash.data.SplashInitializerImpl
-import com.jeong.feature.splash.data.UserStatusCheckerImpl
-import com.jeong.feature.splash.domain.SplashInitializer
-import com.jeong.feature.splash.domain.UserStatusChecker
+import com.jeong.jejuoreum.feature.splash.data.SplashInitializerImpl
+import com.jeong.jejuoreum.feature.splash.data.UserStatusCheckerImpl
+import com.jeong.jejuoreum.feature.splash.domain.SplashInitializer
+import com.jeong.jejuoreum.feature.splash.domain.UserStatusChecker
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

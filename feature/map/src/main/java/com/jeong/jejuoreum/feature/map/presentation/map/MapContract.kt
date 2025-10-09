@@ -1,11 +1,11 @@
-package com.jeong.feature.oreum.presentation.map
+package com.jeong.jejuoreum.feature.oreum.presentation.map
 
-import com.jeong.core.ui.state.UiEffect
-import com.jeong.core.ui.state.UiEvent
-import com.jeong.core.ui.state.UiState
-import com.jeong.domain.entity.GeoBounds
-import com.jeong.domain.entity.GeoPoint
-import com.jeong.feature.oreum.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.state.UiEffect
+import com.jeong.jejuoreum.core.ui.state.UiEvent
+import com.jeong.jejuoreum.core.ui.state.UiState
+import com.jeong.jejuoreum.domain.entity.GeoBounds
+import com.jeong.jejuoreum.domain.entity.GeoPoint
+import com.jeong.jejuoreum.feature.oreum.presentation.model.OreumSummaryUiModel
 
 data class MapUiState(
     val searchQuery: String = "",

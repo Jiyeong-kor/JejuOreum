@@ -1,4 +1,4 @@
-package com.jeong.domain.entity
+package com.jeong.jejuoreum.domain.entity
 
 /**
  * 도메인 레벨의 위경도 좌표(지도 SDK에 의존하지 않음)

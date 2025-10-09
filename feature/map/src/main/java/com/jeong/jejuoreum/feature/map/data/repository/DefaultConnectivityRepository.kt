@@ -1,8 +1,8 @@
-package com.jeong.feature.main.data.repository
+package com.jeong.jejuoreum.feature.main.data.repository
 
-import com.jeong.core.utils.network.NetworkMonitor
-import com.jeong.core.utils.network.NetworkStatus
-import com.jeong.feature.main.domain.repository.ConnectivityRepository
+import com.jeong.jejuoreum.core.utils.network.NetworkMonitor
+import com.jeong.jejuoreum.core.utils.network.NetworkStatus
+import com.jeong.jejuoreum.feature.main.domain.repository.ConnectivityRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow

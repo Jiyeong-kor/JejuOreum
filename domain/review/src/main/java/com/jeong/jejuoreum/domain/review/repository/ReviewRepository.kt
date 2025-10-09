@@ -1,6 +1,6 @@
-package com.jeong.domain.repository
+package com.jeong.jejuoreum.domain.repository
 
-import com.jeong.domain.entity.ReviewItem
+import com.jeong.jejuoreum.domain.entity.ReviewItem
 
 interface ReviewRepository {
     suspend fun getReviews(oreumIdx: String): List<ReviewItem>

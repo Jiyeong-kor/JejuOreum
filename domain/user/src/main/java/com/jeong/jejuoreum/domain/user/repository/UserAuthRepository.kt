@@ -1,6 +1,6 @@
-package com.jeong.domain.repository
+package com.jeong.jejuoreum.domain.repository
 
-import com.jeong.domain.entity.UserAccount
+import com.jeong.jejuoreum.domain.entity.UserAccount
 
 interface UserAuthRepository {
     suspend fun ensureAnonymousUser(): Result<UserAccount>

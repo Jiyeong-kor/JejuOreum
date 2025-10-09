@@ -1,4 +1,4 @@
-package com.jeong.feature.join.presentation
+package com.jeong.jejuoreum.feature.join.presentation
 
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.jeong.feature.join.R
+import com.jeong.jejuoreum.feature.join.R
 
 @Composable
 fun JoinTermDialogContent(onClose: () -> Unit) {

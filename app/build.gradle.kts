@@ -12,7 +12,7 @@ android {
     namespace = "com.jeong.jejuoreum.app"
 
     defaultConfig {
-        applicationId = "com.jeong.jjoreum"
+        applicationId = "com.jeong.jejuoreum"
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
