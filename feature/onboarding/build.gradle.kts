@@ -7,3 +7,7 @@ plugins {
 android {
     namespace = "com.jeong.jejuoreum.feature.onboarding"
 }
+
+dependencies {
+    implementation(project(":core:navigation"))
+}

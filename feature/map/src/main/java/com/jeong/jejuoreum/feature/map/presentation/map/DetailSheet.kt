@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
 import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailViewModel
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.feature.map.presentation.model.toDetailUiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +49,7 @@ fun DetailSheet(
             ) {
                 DetailRoute(
                     viewModel = detailVm,
-                    initialOreum = overlay,
+                    initialOreum = overlay?.toDetailUiModel(),
                     onNavigateToWriteReview = onNavigateToWriteReview,
                     showToast = { msg ->
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
