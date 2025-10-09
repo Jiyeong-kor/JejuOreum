@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.map.presentation.ui
+package com.jeong.jejuoreum.feature.map.presentation.oreum
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,10 +31,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
-import com.jeong.jejuoreum.feature.map.presentation.viewmodel.OreumEffect
-import com.jeong.jejuoreum.feature.map.presentation.viewmodel.OreumEvent
-import com.jeong.jejuoreum.feature.map.presentation.viewmodel.OreumUiState
-import com.jeong.jejuoreum.feature.map.presentation.viewmodel.OreumViewModel
+import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumEffect
+import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumEvent
+import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumUiState
+import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)

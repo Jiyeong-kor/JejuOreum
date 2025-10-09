@@ -1,4 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- test -->
+    <string name="test_word">테스트</string>
+    <string name="test_number">0</string>
+
+    <!-- app -->
+    <string name="app_name">JJOreum</string>
+    <string name="app_k_name">제주오름</string>
+
+    <!-- permission -->
+    <string name="permission_title">앱 접근 권한 안내</string>
+    <string name="permission_sub_title">제주오름 서비스 사용을 위해\n다음 권한의 허용이 필요합니다.</string>
+    <string name="permission_location">위치 (선택)</string>
+    <string name="permission_sub_location">현재 위치 수신</string>
+    <string name="permission_btn">확인</string>
+
+    <!-- detail -->
+    <string name="review_title">오름 후기</string>
+    <string name="detail_stamp">스탬프 찍기</string>
+
+    <!-- login -->
+    <string name="login_login">로그인</string>
+    <string name="login_auto_login">자동로그인</string>
+    <string name="login_join_question">제주오름은 처음이신가요?</string>
+    <string name="login_join">회원가입</string>
+    <string name="login_error">계정 정보가 일치하지 않습니다.</string>
+    <string name="login_required">로그인이 필요합니다.</string>
+
+    <!-- join form -->
+    <string name="join_form_title_first_top">이름을</string>
+    <string name="join_form_title_first_bottom">입력해주세요</string>
+    <string name="join_form_title_email_top">이메일을</string>
+    <string name="join_form_title_email_bottom">입력해주세요</string>
+    <string name="join_form_title_password_top">비밀번호를</string>
+    <string name="join_form_title_password_bottom">입력해주세요</string>
+    <string name="join_form_title_password_check_bottom">확인해주세요</string>
+    <string name="join_form_title_nickname_top">마지막 단계입니다!</string>
+    <string name="join_form_title_nickname_bottom">닉네임을 입력해주세요</string>
+    <string name="hint_nickname">닉네임</string>
+    <string name="hint_password_check">비밀번호 확인</string>
+    <string name="hint_password">비밀번호</string>
+    <string name="hint_email">이메일</string>
+    <string name="hint_name">이름</string>
+    <string name="join_form_btn_next_check">확인</string>
+
+    <!-- dialog_join_success -->
+    <string name="join_success_title">회원가입 완료!</string>
+    <string name="join_success_content">제주오름 회원이 되신 것을 환영해요.</string>
+    <string name="join_success_btn">확인</string>
+
+    <!-- stamp_setting_location -->
+    <string name="setting_location_text">%1$s의 정상에 계신지\n지금 위치를 확인 중 이에요!</string>
+
+    <!-- dialog_stamp_boolean -->
+    <string name="stamp_false_text">현재 %1$s에 정상에 위치하지 않아요.\n오름에 오른 후 다시 시도해주세요!</string>
+    <string name="stamp_false_confirm">확인</string>
+    <string name="stamp_true_text">👏축하합니다!👏\n%1$s의 스탬프 찍기 성공🎉</string>
+
+    <!-- dialog_review -->
+    <string name="dialog_review_nickname">%1$s</string>
+    <string name="dialog_review_hint">%1$s의 오름 후기를 작성해주세요.</string>
+    <string name="dialog_review_register">등록</string>
+
+    <!-- search -->
+    <string name="search_hint">오름명 검색</string>
+    <string name="search_empty">검색결과가 없습니다.</string>
+
+    <!-- fragment_my_stamp -->
+    <string name="my_stamp_text">%1$s님의 스탬프 개수</string>
+    <string name="my_stamp_num">%1$d</string>
+
+    <!-- activity_setting -->
+    <string name="setting_nickname">닉네임</string>
+    <string name="setting_logout">로그아웃</string>
+    <string name="setting_withdrawal">회원탈퇴</string>
+
+    <!-- activity_withdrawal -->
+    <string name="withdrawal_title">회원탈퇴</string>
+    <string name="withdrawal_note">유의사항</string>
+    <string name="withdrawal_note_content">- 제주오름 회원탈퇴 시 회원의 스탬프 목록 정보는 모두 소멸되며, 복구가 불가능합니다.\n- 제주오름 회원탈퇴 후 재가입하더라도 탈퇴 전의 스탬프 목록은 복구되지 않습니다.\n- 제주오름 회원탈퇴 시 회원정보 및 이용 기록은 모두 삭제되며, 삭제된 데이터는 복구가 불가능합니다. 다만 법령에 의하여 보관해야 하는 경우 또는 회원가입 남용 등을 위한 정책에 의하여 보관해야하는 정보는 회원탈퇴 후에도 일정기간 보관됩니다. 자세한 사항은 제주오름 개인정보 처리방침에서 확인하실 수 있습니다.</string>
+    <string name="withdrawal_check">유의사항을 모두 확인하였으며, 스탬프 목록 소멸에 동의합니다.</string>
+    <string name="withdrawal_btn">계정 삭제하기</string>
+
+    <!--fragment_list.xml-->
+    <string name="empty_list">데이터가 없습니다.</string>
+    <string name="desc_oreum_image">목록 항목의 대표 이미지</string>
+    <string name="desc_favorite_icon">좋아요(즐겨찾기) 아이콘</string>
+    <string name="desc_stamp_icon">스탬프 아이콘</string>
+    <string name="tab_favorites">즐겨찾기</string>
+    <string name="tab_stamps">스탬프</string>
+    <string name="desc_stamp_list">사용자가 받은 스탬프 목록</string>
+    <string name="detail_image_desc">자세한 이미지</string>
+    <string name="detail_review_list_desc">자세한 이미지</string>
+    <string name="review_profile_desc">프로필 이미지</string>
+    <string name="review_user_name">작성자 이름</string>
+    <string name="review_date">작성 날짜</string>
+    <string name="review_content">리뷰 내용</string>
+    <string name="review_rating">별점</string>
+    <string name="review_like_desc">좋아요 아이콘</string>
+    <string name="permission_dialog_title">위치 권한 요청</string>
+    <string name="permission_dialog_message">이 앱은 사용자 위치 정보를 기반으로 특정 기능을 제공합니다.\n위치 권한을 허용하여 원활한 서비스 이용을 도와주세요.</string>
+    <string name="permission_dialog_deny">괜찮습니다</string>
+    <string name="permission_dialog_grant">동의하고 계속</string>
+
+    <string name="permission_granted_message">위치 권한이 허용되었습니다.</string>
+    <string name="permission_denied_message">위치 권한이 거부되었습니다. 일부 기능이 제한될 수 있습니다.</string>
+
+    <string name="permission_settings_title">권한 설정 필요</string>
+    <string name="permission_settings_message">위치 권한이 영구적으로 거부되었습니다.\n앱 설정을 통해 직접 권한을 허용해야 합니다.</string>
+    <string name="permission_settings_button">설정으로 이동</string>
+
+    <!-- toast messages -->
+    <string name="permission_required_message">위치 권한이 필요합니다.</string>
+    <string name="stamp_verified_message">스탬프가 인증되었습니다!</string>
+    <string name="favorite_added_message">관심 오름에 추가되었습니다</string>
+    <string name="favorite_removed_message">관심 오름에서 제외되었습니다</string>
+    <string name="stamp_completed_message">스탬프 완료!</string>
+    <string name="unknown_error_message">알 수 없는 오류</string>
+
+    <string name="search_oreum">오름 검색</string>
+    <string name="no_result">검색 결과가 없습니다.</string>
+    <string name="review_delete_desc">후기 삭제</string>
+    <string name="default_nickname">닉네임없음</string>
+    <string name="write_review">후기 작성</string>
+    <string name="no_reviews">작성된 후기가 없습니다.</string>
+    <string name="review_input_hint">후기를 입력하세요</string>
+    <string name="save_review">후기 저장</string>
+    <string name="my_stamp_title">%1$s님의 스탬프</string>
+    <string name="stamp_count">%1$d개</string>
+    <string name="search_placeholder">오름의 이름이나 주소로 검색해 주세요</string>
+    <string name="location_unavailable">현재 위치를 가져올 수 없습니다.</string>
+    <string name="distance_warning">오름과의 거리가 %1$.2fm 입니다. 200m 이내로 가까이 가주세요.</string>
+    <string name="oreum_not_found">해당 오름을 찾을 수 없습니다.</string>
+    <string name="api_failure">API 실패: %1$s</string>
+    <string name="auth_error">사용자 인증 오류</string>
+    <string name="anonymous">익명</string>
+
+    <!-- network -->
     <string name="network_error">네트워크가 연결되지 않았습니다.\nWi-Fi 또는 데이터를 활성화 해주세요.</string>
     <string name="network_retry">다시 시도</string>
 </resources>

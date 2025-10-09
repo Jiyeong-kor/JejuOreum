@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.map.presentation.viewmodel
+package com.jeong.jejuoreum.feature.map.presentation.oreum
 
 import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel

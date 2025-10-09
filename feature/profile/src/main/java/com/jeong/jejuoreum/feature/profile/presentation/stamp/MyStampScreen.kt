@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.profile.presentation.profile.stamp
+package com.jeong.jejuoreum.feature.profile.presentation.stamp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

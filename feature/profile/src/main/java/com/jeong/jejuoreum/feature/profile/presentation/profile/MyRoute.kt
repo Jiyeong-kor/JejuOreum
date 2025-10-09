@@ -12,8 +12,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import com.jeong.jejuoreum.feature.profile.R
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
-import com.jeong.jejuoreum.feature.profile.presentation.profile.favorite.MyFavoriteScreen
-import com.jeong.jejuoreum.feature.profile.presentation.profile.stamp.MyStampScreen
+import com.jeong.jejuoreum.feature.profile.presentation.favorite.MyFavoriteScreen
+import com.jeong.jejuoreum.feature.profile.presentation.stamp.MyStampScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
