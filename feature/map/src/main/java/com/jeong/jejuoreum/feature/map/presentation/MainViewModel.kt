@@ -5,9 +5,9 @@ import com.jeong.jejuoreum.feature.map.presentation.main.MainSideEffect
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiEvent
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiState
 import com.jeong.jejuoreum.feature.map.presentation.base.BaseViewModel
-import com.jeong.jejuoreum.data.remote.NetworkStatus
-import com.jeong.jejuoreum.feature.map.domain.usecase.GetCurrentConnectivityStatusUseCase
-import com.jeong.jejuoreum.feature.map.domain.usecase.ObserveConnectivityStatusUseCase
+import com.jeong.jejuoreum.core.common.network.NetworkStatus
+import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentConnectivityStatusUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.ObserveConnectivityStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest

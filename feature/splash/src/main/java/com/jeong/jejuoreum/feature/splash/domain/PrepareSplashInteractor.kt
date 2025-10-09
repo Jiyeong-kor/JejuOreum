@@ -1,12 +1,10 @@
-package com.jeong.jejuoreum.feature.splash.domain.usecase
+package com.jeong.jejuoreum.feature.splash.domain
 
 import com.jeong.jejuoreum.domain.oreum.usecase.PreloadOreumSummariesUseCase
-import com.jeong.jejuoreum.feature.splash.domain.SplashInitializer
-import com.jeong.jejuoreum.feature.splash.domain.UserStatusChecker
 import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination
 import javax.inject.Inject
 
-class PrepareSplashUseCase @Inject constructor(
+class PrepareSplashInteractor @Inject constructor(
     private val splashInitializer: SplashInitializer,
     private val userStatusChecker: UserStatusChecker,
     private val preloadOreumSummariesUseCase: PreloadOreumSummariesUseCase,

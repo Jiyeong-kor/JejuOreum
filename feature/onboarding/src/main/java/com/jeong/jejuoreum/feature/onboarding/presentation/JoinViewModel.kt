@@ -2,10 +2,10 @@ package com.jeong.jejuoreum.feature.onboarding.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
-import com.jeong.jejuoreum.feature.onboarding.domain.AnonymousUserInitializer
-import com.jeong.jejuoreum.feature.onboarding.domain.NicknameAvailabilityChecker
-import com.jeong.jejuoreum.feature.onboarding.domain.NicknameSaver
-import com.jeong.jejuoreum.feature.onboarding.domain.NicknameValidator
+import com.jeong.jejuoreum.domain.user.usecase.CheckNicknameAvailabilityUseCase
+import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
+import com.jeong.jejuoreum.domain.user.usecase.SaveNicknameUseCase
+import com.jeong.jejuoreum.domain.user.usecase.ValidateNicknameUseCase
 import com.jeong.jejuoreum.feature.onboarding.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,10 +15,10 @@ import timber.log.Timber
 
 @HiltViewModel
 class JoinViewModel @Inject constructor(
-    private val nicknameValidator: NicknameValidator,
-    private val nicknameAvailabilityChecker: NicknameAvailabilityChecker,
-    private val nicknameSaver: NicknameSaver,
-    private val anonymousUserInitializer: AnonymousUserInitializer,
+    private val validateNicknameUseCase: ValidateNicknameUseCase,
+    private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
+    private val saveNicknameUseCase: SaveNicknameUseCase,
+    private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
 ) : BaseViewModel<JoinUiEvent, JoinSideEffect, JoinUiState>(JoinUiState()) {
 
     private var availabilityJob: Job? = null
@@ -42,7 +42,7 @@ class JoinViewModel @Inject constructor(
     }
 
     private fun handleNicknameChanged(input: String) {
-        val validationResult = nicknameValidator.validate(input)
+        val validationResult = validateNicknameUseCase(input)
         availabilityJob?.cancel()
 
         setState {
@@ -70,7 +70,7 @@ class JoinViewModel @Inject constructor(
 
         viewModelScope.launch {
             setState { copy(isSaving = true) }
-            val result = nicknameSaver.save(currentState.nickname)
+            val result = saveNicknameUseCase(currentState.nickname)
             setState { copy(isSaving = false) }
 
             result.fold(
@@ -87,7 +87,7 @@ class JoinViewModel @Inject constructor(
 
     private fun ensureAnonymousUser() {
         viewModelScope.launch {
-            anonymousUserInitializer.ensure()
+            ensureAnonymousUserUseCase()
                 .onFailure { throwable ->
                     Timber.e(throwable, "Failed to authenticate user")
                     sendEffect { JoinSideEffect.AuthenticationFailed }
@@ -97,7 +97,7 @@ class JoinViewModel @Inject constructor(
 
     private fun checkNicknameAvailability(nickname: String) {
         availabilityJob = viewModelScope.launch {
-            val result = nicknameAvailabilityChecker.check(nickname)
+            val result = checkNicknameAvailabilityUseCase(nickname)
             setState {
                 if (this.nickname != nickname) {
                     this

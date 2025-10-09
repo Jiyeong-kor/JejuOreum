@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.map.presentation.main
 
-import com.jeong.jejuoreum.data.remote.NetworkStatus
+import com.jeong.jejuoreum.core.common.network.NetworkStatus
 
 data class MainUiState(
     val networkStatus: NetworkStatus = NetworkStatus.Unknown,

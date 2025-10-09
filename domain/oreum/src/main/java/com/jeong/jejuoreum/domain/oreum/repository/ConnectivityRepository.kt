@@ -1,6 +1,6 @@
-package com.jeong.jejuoreum.feature.map.domain.repository
+package com.jeong.jejuoreum.domain.oreum.repository
 
-import com.jeong.jejuoreum.data.remote.NetworkStatus
+import com.jeong.jejuoreum.core.common.network.NetworkStatus
 import kotlinx.coroutines.flow.Flow
 
 interface ConnectivityRepository {

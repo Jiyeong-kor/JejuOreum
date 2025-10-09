@@ -25,6 +25,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain:oreum"))
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.kakao.vectormap)

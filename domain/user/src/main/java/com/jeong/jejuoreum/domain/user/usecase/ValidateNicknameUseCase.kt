@@ -2,8 +2,9 @@ package com.jeong.jejuoreum.domain.user.usecase
 
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationError
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
+import javax.inject.Inject
 
-class ValidateNicknameUseCase {
+class ValidateNicknameUseCase @Inject constructor() {
     operator fun invoke(input: String): NicknameValidationResult {
         val trimmed = input.trim()
         if (trimmed.isEmpty()) {

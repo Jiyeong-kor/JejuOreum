@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.remote
+package com.jeong.jejuoreum.core.common.network
 
 import kotlinx.coroutines.flow.Flow
 

@@ -26,6 +26,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":domain:oreum"))
 
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)

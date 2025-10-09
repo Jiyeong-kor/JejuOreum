@@ -1,7 +1,7 @@
-package com.jeong.jejuoreum.feature.map.domain.usecase
+package com.jeong.jejuoreum.domain.oreum.usecase
 
-import com.jeong.jejuoreum.data.remote.NetworkStatus
-import com.jeong.jejuoreum.feature.map.domain.repository.ConnectivityRepository
+import com.jeong.jejuoreum.core.common.network.NetworkStatus
+import com.jeong.jejuoreum.domain.oreum.repository.ConnectivityRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 

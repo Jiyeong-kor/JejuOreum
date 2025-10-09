@@ -11,13 +11,14 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jejuoreum.data.remote.firestore.FirestoreConstants
 import com.jeong.jejuoreum.domain.oreum.repository.StampRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
 @Singleton
 class StampRepositoryImpl @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : StampRepository {

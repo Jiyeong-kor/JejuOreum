@@ -49,6 +49,11 @@ dependencies {
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:splash"))
+    implementation(project(":data:local"))
+    implementation(project(":data:oreum"))
+    implementation(project(":data:remote"))
+    implementation(project(":data:review"))
+    implementation(project(":data:user"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))
