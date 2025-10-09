@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.app.presentation.main
+package com.jeong.jejuoreum.core.navigation.main
 
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -20,13 +20,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jeong.jejuoreum.app.R
+import com.jeong.jejuoreum.core.navigation.NavHost
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
+import com.jeong.jejuoreum.core.navigation.R
 import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
 import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewRoute
 import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewViewModel

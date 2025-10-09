@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.app.presentation.main
+package com.jeong.jejuoreum.feature.map.presentation.main
 
 import com.jeong.jejuoreum.core.ui.state.UiEffect
 import com.jeong.jejuoreum.core.ui.state.UiEvent

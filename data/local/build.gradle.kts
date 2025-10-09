@@ -6,3 +6,10 @@ plugins {
 android {
     namespace = "com.jeong.jejuoreum.data.local"
 }
+
+dependencies {
+    implementation(project(":core:common"))
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.coroutines.core)
+}

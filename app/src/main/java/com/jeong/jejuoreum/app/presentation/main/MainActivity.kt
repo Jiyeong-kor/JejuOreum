@@ -14,6 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
+import com.jeong.jejuoreum.core.navigation.main.MainRoute
+import com.jeong.jejuoreum.feature.map.presentation.main.MainSideEffect
+import com.jeong.jejuoreum.feature.map.presentation.main.MainUiEvent
 import com.jeong.jejuoreum.core.ui.dialog.NetworkDialog
 import com.jeong.jejuoreum.core.ui.theme.JJOreumTheme
 import com.jeong.jejuoreum.feature.map.presentation.MainViewModel
