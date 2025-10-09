@@ -2,7 +2,7 @@ package com.jeong.jejuoreum.feature.map.presentation.map
 
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
-import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 
 data class MapUiState(
     val searchQuery: String = "",

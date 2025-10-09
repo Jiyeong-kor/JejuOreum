@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.detail.presentation.detail
 
-import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 
 data class DetailUiState(

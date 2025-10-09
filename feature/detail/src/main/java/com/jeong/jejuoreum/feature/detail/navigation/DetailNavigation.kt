@@ -13,7 +13,7 @@ import androidx.navigation.navArgument
 import com.jeong.jejuoreum.core.navigation.NavigationDestination
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
-import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewRoute
 import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewViewModel
 

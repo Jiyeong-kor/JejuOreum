@@ -49,7 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 import com.jeong.jejuoreum.feature.detail.R
-import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

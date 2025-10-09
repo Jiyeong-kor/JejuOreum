@@ -1,8 +1,9 @@
 package com.jeong.jejuoreum.feature.map.presentation.model
 
-import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel as DetailOreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 
-fun OreumSummaryUiModel.toDetailUiModel(): DetailOreumSummaryUiModel = DetailOreumSummaryUiModel(
+fun ResultSummary.toUiModel(): OreumSummaryUiModel = OreumSummaryUiModel(
     idx = idx,
     oreumEname = oreumEname,
     oreumKname = oreumKname,
@@ -15,5 +16,5 @@ fun OreumSummaryUiModel.toDetailUiModel(): DetailOreumSummaryUiModel = DetailOre
     totalFavorites = totalFavorites,
     totalStamps = totalStamps,
     userLiked = userLiked,
-    userStamped = userStamped
+    userStamped = userStamped,
 )

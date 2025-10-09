@@ -6,7 +6,7 @@ import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ToggleFavoriteUseCase
-import com.jeong.jejuoreum.feature.map.presentation.model.toUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +48,7 @@ class MyFavoriteViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        favorites = favorites.map { oreum -> oreum.toUiModel() },
+                        favorites = favorites.map { oreum -> oreum.toProfileUiModel() },
                         errorMessage = null
                     )
                 }
@@ -70,3 +70,20 @@ class MyFavoriteViewModel @Inject constructor(
         _uiState.update { it.copy(errorMessage = null) }
     }
 }
+
+private fun com.jeong.jejuoreum.domain.oreum.entity.ResultSummary.toProfileUiModel(): OreumSummaryUiModel =
+    OreumSummaryUiModel(
+        idx = idx,
+        oreumEname = oreumEname,
+        oreumKname = oreumKname,
+        oreumAddr = oreumAddr,
+        oreumAltitu = oreumAltitu,
+        x = x,
+        y = y,
+        explain = explain,
+        imgPath = imgPath,
+        totalFavorites = totalFavorites,
+        totalStamps = totalStamps,
+        userLiked = userLiked,
+        userStamped = userStamped,
+    )

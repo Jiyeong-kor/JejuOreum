@@ -32,10 +32,12 @@ object MapNavigation : BottomNavigationDestination {
     override fun register(navController: NavHostController, navGraphBuilder: NavGraphBuilder) {
         navGraphBuilder.composable(route) {
             MapRoute(
-                onNavigateToWriteReview = { idx, name ->
-                    navController.navigate(OreumNavigation.writeReviewRoute(idx, name))
-                },
-                onFavoriteToggled = {}
+                onNavigateToDetail = { oreum ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(OreumNavigation.DETAIL_OREUM_KEY, oreum)
+                    navController.navigate(OreumNavigation.DETAIL)
+                }
             )
         }
     }

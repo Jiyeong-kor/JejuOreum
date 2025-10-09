@@ -21,11 +21,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
-import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailViewModel
-import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
-
-private val T.searchQuery: Any
 
 private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
@@ -35,8 +32,7 @@ private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {
 
 @Composable
 fun MapRoute(
-    onNavigateToWriteReview: (Int, String) -> Unit,
-    onFavoriteToggled: (String) -> Unit,
+    onNavigateToDetail: (OreumSummaryUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -44,8 +40,6 @@ fun MapRoute(
     requireNotNull(activity)
 
     val mapViewModel: MapViewModel = hiltViewModel(activity)
-    val detailViewModel: DetailViewModel = hiltViewModel(activity)
-
     val mapState by mapViewModel.state.collectAsStateWithLifecycle()
     val selectedOreum = mapState.selectedOreum
     val query = mapState.searchQuery
@@ -94,14 +88,15 @@ fun MapRoute(
         )
         DetailSheet(
             overlay = detailOverlay,
-            detailVm = detailViewModel,
             controller = controller,
             onDismiss = {
                 detailOverlay = null
                 mapViewModel.onEvent(MapEvent.SelectionCleared)
             },
-            onNavigateToWriteReview = onNavigateToWriteReview,
-            onFavoriteToggled = onFavoriteToggled
+            onNavigateToDetail = { oreum ->
+                onNavigateToDetail(oreum)
+                detailOverlay = null
+            }
         )
     }
 }

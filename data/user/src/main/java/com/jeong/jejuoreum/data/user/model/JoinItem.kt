@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.model.entity
+package com.jeong.jejuoreum.data.user.model
 
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.IgnoreExtraProperties

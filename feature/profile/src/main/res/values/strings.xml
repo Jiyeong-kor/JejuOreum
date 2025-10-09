@@ -1,0 +1,5 @@
+<resources>
+    <string name="profile_remove_favorite">즐겨찾기 해제</string>
+    <string name="profile_add_favorite">즐겨찾기 추가</string>
+    <string name="profile_write_review">리뷰 작성</string>
+</resources>

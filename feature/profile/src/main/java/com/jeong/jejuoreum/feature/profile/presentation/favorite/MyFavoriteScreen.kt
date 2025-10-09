@@ -22,7 +22,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.jejuoreum.feature.profile.R
 import com.jeong.jejuoreum.feature.profile.presentation.list.OreumListItem
-import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 
 @Composable
 fun MyFavoriteScreen(

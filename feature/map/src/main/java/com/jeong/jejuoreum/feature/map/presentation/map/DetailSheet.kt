@@ -1,6 +1,5 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -13,23 +12,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
-import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailViewModel
-import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiModel
-import com.jeong.jejuoreum.feature.map.presentation.model.toDetailUiModel
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.feature.map.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailSheet(
     overlay: OreumSummaryUiModel?,
-    detailVm: DetailViewModel,
     controller: MapController?,
     onDismiss: () -> Unit,
-    onNavigateToWriteReview: (Int, String) -> Unit,
-    onFavoriteToggled: (String) -> Unit
+    onNavigateToDetail: (OreumSummaryUiModel) -> Unit
 ) {
-    val context = LocalContext.current
     if (overlay != null) {
         val sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
         DisposableEffect(Unit) {
@@ -47,15 +50,35 @@ fun DetailSheet(
                     .navigationBarsPadding()
                     .imePadding()
             ) {
-                DetailRoute(
-                    viewModel = detailVm,
-                    initialOreum = overlay?.toDetailUiModel(),
-                    onNavigateToWriteReview = onNavigateToWriteReview,
-                    showToast = { msg ->
-                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                    },
-                    onFavoriteToggled = onFavoriteToggled
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .imePadding()
+                        .padding(24.dp)
+                ) {
+                    Text(
+                        text = overlay.oreumKname.ifBlank { overlay.oreumEname },
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    if (overlay.oreumAddr.isNotBlank()) {
+                        Text(
+                            text = overlay.oreumAddr,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Text(
+                        text = overlay.explain,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = { onNavigateToDetail(overlay) }) {
+                        Text(text = stringResource(id = R.string.map_view_detail))
+                    }
+                }
             }
         }
     }

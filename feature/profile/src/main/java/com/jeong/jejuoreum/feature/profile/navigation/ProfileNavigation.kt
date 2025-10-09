@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 import com.jeong.jejuoreum.core.designsystem.R as DesignSystemR
 import com.jeong.jejuoreum.core.navigation.BottomNavigationDestination
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
-import com.jeong.jejuoreum.feature.map.presentation.model.toDetailUiModel
 import com.jeong.jejuoreum.feature.profile.presentation.profile.MyRoute
 
 object ProfileNavigation : BottomNavigationDestination {
@@ -41,7 +40,7 @@ object ProfileNavigation : BottomNavigationDestination {
                 onFavoriteItemClick = { oreum ->
                     navController.currentBackStackEntry
                         ?.savedStateHandle
-                        ?.set(OreumNavigation.DETAIL_OREUM_KEY, oreum.toDetailUiModel())
+                        ?.set(OreumNavigation.DETAIL_OREUM_KEY, oreum)
                     navController.navigate(OreumNavigation.DETAIL)
                 },
                 onNavigateToWriteReview = { idx, name ->

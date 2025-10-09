@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.feature.detail.domain.OreumDetailInteractor
 import com.jeong.jejuoreum.feature.detail.domain.model.OreumStampRequest
-import com.jeong.jejuoreum.feature.detail.presentation.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.feature.detail.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
