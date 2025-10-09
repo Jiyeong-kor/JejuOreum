@@ -9,7 +9,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jejuoreum.data.remote.firestore.FirestoreConstants
+import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
 import com.jeong.jejuoreum.domain.oreum.repository.StampRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

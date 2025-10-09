@@ -9,9 +9,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.jeong.jejuoreum.core.designsystem.R as DesignSystemR
-import com.jeong.jejuoreum.core.navigation.BottomNavigationDestination
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.feature.map.presentation.map.MapRoute
+import com.jeong.jejuoreum.core.ui.navigation.BottomNavigationDestination
 
 object MapNavigation : BottomNavigationDestination {
     override val route: String = OreumNavigation.MAP

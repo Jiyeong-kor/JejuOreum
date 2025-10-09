@@ -43,18 +43,11 @@ android {
 
 dependencies {
     implementation(project(":core:navigation"))
-    implementation(project(":core:ui"))
     implementation(project(":feature:detail"))
     implementation(project(":feature:map"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:splash"))
-
-    runtimeOnly(project(":data:local"))
-    runtimeOnly(project(":data:oreum"))
-    runtimeOnly(project(":data:remote"))
-    runtimeOnly(project(":data:review"))
-    runtimeOnly(project(":data:user"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))

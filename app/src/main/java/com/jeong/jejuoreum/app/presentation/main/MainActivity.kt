@@ -14,16 +14,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
-import com.jeong.jejuoreum.core.navigation.main.ListPlaceholderDestination
-import com.jeong.jejuoreum.core.navigation.main.MainRoute
+import com.jeong.jejuoreum.feature.map.navigation.ListPlaceholderDestination
 import com.jeong.jejuoreum.feature.detail.navigation.DetailRouteContract
 import com.jeong.jejuoreum.feature.detail.navigation.WriteReviewRouteContract
 import com.jeong.jejuoreum.feature.map.navigation.MapNavigation
 import com.jeong.jejuoreum.feature.map.presentation.MainViewModel
 import com.jeong.jejuoreum.feature.map.presentation.main.MainSideEffect
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiEvent
-import com.jeong.jejuoreum.core.ui.dialog.NetworkDialog
-import com.jeong.jejuoreum.core.ui.theme.JJOreumTheme
+import com.jeong.jejuoreum.feature.map.presentation.main.JejuOreumApp
 import com.jeong.jejuoreum.feature.onboarding.navigation.JoinNavigation
 import com.jeong.jejuoreum.feature.onboarding.navigation.JoinRouteContract
 import com.jeong.jejuoreum.feature.profile.navigation.ProfileNavigation
@@ -46,72 +44,65 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            JJOreumTheme {
-                val splashUiState by splashViewModel.state.collectAsState()
-                val mainUiState by mainViewModel.state.collectAsState()
-                val context = LocalContext.current
-                var startDestination by remember { mutableStateOf<String?>(null) }
+            val splashUiState by splashViewModel.state.collectAsState()
+            val mainUiState by mainViewModel.state.collectAsState()
+            val context = LocalContext.current
+            var startDestination by remember { mutableStateOf<String?>(null) }
 
-                LaunchedEffect(Unit) {
-                    splashViewModel.onEvent(SplashUiEvent.Initialize)
-                    launch {
-                        splashViewModel.effect.collectLatest { effect ->
-                            when (effect) {
-                                is SplashSideEffect.NavigateTo -> {
-                                    startDestination = when (effect.destination) {
-                                        SplashDestination.Join -> JoinNavigation.ROUTE
-                                        SplashDestination.Map -> OreumNavigation.MAP
-                                    }
+            LaunchedEffect(Unit) {
+                splashViewModel.onEvent(SplashUiEvent.Initialize)
+                launch {
+                    splashViewModel.effect.collectLatest { effect ->
+                        when (effect) {
+                            is SplashSideEffect.NavigateTo -> {
+                                startDestination = when (effect.destination) {
+                                    SplashDestination.Join -> JoinNavigation.ROUTE
+                                    SplashDestination.Map -> OreumNavigation.MAP
                                 }
                             }
                         }
                     }
-                    launch {
-                        mainViewModel.effect.collectLatest { effect ->
-                            when (effect) {
-                                MainSideEffect.NetworkRestored -> splashViewModel.onEvent(SplashUiEvent.Initialize)
-                            }
+                }
+                launch {
+                    mainViewModel.effect.collectLatest { effect ->
+                        when (effect) {
+                            MainSideEffect.NetworkRestored -> splashViewModel.onEvent(SplashUiEvent.Initialize)
                         }
                     }
                 }
+            }
 
-                LaunchedEffect(splashUiState.errorMessage) {
-                    splashUiState.errorMessage?.let { message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        splashViewModel.onEvent(SplashUiEvent.ErrorConsumed)
-                    }
-                }
-
-                startDestination?.let { destination ->
-                    val bottomDestinations = remember {
-                        listOf(
-                            MapNavigation,
-                            ListPlaceholderDestination,
-                            ProfileNavigation
-                        )
-                    }
-                    val destinations = remember {
-                        listOf(
-                            JoinRouteContract,
-                            MapNavigation,
-                            ListPlaceholderDestination,
-                            ProfileNavigation,
-                            DetailRouteContract,
-                            WriteReviewRouteContract
-                        )
-                    }
-                    MainRoute(
-                        startDestination = destination,
-                        destinations = destinations,
-                        bottomDestinations = bottomDestinations
-                    )
-                }
-                if (mainUiState.showNetworkDialog) {
-                    NetworkDialog(onRetryClick = {
-                        mainViewModel.onEvent(MainUiEvent.RetryClicked)
-                    })
+            LaunchedEffect(splashUiState.errorMessage) {
+                splashUiState.errorMessage?.let { message ->
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    splashViewModel.onEvent(SplashUiEvent.ErrorConsumed)
                 }
             }
+
+            val bottomDestinations = remember {
+                listOf(
+                    MapNavigation,
+                    ListPlaceholderDestination,
+                    ProfileNavigation
+                )
+            }
+            val destinations = remember {
+                listOf(
+                    JoinRouteContract,
+                    MapNavigation,
+                    ListPlaceholderDestination,
+                    ProfileNavigation,
+                    DetailRouteContract,
+                    WriteReviewRouteContract
+                )
+            }
+            JejuOreumApp(
+                startDestination = startDestination,
+                destinations = destinations,
+                bottomDestinations = bottomDestinations,
+                showNetworkDialog = mainUiState.showNetworkDialog,
+                onRetryClick = { mainViewModel.onEvent(MainUiEvent.RetryClicked) }
+            )
         }
     }
 }

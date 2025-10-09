@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.core.navigation.main
+package com.jeong.jejuoreum.feature.map.navigation
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -9,10 +9,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.jeong.jejuoreum.core.designsystem.R as DesignSystemR
-import com.jeong.jejuoreum.core.navigation.BottomNavigationDestination
+import com.jeong.jejuoreum.core.navigation.NavigationDestination
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
+import com.jeong.jejuoreum.core.ui.navigation.BottomNavigationDestination
 
-object ListPlaceholderDestination : BottomNavigationDestination {
+object ListPlaceholderDestination : NavigationDestination, BottomNavigationDestination {
     override val route: String = OreumNavigation.LIST
 
     @Composable

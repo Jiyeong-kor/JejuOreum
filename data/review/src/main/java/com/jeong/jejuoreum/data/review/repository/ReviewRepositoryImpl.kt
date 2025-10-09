@@ -2,7 +2,7 @@ package com.jeong.jejuoreum.data.review.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jejuoreum.data.remote.firestore.FirestoreConstants
+import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 import com.jeong.jejuoreum.domain.review.repository.ReviewRepository
 import kotlinx.coroutines.tasks.await

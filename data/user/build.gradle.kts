@@ -9,10 +9,9 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(project(":data:local"))
-    implementation(project(":data:remote"))
     implementation(project(":domain:user"))
 
+    implementation(libs.androidx.datastore.preferences)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)

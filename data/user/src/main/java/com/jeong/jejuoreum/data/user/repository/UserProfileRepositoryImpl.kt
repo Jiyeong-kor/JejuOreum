@@ -2,8 +2,8 @@ package com.jeong.jejuoreum.data.user.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jeong.jejuoreum.data.remote.firestore.FirestoreConstants
-import com.jeong.jejuoreum.data.local.PreferenceManager
+import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
+import com.jeong.jejuoreum.data.user.local.PreferenceManager
 import com.jeong.jejuoreum.data.user.model.JoinItem
 import com.jeong.jejuoreum.domain.user.entity.UserAccount
 import com.jeong.jejuoreum.domain.user.repository.UserProfileRepository

@@ -1,10 +1,10 @@
-package com.jeong.jejuoreum.data.local
+package com.jeong.jejuoreum.data.user.local
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.jeong.jejuoreum.data.local.PreferenceKeys.PREF_KEY_NICKNAME
+import com.jeong.jejuoreum.data.user.local.PreferenceKeys.PREF_KEY_NICKNAME
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

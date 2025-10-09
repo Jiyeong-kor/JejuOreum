@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.local.permission
+package com.jeong.jejuoreum.data.user.local.permission
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey

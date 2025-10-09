@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.data.user.di
 
-import com.jeong.jejuoreum.data.local.permission.PermissionLocalDataSource
-import com.jeong.jejuoreum.data.local.permission.PreferencePermissionLocalDataSource
+import com.jeong.jejuoreum.data.user.local.permission.PermissionLocalDataSource
+import com.jeong.jejuoreum.data.user.local.permission.PreferencePermissionLocalDataSource
 import com.jeong.jejuoreum.data.user.repository.PermissionRepositoryImpl
 import com.jeong.jejuoreum.domain.user.repository.PermissionRepository
 import dagger.Binds

@@ -1,7 +1,8 @@
-package com.jeong.jejuoreum.data.local.di
+package com.jeong.jejuoreum.data.user.local.di
 
 import android.content.Context
-import com.jeong.jejuoreum.data.local.PreferenceManager
+import dagger.hilt.android.qualifiers.ApplicationContext
+import com.jeong.jejuoreum.data.user.local.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +16,6 @@ object LocalModule {
     @Provides
     @Singleton
     fun providePreferenceManager(
-        context: Context
+        @ApplicationContext context: Context
     ): PreferenceManager = PreferenceManager(context)
 }

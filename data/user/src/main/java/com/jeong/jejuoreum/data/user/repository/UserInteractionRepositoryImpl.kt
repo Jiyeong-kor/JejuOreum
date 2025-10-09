@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
-import com.jeong.jejuoreum.data.remote.firestore.FirestoreConstants
+import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
 import com.jeong.jejuoreum.domain.user.repository.UserInteractionRepository
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -105,3 +105,23 @@ class UserInteractionRepositoryImpl @Inject constructor(
         return doc.getString(FirestoreConstants.FIELD_NICKNAME) ?: defaultNickname
     }
 }
+
+private fun Any?.toStringBooleanMap(): Map<String, Boolean> =
+    (this as? Map<*, *>)
+        ?.mapNotNull { (key, value) ->
+            val name = key as? String
+            val flag = value as? Boolean
+            if (name != null && flag != null) name to flag else null
+        }
+        ?.toMap()
+        ?: emptyMap()
+
+private fun Any?.toStringStringMap(): Map<String, String> =
+    (this as? Map<*, *>)
+        ?.mapNotNull { (key, value) ->
+            val name = key as? String
+            val text = value as? String
+            if (name != null && text != null) name to text else null
+        }
+        ?.toMap()
+        ?: emptyMap()

@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.remote.firestore
+package com.jeong.jejuoreum.core.common.firestore
 
 object FirestoreConstants {
 
