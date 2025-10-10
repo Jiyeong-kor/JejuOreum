@@ -36,7 +36,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.auth.FirebaseAuth
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 import com.jeong.jejuoreum.feature.detail.R
 
@@ -47,11 +46,13 @@ fun WriteReviewRoute(
     val reviews by viewModel.reviews.collectAsStateWithLifecycle()
     val oreumName by viewModel.oreumName.collectAsStateWithLifecycle()
     val reviewInputText by viewModel.reviewInputText.collectAsStateWithLifecycle()
+    val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
 
     WriteReviewScreen(
         oreumName = oreumName,
         reviews = reviews,
         reviewInputText = reviewInputText,
+        currentUserId = currentUserId,
         onReviewTextChange = viewModel::onReviewTextChange,
         onSaveClick = viewModel::saveReview,
         onLikeClick = viewModel::toggleReviewLike,
@@ -64,6 +65,7 @@ fun WriteReviewScreen(
     oreumName: String,
     reviews: List<ReviewItem>,
     reviewInputText: String,
+    currentUserId: String?,
     onReviewTextChange: (String) -> Unit,
     onSaveClick: (String) -> Unit,
     onLikeClick: (ReviewItem) -> Unit,
@@ -117,6 +119,7 @@ fun WriteReviewScreen(
                 items(reviews) { review ->
                     ReviewItemCard(
                         review = review,
+                        currentUserId = currentUserId,
                         onLikeClick = onLikeClick,
                         onDeleteClick = onDeleteClick
                     )
@@ -129,11 +132,10 @@ fun WriteReviewScreen(
 @Composable
 fun ReviewItemCard(
     review: ReviewItem,
+    currentUserId: String?,
     onLikeClick: (ReviewItem) -> Unit,
     onDeleteClick: (ReviewItem) -> Unit,
 ) {
-    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-
     Card(
         modifier = Modifier
             .fillMaxWidth()

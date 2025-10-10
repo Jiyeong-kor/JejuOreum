@@ -3,3 +3,7 @@ plugins {
 }
 
 group = "com.jeong.jejuoreum.domain.review"
+
+dependencies {
+    implementation(libs.javax.inject)
+}

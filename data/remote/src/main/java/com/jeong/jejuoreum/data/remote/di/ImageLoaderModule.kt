@@ -8,6 +8,7 @@ import coil3.request.CachePolicy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
@@ -19,7 +20,7 @@ object ImageLoaderModule {
     @Provides
     @Singleton
     fun provideImageLoader(
-        context: Context,
+        @ApplicationContext context: Context,
         okHttpClient: OkHttpClient,
     ): ImageLoader {
         return ImageLoader.Builder(context)
