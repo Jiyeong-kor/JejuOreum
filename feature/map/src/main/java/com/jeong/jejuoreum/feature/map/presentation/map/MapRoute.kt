@@ -2,6 +2,7 @@ package com.jeong.jejuoreum.feature.map.presentation.map
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
@@ -23,6 +28,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
+import com.jeong.jejuoreum.feature.map.presentation.map.MapEffect.ShowMessage
+import kotlinx.coroutines.flow.collectLatest
 
 private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
@@ -56,10 +63,20 @@ fun MapRoute(
 
     LaunchedEffect(selectedOreum) { selectedOreum?.let { detailOverlay = it } }
 
+    LaunchedEffect(Unit) {
+        mapViewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is ShowMessage ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     Box(modifier.fillMaxSize()) {
         MapViewHost(
-            viewModel = mapViewModel,
+            uiState = mapState,
             modifier = Modifier.fillMaxSize(),
+            onEvent = mapViewModel::onEvent,
             onMapReady = { controller = it },
             onMapTap = {
                 detailOverlay = null
@@ -98,6 +115,24 @@ fun MapRoute(
                 detailOverlay = null
             }
         )
+        if (mapState.isLoading) {
+            LoadingIndicatorOverlay()
+        }
+    }
+}
+
+@Composable
+private fun LoadingIndicatorOverlay() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 

@@ -2,6 +2,7 @@ package com.jeong.jejuoreum.feature.profile.presentation.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
@@ -44,13 +45,27 @@ class MyFavoriteViewModel @Inject constructor(
                 return@launch
             }
 
-            observeFavoriteOreumsUseCase().collect { favorites ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        favorites = favorites.map { oreum -> oreum.toProfileUiModel() },
-                        errorMessage = null
-                    )
+            observeFavoriteOreumsUseCase().collect { resource ->
+                when (resource) {
+                    Resource.Loading -> _uiState.update {
+                        it.copy(isLoading = true, errorMessage = null)
+                    }
+
+                    is Resource.Success -> _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            favorites = resource.data.map { oreum -> oreum.toProfileUiModel() },
+                            errorMessage = null
+                        )
+                    }
+
+                    is Resource.Error -> _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = resource.throwable?.message
+                                ?: "즐겨찾는 오름을 불러오지 못했어요."
+                        )
+                    }
                 }
             }
         }

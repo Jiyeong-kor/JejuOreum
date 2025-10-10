@@ -5,6 +5,8 @@ import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 
 data class MapUiState(
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null,
     val searchQuery: String = "",
     val panelState: MapPanelState = MapPanelState.Hidden,
     val searchResults: List<OreumSummaryUiModel> = emptyList(),
@@ -37,6 +39,8 @@ sealed interface MapEvent {
     data class CameraSaved(val center: GeoPoint, val zoomLevel: Int) : MapEvent
 }
 
-sealed interface MapEffect
+sealed interface MapEffect {
+    data class ShowMessage(val message: String) : MapEffect
+}
 
 data class CameraSnapshot(val center: GeoPoint, val zoomLevel: Int)

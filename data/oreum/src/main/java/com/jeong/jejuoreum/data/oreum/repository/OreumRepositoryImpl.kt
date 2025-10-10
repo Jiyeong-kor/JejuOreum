@@ -2,6 +2,7 @@ package com.jeong.jejuoreum.data.oreum.repository
 
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.error.DomainError
+import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.data.oreum.datasource.local.OreumLocalDataSource
 import com.jeong.jejuoreum.data.oreum.mapper.toDomainOreum
 import com.jeong.jejuoreum.data.oreum.mapper.toDomainSummary
@@ -21,12 +22,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Singleton
-class OreumRepositoryImpl @Inject constructor(
+internal class OreumRepositoryImpl @Inject constructor(
     private val remoteDataSource: OreumRemoteDataSource,
     private val localDataSource: OreumLocalDataSource,
     private val dispatcherProvider: CoroutineDispatcherProvider,
@@ -55,6 +57,13 @@ class OreumRepositoryImpl @Inject constructor(
             }
         )
     }
+
+    override fun observeOreumSummaries(): Flow<Resource<List<ResultSummary>>> =
+        oreumListFlow
+            .map<List<ResultSummary>, Resource<List<ResultSummary>>> { summaries ->
+                Resource.Success(summaries)
+            }
+            .onStart { emit(Resource.Loading) }
 
     override suspend fun getOreumDetail(id: String): Result<Oreum> =
         runCatching { fetchSingleOreumById(id).toDomainOreum() }

@@ -13,7 +13,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.jejuoreum.feature.map.presentation.map.MapEvent
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -31,17 +31,17 @@ class MapController(
 
 @Composable
 fun MapViewHost(
-    viewModel: MapViewModel,
+    uiState: MapUiState,
     modifier: Modifier = Modifier,
+    onEvent: (MapEvent) -> Unit,
     onMapReady: (MapController) -> Unit = {},
     onMapTap: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val mapState by viewModel.state.collectAsStateWithLifecycle()
-    val visiblePins = mapState.visiblePins
-    val cameraState = mapState.cameraSnapshot
+    val visiblePins = uiState.visiblePins
+    val cameraState = uiState.cameraSnapshot
 
     var renderer by remember { mutableStateOf<MapRenderer?>(null) }
     var kakaoMap by remember { mutableStateOf<KakaoMap?>(null) }
@@ -58,7 +58,7 @@ fun MapViewHost(
             when (event) {
                 Lifecycle.Event.ON_RESUME -> mapView.resume()
                 Lifecycle.Event.ON_PAUSE -> mapView.pause()
-                Lifecycle.Event.ON_STOP -> viewModel.onEvent(MapEvent.SelectionCleared)
+                Lifecycle.Event.ON_STOP -> onEvent(MapEvent.SelectionCleared)
                 else -> Unit
             }
         }
@@ -136,16 +136,16 @@ fun MapViewHost(
                         val sw = map.fromScreenPoint(vp.left, vp.bottom)
                         val ne = map.fromScreenPoint(vp.right, vp.top)
                         if (sw != null && ne != null) {
-                            viewModel.onEvent(MapEvent.ViewportUpdated(asGeoBounds(sw, ne)))
+                            onEvent(MapEvent.ViewportUpdated(asGeoBounds(sw, ne)))
                         }
                         map.setOnPoiClickListener { _, latLng, _, _ ->
                             renderer?.selectMarkerAt(latLng)
                             renderer?.moveCameraTo(latLng)
-                            viewModel.onEvent(MapEvent.MarkerSelected(latLng.asGeoPoint()))
+                            onEvent(MapEvent.MarkerSelected(latLng.asGeoPoint()))
                         }
                         map.setOnViewportClickListener { _, _, _ ->
                             renderer?.clearSelection()
-                            viewModel.onEvent(MapEvent.SelectionCleared)
+                            onEvent(MapEvent.SelectionCleared)
                             onMapTap()
                         }
                         map.setOnCameraMoveEndListener { m, _, _ ->
@@ -153,7 +153,7 @@ fun MapViewHost(
                             val sw2 = m.fromScreenPoint(v.left, v.bottom)
                             val ne2 = m.fromScreenPoint(v.right, v.top)
                             if (sw2 != null && ne2 != null) {
-                                viewModel.onEvent(
+                                onEvent(
                                     MapEvent.ViewportUpdated(
                                         asGeoBounds(sw2, ne2)
                                     )
@@ -162,7 +162,7 @@ fun MapViewHost(
                             val cx = (v.left + v.right) / 2
                             val cy = (v.top + v.bottom) / 2
                             m.fromScreenPoint(cx, cy)?.let { c ->
-                                viewModel.onEvent(
+                                onEvent(
                                     MapEvent.CameraSaved(c.asGeoPoint(), m.zoomLevel)
                                 )
                             }
