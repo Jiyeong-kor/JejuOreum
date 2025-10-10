@@ -21,7 +21,7 @@ import com.jeong.jejuoreum.feature.map.navigation.MapNavigation
 import com.jeong.jejuoreum.feature.map.presentation.MainViewModel
 import com.jeong.jejuoreum.feature.map.presentation.main.MainSideEffect
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiEvent
-import com.jeong.jejuoreum.core.navigation.ui.JejuOreumApp
+import com.jeong.jejuoreum.core.ui.app.JejuOreumApp
 import com.jeong.jejuoreum.feature.onboarding.navigation.JoinNavigation
 import com.jeong.jejuoreum.feature.onboarding.navigation.JoinRouteContract
 import com.jeong.jejuoreum.feature.profile.navigation.ProfileNavigation

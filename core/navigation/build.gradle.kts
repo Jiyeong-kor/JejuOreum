@@ -1,6 +1,5 @@
 plugins {
     id("jejuoreum.android.library")
-    id("jejuoreum.compose")
 }
 
 android {
@@ -8,11 +7,5 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
-
     implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.ui)
-    implementation(platform(libs.androidx.compose.bom))
 }
