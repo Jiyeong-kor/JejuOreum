@@ -4,7 +4,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
+import com.jeong.jejuoreum.core.common.error.DomainError
+import com.jeong.jejuoreum.core.common.error.toDomainError
 import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
+import com.jeong.jejuoreum.core.common.result.mapToDomainError
 import com.jeong.jejuoreum.domain.user.repository.UserInteractionRepository
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -12,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserInteractionRepositoryImpl @Inject constructor(
+internal class UserInteractionRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
 ) : UserInteractionRepository {
@@ -38,7 +41,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun toggleFavorite(oreumIdx: String, newIsFavorite: Boolean): Int {
-        val uid = getUserId() ?: throw IllegalStateException("Login required")
+        val uid = getUserId() ?: throw DomainError.AuthenticationRequired
         val userDoc = firestore.collection(
             FirestoreConstants.COLLECTION_USER_INFO
         ).document(uid)
@@ -46,7 +49,7 @@ class UserInteractionRepositoryImpl @Inject constructor(
             FirestoreConstants.COLLECTION_OREUM_INFO
         ).document(oreumIdx)
 
-        return try {
+        return runCatching {
             firestore.runTransaction { tx ->
                 val userSnap = tx.get(userDoc)
                 val oreumSnap = tx.get(oreumDoc)
@@ -73,11 +76,12 @@ class UserInteractionRepositoryImpl @Inject constructor(
                 Timber.d("✅ [쓰기 성공] Oreum %s -> %s", oreumIdx, newIsFavorite)
                 count
             }.await()
-        } catch (e: Exception) {
-            Timber.e(e, "❌ [쓰기 실패] 원인")
-            val oreumSnap = oreumDoc.get().await()
-            oreumSnap.getLong(FirestoreConstants.FIELD_FAVORITE)?.toInt() ?: 0
-        }
+        }.mapToDomainError()
+            .getOrElse { throwable ->
+                val domainError = throwable.toDomainError()
+                Timber.e(domainError, "❌ [쓰기 실패] 원인")
+                throw domainError
+            }
     }
 
     override suspend fun getAllFavoriteStatus(): Map<String, Boolean> {

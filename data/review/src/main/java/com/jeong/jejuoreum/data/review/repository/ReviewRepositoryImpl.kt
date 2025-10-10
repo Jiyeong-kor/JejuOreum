@@ -6,6 +6,7 @@ import com.jeong.jejuoreum.core.common.error.DomainError
 import com.jeong.jejuoreum.core.common.error.toDomainError
 import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.common.result.mapToDomainError
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 import com.jeong.jejuoreum.domain.review.repository.ReviewRepository
 import javax.inject.Inject
@@ -31,13 +32,9 @@ internal class ReviewRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchReviews(oreumIdx: String): Result<List<ReviewItem>> {
-        return try {
-            Result.success(loadReviews(oreumIdx))
-        } catch (throwable: Throwable) {
-            Result.failure(throwable.toDomainError())
-        }
-    }
+    override suspend fun fetchReviews(oreumIdx: String): Result<List<ReviewItem>> =
+        runCatching { loadReviews(oreumIdx) }
+            .mapToDomainError()
 
     override suspend fun submitReview(oreumIdx: String, review: ReviewItem): Result<Unit> {
         val userId = auth.currentUser?.uid
@@ -57,16 +54,14 @@ internal class ReviewRepositoryImpl @Inject constructor(
             FirestoreConstants.FIELD_IS_LIKED to review.isLiked
         )
 
-        return try {
+        return runCatching {
             docRef.set(reviewMap).await()
-            Result.success(Unit)
-        } catch (throwable: Throwable) {
-            Result.failure(throwable.toDomainError())
-        }
+        }.mapToDomainError()
+            .map { Unit }
     }
 
-    override suspend fun toggleReviewLike(oreumIdx: String, userId: String): Result<Unit> {
-        return try {
+    override suspend fun toggleReviewLike(oreumIdx: String, userId: String): Result<Unit> =
+        runCatching {
             val docRef = firestore.collection(FirestoreConstants.COLLECTION_REVIEWS)
                 .document(oreumIdx)
                 .collection(FirestoreConstants.SUBCOLLECTION_ITEMS)
@@ -85,25 +80,19 @@ internal class ReviewRepositoryImpl @Inject constructor(
                     )
                 )
             }.await()
-            Result.success(Unit)
-        } catch (throwable: Throwable) {
-            Result.failure(throwable.toDomainError())
-        }
-    }
+        }.mapToDomainError()
+            .map { Unit }
 
-    override suspend fun deleteReview(oreumIdx: String, userId: String): Result<Unit> {
-        return try {
+    override suspend fun deleteReview(oreumIdx: String, userId: String): Result<Unit> =
+        runCatching {
             firestore.collection(FirestoreConstants.COLLECTION_REVIEWS)
                 .document(oreumIdx)
                 .collection(FirestoreConstants.SUBCOLLECTION_ITEMS)
                 .document(userId)
                 .delete()
                 .await()
-            Result.success(Unit)
-        } catch (throwable: Throwable) {
-            Result.failure(throwable.toDomainError())
-        }
-    }
+        }.mapToDomainError()
+            .map { Unit }
 
     private suspend fun loadReviews(oreumIdx: String): List<ReviewItem> {
         val snapshot = firestore.collection(FirestoreConstants.COLLECTION_REVIEWS)

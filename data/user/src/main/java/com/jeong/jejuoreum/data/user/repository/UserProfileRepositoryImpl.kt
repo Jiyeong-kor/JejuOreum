@@ -3,6 +3,7 @@ package com.jeong.jejuoreum.data.user.repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
+import com.jeong.jejuoreum.core.common.result.mapToDomainError
 import com.jeong.jejuoreum.data.user.local.PreferenceManager
 import com.jeong.jejuoreum.data.user.model.JoinItem
 import com.jeong.jejuoreum.domain.user.entity.UserAccount
@@ -12,7 +13,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
 @Singleton
-class UserProfileRepositoryImpl @Inject constructor(
+internal class UserProfileRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
     private val preferenceManager: PreferenceManager,
@@ -26,7 +27,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             .get()
             .await()
         snapshot.documents.all { it.id == currentUser.uid }
-    }
+    }.mapToDomainError()
 
     override suspend fun saveNickname(nickname: String): Result<UserAccount> = runCatching {
         val currentUser = firebaseAuth.currentUser
@@ -40,5 +41,5 @@ class UserProfileRepositoryImpl @Inject constructor(
         document.set(userInfo.toMap()).await()
         preferenceManager.setNickname(nickname)
         UserAccount(id = currentUser.uid, nickname = nickname)
-    }
+    }.mapToDomainError()
 }

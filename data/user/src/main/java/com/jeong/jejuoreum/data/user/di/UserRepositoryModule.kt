@@ -1,8 +1,10 @@
 package com.jeong.jejuoreum.data.user.di
 
 import com.jeong.jejuoreum.data.user.repository.UserAuthRepositoryImpl
+import com.jeong.jejuoreum.data.user.repository.UserInteractionRepositoryImpl
 import com.jeong.jejuoreum.data.user.repository.UserProfileRepositoryImpl
 import com.jeong.jejuoreum.domain.user.repository.UserAuthRepository
+import com.jeong.jejuoreum.domain.user.repository.UserInteractionRepository
 import com.jeong.jejuoreum.domain.user.repository.UserProfileRepository
 import dagger.Binds
 import dagger.Module
@@ -25,4 +27,10 @@ abstract class UserRepositoryModule {
     abstract fun bindUserAuthRepository(
         impl: UserAuthRepositoryImpl,
     ): UserAuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserInteractionRepository(
+        impl: UserInteractionRepositoryImpl,
+    ): UserInteractionRepository
 }

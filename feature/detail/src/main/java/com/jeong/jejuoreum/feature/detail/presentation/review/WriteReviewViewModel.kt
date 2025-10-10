@@ -1,98 +1,162 @@
 package com.jeong.jejuoreum.feature.detail.presentation.review
 
-import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.jeong.jejuoreum.domain.review.entity.ReviewItem
-import com.jeong.jejuoreum.domain.review.repository.ReviewRepository
+import com.jeong.jejuoreum.core.common.error.DomainError
+import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentUserNicknameUseCase
+import com.jeong.jejuoreum.domain.review.usecase.BuildReviewItemUseCase
+import com.jeong.jejuoreum.domain.review.usecase.DeleteReviewUseCase
+import com.jeong.jejuoreum.domain.review.usecase.FetchReviewsUseCase
+import com.jeong.jejuoreum.domain.review.usecase.ObserveReviewsUseCase
+import com.jeong.jejuoreum.domain.review.usecase.ToggleReviewLikeUseCase
+import com.jeong.jejuoreum.domain.review.usecase.WriteReviewUseCase
+import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
+import com.jeong.jejuoreum.domain.user.usecase.GetCurrentUserIdUseCase
+import com.jeong.jejuoreum.feature.detail.presentation.review.toUiModels
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+private const val DEFAULT_ERROR_MESSAGE = "요청 처리 중 오류가 발생했어요."
 
 @HiltViewModel
 class WriteReviewViewModel @Inject constructor(
-    private val reviewRepo: ReviewRepository,
-    private val auth: FirebaseAuth,
-    @param:ApplicationContext private val context: Context
-) : ViewModel() {
+    private val observeReviewsUseCase: ObserveReviewsUseCase,
+    private val fetchReviewsUseCase: FetchReviewsUseCase,
+    private val writeReviewUseCase: WriteReviewUseCase,
+    private val toggleReviewLikeUseCase: ToggleReviewLikeUseCase,
+    private val deleteReviewUseCase: DeleteReviewUseCase,
+    private val buildReviewItemUseCase: BuildReviewItemUseCase,
+    private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val getCurrentUserNicknameUseCase: GetCurrentUserNicknameUseCase,
+) : BaseViewModel<WriteReviewUiEvent, WriteReviewUiEffect, WriteReviewUiState>(WriteReviewUiState()) {
 
-    private val _reviews = MutableStateFlow<List<ReviewItem>>(emptyList())
-    val reviews: StateFlow<List<ReviewItem>> = _reviews.asStateFlow()
+    private var observeJob: Job? = null
 
-    private val _oreumIdx = MutableStateFlow("")
-    private val _oreumName = MutableStateFlow("")
-    val oreumName: StateFlow<String> = _oreumName.asStateFlow()
-
-    private val _reviewInputText = MutableStateFlow("")
-    val reviewInputText: StateFlow<String> = _reviewInputText.asStateFlow()
-
-    fun init(oreumIdx: Int, oreumName: String) {
-        val idxString = oreumIdx.toString()
-
-        // 중복 초기화 방지
-        if (_oreumIdx.value == idxString) return
-
-        _oreumIdx.value = idxString
-        _oreumName.value = oreumName
-        loadReviews()
-    }
-
-    fun onReviewTextChange(text: String) {
-        _reviewInputText.value = text
-    }
-
-    private fun loadReviews() {
-        if (_oreumIdx.value.isEmpty()) return
-        viewModelScope.launch {
-            _reviews.value = reviewRepo.getReviews(_oreumIdx.value)
+    override fun handleEvent(event: WriteReviewUiEvent) {
+        when (event) {
+            is WriteReviewUiEvent.Initialize -> initialize(event.oreumIdx, event.oreumName)
+            is WriteReviewUiEvent.ReviewTextChanged -> setState { copy(reviewInput = event.text) }
+            is WriteReviewUiEvent.SaveClicked -> submitReview(event.defaultNickname)
+            is WriteReviewUiEvent.LikeClicked -> toggleLike(event.review)
+            is WriteReviewUiEvent.DeleteClicked -> deleteReview(event.review)
+            WriteReviewUiEvent.RefreshRequested -> refreshReviews()
         }
     }
 
-    fun saveReview(defaultNickname: String) {
-        if (_reviewInputText.value.isBlank()) return
+    private fun initialize(oreumIdx: Int, oreumName: String) {
+        val idx = oreumIdx.takeIf { it >= 0 }?.toString() ?: return
+        if (state.value.oreumIdx == idx) return
 
-        val currentUser = auth.currentUser ?: return
-        val nickname = auth.currentUser?.displayName ?: defaultNickname
+        setState { copy(oreumIdx = idx, oreumName = oreumName) }
+        loadCurrentUser()
+        observeReviews(idx)
+        refreshReviews()
+    }
 
-        val newReview = ReviewItem(
-            userId = currentUser.uid,
-            userNickname = nickname,
-            userReview = _reviewInputText.value.trim(),
-            userTime = System.currentTimeMillis()
-        )
+    private fun loadCurrentUser() {
+        val currentUserId = getCurrentUserIdUseCase()
+        setState { copy(currentUserId = currentUserId) }
+    }
 
-        viewModelScope.launch {
-            reviewRepo.writeReview(_oreumIdx.value, newReview).onSuccess {
-
-                // 입력창 초기화
-                _reviewInputText.value = ""
-
-                // 리뷰 목록 새로고침
-                loadReviews()
+    private fun observeReviews(oreumIdx: String) {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
+            observeReviewsUseCase(oreumIdx).collectLatest { resource ->
+                when (resource) {
+                    Resource.Loading -> setState { copy(isLoading = true) }
+                    is Resource.Success -> setState {
+                        copy(isLoading = false, reviews = resource.data.toUiModels())
+                    }
+                    is Resource.Error -> {
+                        setState { copy(isLoading = false) }
+                        sendError(resource.throwable)
+                    }
+                }
             }
         }
     }
 
-    fun toggleReviewLike(review: ReviewItem) {
+    private fun refreshReviews(showLoading: Boolean = true) {
+        val oreumIdx = state.value.oreumIdx ?: return
         viewModelScope.launch {
-            reviewRepo.toggleReviewLike(
-                _oreumIdx.value, review.userId
-            ).onSuccess {
-                loadReviews()
-            }
+            if (showLoading) setState { copy(isLoading = true) }
+            fetchReviewsUseCase(oreumIdx)
+                .onSuccess { reviews ->
+                    setState { copy(isLoading = false, reviews = reviews.toUiModels()) }
+                }
+                .onFailure { error ->
+                    setState { copy(isLoading = false) }
+                    sendError(error)
+                }
         }
     }
 
-    fun deleteReview(review: ReviewItem) {
+    private fun submitReview(defaultNickname: String) {
+        val oreumIdx = state.value.oreumIdx ?: return
+        val content = state.value.reviewInput.trim()
+        if (content.isBlank()) return
+
         viewModelScope.launch {
-            reviewRepo.deleteReview(_oreumIdx.value, review.userId).onSuccess {
-                loadReviews()
-            }
+            setState { copy(isSubmitting = true) }
+            ensureAnonymousUserUseCase()
+                .onSuccess { account ->
+                    val nicknameResult = getCurrentUserNicknameUseCase()
+                    nicknameResult.onFailure { sendError(it) }
+                    val nickname = nicknameResult.getOrDefault(defaultNickname)
+
+                    val review = buildReviewItemUseCase(
+                        userId = account.id,
+                        nickname = nickname,
+                        content = content,
+                        createdAt = System.currentTimeMillis()
+                    )
+                    writeReviewUseCase(oreumIdx, review)
+                        .onSuccess {
+                            setState {
+                                copy(reviewInput = "", isSubmitting = false, currentUserId = account.id)
+                            }
+                            refreshReviews(showLoading = false)
+                        }
+                        .onFailure { error ->
+                            setState { copy(isSubmitting = false) }
+                            sendError(error)
+                        }
+                }
+                .onFailure { error ->
+                    setState { copy(isSubmitting = false) }
+                    sendError(error)
+                }
         }
+    }
+
+    private fun toggleLike(review: ReviewUiModel) {
+        val oreumIdx = state.value.oreumIdx ?: return
+        viewModelScope.launch {
+            toggleReviewLikeUseCase(oreumIdx, review.userId)
+                .onSuccess { refreshReviews(showLoading = false) }
+                .onFailure { sendError(it) }
+        }
+    }
+
+    private fun deleteReview(review: ReviewUiModel) {
+        val oreumIdx = state.value.oreumIdx ?: return
+        viewModelScope.launch {
+            deleteReviewUseCase(oreumIdx, review.userId)
+                .onSuccess { refreshReviews(showLoading = false) }
+                .onFailure { sendError(it) }
+        }
+    }
+
+    private fun sendError(throwable: Throwable?) {
+        val message = when (throwable) {
+            is DomainError -> throwable.message
+            else -> throwable?.message
+        } ?: DEFAULT_ERROR_MESSAGE
+        sendEffect { WriteReviewUiEffect.ShowMessage(message) }
     }
 }
