@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum
+package com.jeong.jejuoreum.app
 
 import org.junit.Test
 

@@ -9,7 +9,6 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(project(":data:remote"))
     implementation(project(":domain:oreum"))
 
     implementation(libs.kotlinx.coroutines.core)

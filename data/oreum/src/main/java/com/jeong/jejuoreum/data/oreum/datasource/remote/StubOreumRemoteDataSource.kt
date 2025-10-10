@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.remote.oreum.datasource
+package com.jeong.jejuoreum.data.oreum.datasource.remote
 
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import javax.inject.Inject
@@ -57,7 +57,6 @@ class StubOreumRemoteDataSource @Inject constructor() : OreumRemoteDataSource {
             userStamped = false
         ),
     ).associateBy { it.idx.toString() }
-
 
     override suspend fun fetchOreums(): List<ResultSummary> =
         withContext(Dispatchers.Default) {

@@ -1,0 +1,4 @@
+diff a/app/src/androidTest/java/com/jeong/jejuoreum/app/ExampleInstrumentedTest.kt b/app/src/androidTest/java/com/jeong/jejuoreum/app/ExampleInstrumentedTest.kt	(rejected hunks)
+@@ -1 +1 @@
+-package com.jeong.jejuoreum
++package com.jeong.jejuoreum.app

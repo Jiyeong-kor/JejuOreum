@@ -32,4 +32,8 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.okhttp)
     implementation(libs.retrofit)
+    implementation(platform(libs.coil.bom))
+    implementation(libs.coil3.coil)
+    implementation(libs.coil3.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }

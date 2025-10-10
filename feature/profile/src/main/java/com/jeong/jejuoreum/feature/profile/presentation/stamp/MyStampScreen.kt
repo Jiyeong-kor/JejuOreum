@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jeong.jejuoreum.core.designsystem.R as DesignSystemR
+import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
 import com.jeong.jejuoreum.domain.oreum.entity.MyStampItem
 import com.jeong.jejuoreum.feature.profile.R
 
@@ -63,7 +63,7 @@ fun MyStampScreen(
             )
             Spacer(modifier = Modifier.width(20.dp))
             Image(
-                painter = painterResource(id = DesignSystemR.drawable.oreum_stamp),
+                painter = painterResource(id = DesignSystemAssets.Drawable.Stamp),
                 contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
                 modifier = Modifier.size(30.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
@@ -119,7 +119,7 @@ private fun StampItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = DesignSystemR.drawable.oreum_marker_selected),
+            painter = painterResource(id = DesignSystemAssets.Drawable.StampMarkerSelected),
             contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
             modifier = Modifier.size(100.dp)
         )

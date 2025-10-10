@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.remote.oreum.datasource
+package com.jeong.jejuoreum.data.oreum.datasource.remote
 
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 

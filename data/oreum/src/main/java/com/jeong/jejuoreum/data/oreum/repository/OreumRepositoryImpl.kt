@@ -6,7 +6,7 @@ import com.jeong.jejuoreum.data.oreum.datasource.local.OreumLocalDataSource
 import com.jeong.jejuoreum.data.oreum.mapper.toDomainOreum
 import com.jeong.jejuoreum.data.oreum.mapper.toDomainSummary
 import com.jeong.jejuoreum.data.oreum.mapper.toEntity
-import com.jeong.jejuoreum.data.remote.oreum.datasource.OreumRemoteDataSource
+import com.jeong.jejuoreum.data.oreum.datasource.remote.OreumRemoteDataSource
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.model.Oreum
 import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository

@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.data.remote.di
 
 import android.content.Context
-import com.jeong.jejuoreum.data.remote.api.OreumRetrofitInterface
+import com.jeong.jejuoreum.data.remote.oreum.api.OreumRetrofitInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

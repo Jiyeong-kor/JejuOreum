@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.map.presentation.main
+package com.jeong.jejuoreum.core.navigation.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar

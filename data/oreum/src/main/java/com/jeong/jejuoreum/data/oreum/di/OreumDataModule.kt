@@ -3,8 +3,8 @@ package com.jeong.jejuoreum.data.oreum.di
 import com.jeong.jejuoreum.data.oreum.datasource.local.InMemoryOreumLocalDataSource
 import com.jeong.jejuoreum.data.oreum.datasource.local.OreumLocalDataSource
 import com.jeong.jejuoreum.data.oreum.repository.StampRepositoryImpl
-import com.jeong.jejuoreum.data.remote.oreum.datasource.OreumRemoteDataSource
-import com.jeong.jejuoreum.data.remote.oreum.datasource.StubOreumRemoteDataSource
+import com.jeong.jejuoreum.data.oreum.datasource.remote.OreumRemoteDataSource
+import com.jeong.jejuoreum.data.oreum.datasource.remote.StubOreumRemoteDataSource
 import com.jeong.jejuoreum.data.oreum.repository.OreumRepositoryImpl
 import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
 import com.jeong.jejuoreum.domain.oreum.repository.StampRepository

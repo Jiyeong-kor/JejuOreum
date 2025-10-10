@@ -2,6 +2,7 @@ package com.jeong.jejuoreum.domain.oreum.usecase
 
 import com.jeong.jejuoreum.domain.oreum.model.Oreum
 import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
+import com.jeong.jejuoreum.domain.oreum.usecase.base.FlowUseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

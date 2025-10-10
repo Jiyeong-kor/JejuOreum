@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.app.di
+package com.jeong.jejuoreum.data.remote.di
 
 import android.content.Context
 import coil3.ImageLoader

@@ -39,7 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.jeong.jejuoreum.core.designsystem.R as DesignSystemR
+import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -201,7 +201,7 @@ private fun DetailScreen(
                     )
                     if (oreum.userStamped) {
                         Image(
-                            painter = painterResource(id = DesignSystemR.drawable.oreum_stamp_badge),
+                            painter = painterResource(id = DesignSystemAssets.Drawable.StampBadge),
                             contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
