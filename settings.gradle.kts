@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":core:presentation")
+
+
 pluginManagement {
     includeBuild("build-logic")
     repositories {
