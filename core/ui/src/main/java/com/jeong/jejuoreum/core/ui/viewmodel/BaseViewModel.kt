@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.feature.splash.presentation.base
+package com.jeong.jejuoreum.core.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

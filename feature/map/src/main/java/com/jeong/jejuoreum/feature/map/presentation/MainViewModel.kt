@@ -1,10 +1,10 @@
 package com.jeong.jejuoreum.feature.map.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.feature.map.presentation.main.MainSideEffect
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiEvent
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiState
-import com.jeong.jejuoreum.feature.map.presentation.base.BaseViewModel
 import com.jeong.jejuoreum.core.common.network.NetworkStatus
 import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentConnectivityStatusUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveConnectivityStatusUseCase

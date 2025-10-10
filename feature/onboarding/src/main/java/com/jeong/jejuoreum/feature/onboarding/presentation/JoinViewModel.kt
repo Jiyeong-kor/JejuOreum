@@ -6,7 +6,7 @@ import com.jeong.jejuoreum.domain.user.usecase.CheckNicknameAvailabilityUseCase
 import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
 import com.jeong.jejuoreum.domain.user.usecase.SaveNicknameUseCase
 import com.jeong.jejuoreum.domain.user.usecase.ValidateNicknameUseCase
-import com.jeong.jejuoreum.feature.onboarding.presentation.base.BaseViewModel
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job

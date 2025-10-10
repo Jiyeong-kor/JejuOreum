@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":domain:user"))
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

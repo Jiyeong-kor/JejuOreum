@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":data:local"))
     implementation(project(":domain:user"))
 
     implementation(libs.androidx.datastore.preferences)
