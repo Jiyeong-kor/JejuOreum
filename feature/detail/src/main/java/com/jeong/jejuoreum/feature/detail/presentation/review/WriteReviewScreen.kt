@@ -1,5 +1,6 @@
 package com.jeong.jejuoreum.feature.detail.presentation.review
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,53 +25,53 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 import com.jeong.jejuoreum.feature.detail.R
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun WriteReviewRoute(
     viewModel: WriteReviewViewModel,
 ) {
-    val reviews by viewModel.reviews.collectAsStateWithLifecycle()
-    val oreumName by viewModel.oreumName.collectAsStateWithLifecycle()
-    val reviewInputText by viewModel.reviewInputText.collectAsStateWithLifecycle()
-    val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is WriteReviewUiEffect.ShowMessage ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     WriteReviewScreen(
-        oreumName = oreumName,
-        reviews = reviews,
-        reviewInputText = reviewInputText,
-        currentUserId = currentUserId,
-        onReviewTextChange = viewModel::onReviewTextChange,
-        onSaveClick = viewModel::saveReview,
-        onLikeClick = viewModel::toggleReviewLike,
-        onDeleteClick = viewModel::deleteReview
+        state = state,
+        onEvent = viewModel::onEvent,
     )
 }
 
 @Composable
 fun WriteReviewScreen(
-    oreumName: String,
-    reviews: List<ReviewItem>,
-    reviewInputText: String,
-    currentUserId: String?,
-    onReviewTextChange: (String) -> Unit,
-    onSaveClick: (String) -> Unit,
-    onLikeClick: (ReviewItem) -> Unit,
-    onDeleteClick: (ReviewItem) -> Unit,
+    state: WriteReviewUiState,
+    onEvent: (WriteReviewUiEvent) -> Unit,
 ) {
+    val anonymousLabel = stringResource(id = R.string.oreum_anonymous)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,14 +79,14 @@ fun WriteReviewScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = oreumName,
+            text = state.oreumName,
             style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = reviewInputText,
-            onValueChange = onReviewTextChange,
+            value = state.reviewInput,
+            onValueChange = { onEvent(WriteReviewUiEvent.ReviewTextChanged(it)) },
             label = { Text(stringResource(id = R.string.oreum_review_input_hint)) },
             modifier = Modifier.fillMaxWidth(),
             maxLines = 5
@@ -93,18 +94,26 @@ fun WriteReviewScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
-            onClick = {
-                onSaveClick(stringResource(id = R.string.oreum_anonymous))
-            },
+            onClick = { onEvent(WriteReviewUiEvent.SaveClicked(anonymousLabel)) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = reviewInputText.isNotBlank()
+            enabled = state.reviewInput.isNotBlank() && !state.isSubmitting
         ) {
             Text(stringResource(id = R.string.oreum_save_review))
         }
 
+        if (state.isLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
-        if (reviews.isEmpty()) {
+        if (state.reviews.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     stringResource(id = R.string.oreum_no_reviews),
@@ -116,12 +125,12 @@ fun WriteReviewScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(reviews) { review ->
+                items(state.reviews) { review ->
                     ReviewItemCard(
                         review = review,
-                        currentUserId = currentUserId,
-                        onLikeClick = onLikeClick,
-                        onDeleteClick = onDeleteClick
+                        currentUserId = state.currentUserId,
+                        onLikeClick = { onEvent(WriteReviewUiEvent.LikeClicked(it)) },
+                        onDeleteClick = { onEvent(WriteReviewUiEvent.DeleteClicked(it)) },
                     )
                 }
             }
@@ -131,10 +140,10 @@ fun WriteReviewScreen(
 
 @Composable
 fun ReviewItemCard(
-    review: ReviewItem,
+    review: ReviewUiModel,
     currentUserId: String?,
-    onLikeClick: (ReviewItem) -> Unit,
-    onDeleteClick: (ReviewItem) -> Unit,
+    onLikeClick: (ReviewUiModel) -> Unit,
+    onDeleteClick: (ReviewUiModel) -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -197,6 +206,6 @@ fun ReviewItemCard(
     }
 }
 
-private fun ReviewItem.formattedTime(): String =
+private fun ReviewUiModel.formattedTime(): String =
     java.text.SimpleDateFormat("yyyy.MM.dd HH:mm", java.util.Locale.getDefault())
         .format(java.util.Date(userTime))

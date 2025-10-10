@@ -53,6 +53,7 @@ import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DetailRoute(
@@ -62,65 +63,50 @@ fun DetailRoute(
     onFavoriteToggled: (String) -> Unit,
     initialOreum: OreumSummaryUiModel? = null
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
     val oreumDetail = uiState.oreumDetail
-    val isFavorite = uiState.isFavorite
     val hasStamp = uiState.hasStamp
     val locationPermissionGranted = uiState.isLocationPermissionGranted
     val context = LocalContext.current
 
     LaunchedEffect(initialOreum) {
-        initialOreum?.let(viewModel::initialize)
+        initialOreum?.let { viewModel.onEvent(DetailEvent.Initialize(it)) }
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        viewModel.onLocationPermissionResult(isGranted)
+        viewModel.onEvent(DetailEvent.LocationPermissionResult(isGranted))
         if (isGranted) {
-            viewModel.stampOreum()
+            viewModel.onEvent(DetailEvent.StampRequested)
         } else {
             showToast(context.getString(R.string.oreum_permission_required_message))
         }
     }
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is DetailViewModel.DetailEvent.StampSuccess -> {
-                    showToast(context.getString(R.string.oreum_stamp_success_message))
-                    onFavoriteToggled(viewModel.uiState.value.oreumDetail?.idx.toString())
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is DetailEffect.ShowMessage -> showToast(effect.message)
+                is DetailEffect.FavoriteStatusChanged -> {
+                    val message = context.getString(
+                        if (effect.isFavorite) R.string.oreum_favorite_added_message
+                        else R.string.oreum_favorite_removed_message
+                    )
+                    showToast(message)
+                    onFavoriteToggled(effect.oreumIdx)
                 }
 
-                is DetailViewModel.DetailEvent.StampFailure -> {
-                    val message =
-                        event.message ?: context.getString(R.string.oreum_unknown_error_message)
-                    showToast(message)
+                is DetailEffect.StampCompleted -> {
+                    showToast(context.getString(R.string.oreum_stamp_success_message))
+                    onFavoriteToggled(effect.oreumIdx)
                 }
             }
         }
     }
-
-    LaunchedEffect(uiState.errorMessage) {
-        uiState.errorMessage?.let { message ->
-            showToast(message)
-            viewModel.clearError()
-        }
-    }
     DetailScreen(
         uiState = uiState,
-        onFavoriteToggled = {
-            val oreumIdx = oreumDetail?.idx?.toString() ?: return@DetailScreen
-            val wasFavorite = isFavorite
-            viewModel.toggleFavorite()
-            showToast(
-                context.getString(
-                    if (!wasFavorite) R.string.oreum_favorite_added_message
-                    else R.string.oreum_favorite_removed_message
-                )
-            )
-            onFavoriteToggled(oreumIdx)
-        },
+        onFavoriteClick = { viewModel.onEvent(DetailEvent.FavoriteClicked) },
         onStampClick = {
             if (hasStamp) {
                 onNavigateToWriteReview(
@@ -133,7 +119,7 @@ fun DetailRoute(
                         context,
                         Manifest.permission.ACCESS_FINE_LOCATION
                     ) == PackageManager.PERMISSION_GRANTED -> {
-                        viewModel.stampOreum()
+                        viewModel.onEvent(DetailEvent.StampRequested)
                     }
 
                     else -> {
@@ -159,7 +145,7 @@ fun DetailRoute(
 @Composable
 private fun DetailScreen(
     uiState: DetailUiState,
-    onFavoriteToggled: () -> Unit,
+    onFavoriteClick: () -> Unit,
     onStampClick: () -> Unit,
     onNavigateToWriteReview: (Int, String) -> Unit
 ) {
@@ -168,7 +154,7 @@ private fun DetailScreen(
             BottomButtonSection(
                 isFavorite = uiState.isFavorite,
                 hasStamp = uiState.hasStamp,
-                onFavoriteClick = onFavoriteToggled,
+                onFavoriteClick = onFavoriteClick,
                 onStampClick = onStampClick
             )
         }

@@ -15,6 +15,7 @@ import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewRoute
+import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewUiEvent
 import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewViewModel
 
 object DetailRouteContract : NavigationDestination {
@@ -64,7 +65,9 @@ object WriteReviewRouteContract : NavigationDestination {
                 ?: return@composable
             val name = entry.arguments?.getString(OreumNavigation.WRITE_REVIEW_ARG_NAME).orEmpty()
             val viewModel: WriteReviewViewModel = hiltViewModel()
-            LaunchedEffect(idx, name) { viewModel.init(idx, name) }
+            LaunchedEffect(idx, name) {
+                viewModel.onEvent(WriteReviewUiEvent.Initialize(idx, name))
+            }
             WriteReviewRoute(viewModel = viewModel)
         }
     }

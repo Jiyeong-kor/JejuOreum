@@ -11,11 +11,10 @@ class DetailStateReducer @Inject constructor() {
             oreumDetail = oreum,
             isFavorite = oreum.userLiked,
             hasStamp = oreum.userStamped,
-            errorMessage = null
         )
 
     fun onLoading(state: DetailUiState): DetailUiState =
-        state.copy(isLoading = true, errorMessage = null)
+        state.copy(isLoading = true)
 
     fun onDetailLoaded(state: DetailUiState, detail: OreumSummaryUiModel): DetailUiState =
         state.copy(
@@ -23,11 +22,10 @@ class DetailStateReducer @Inject constructor() {
             isFavorite = detail.userLiked,
             hasStamp = detail.userStamped,
             isLoading = false,
-            errorMessage = null
         )
 
-    fun onDetailLoadFailed(state: DetailUiState, message: String?): DetailUiState =
-        state.copy(isLoading = false, errorMessage = message)
+    fun onDetailLoadFailed(state: DetailUiState): DetailUiState =
+        state.copy(isLoading = false)
 
     fun onFavoriteStatusChanged(state: DetailUiState, isFavorite: Boolean): DetailUiState =
         state.copy(
@@ -55,10 +53,4 @@ class DetailStateReducer @Inject constructor() {
 
     fun onLocationPermissionChanged(state: DetailUiState, granted: Boolean): DetailUiState =
         state.copy(isLocationPermissionGranted = granted)
-
-    fun onError(state: DetailUiState, message: String?): DetailUiState =
-        state.copy(errorMessage = message)
-
-    fun clearError(state: DetailUiState): DetailUiState =
-        state.copy(errorMessage = null)
 }
