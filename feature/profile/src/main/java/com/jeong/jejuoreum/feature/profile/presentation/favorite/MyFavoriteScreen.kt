@@ -12,7 +12,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,16 +22,25 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.jejuoreum.feature.profile.R
 import com.jeong.jejuoreum.feature.profile.presentation.list.OreumListItem
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MyFavoriteScreen(
     onItemClick: (OreumSummaryUiModel) -> Unit,
-    viewModel: MyFavoriteViewModel = hiltViewModel()
+    onShowMessage: (String) -> Unit = {},
+    viewModel: MyFavoriteViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(uiState.errorMessage) {
-        uiState.errorMessage?.let { viewModel.clearError() }
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is MyFavoriteUiEffect.ShowError -> {
+                    onShowMessage(effect.message)
+                    viewModel.onEvent(MyFavoriteUiEvent.ErrorConsumed)
+                }
+            }
+        }
     }
 
     when {
@@ -63,7 +71,12 @@ fun MyFavoriteScreen(
                             oreum = oreum,
                             onItemClick = onItemClick,
                             onFavoriteClick = {
-                                viewModel.toggleFavorite(it.idx.toString(), !it.userLiked)
+                                viewModel.onEvent(
+                                    MyFavoriteUiEvent.FavoriteToggled(
+                                        oreumIdx = it.idx.toString(),
+                                        currentlyLiked = it.userLiked,
+                                    )
+                                )
                             },
                             onStampClick = {},
                         )

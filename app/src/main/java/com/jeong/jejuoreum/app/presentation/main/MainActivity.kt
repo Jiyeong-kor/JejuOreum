@@ -26,7 +26,7 @@ import com.jeong.jejuoreum.feature.onboarding.navigation.JoinNavigation
 import com.jeong.jejuoreum.feature.onboarding.navigation.JoinRouteContract
 import com.jeong.jejuoreum.feature.profile.navigation.ProfileNavigation
 import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination
-import com.jeong.jejuoreum.feature.splash.presentation.SplashSideEffect
+import com.jeong.jejuoreum.feature.splash.presentation.SplashUiEffect
 import com.jeong.jejuoreum.feature.splash.presentation.SplashUiEvent
 import com.jeong.jejuoreum.feature.splash.presentation.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                 launch {
                     splashViewModel.effect.collectLatest { effect ->
                         when (effect) {
-                            is SplashSideEffect.NavigateTo -> {
+                            is SplashUiEffect.NavigateTo -> {
                                 startDestination = when (effect.destination) {
                                     SplashDestination.Join -> JoinNavigation.ROUTE
                                     SplashDestination.Map -> OreumNavigation.MAP

@@ -26,16 +26,16 @@ fun JoinRoute(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                JoinSideEffect.AuthenticationFailed -> {
+                JoinUiEffect.AuthenticationFailed -> {
                     context.toastMessage(R.string.auth_failed)
                 }
 
-                is JoinSideEffect.NicknameSaved -> {
+                is JoinUiEffect.NicknameSaved -> {
                     context.toastMessage(R.string.signup_success)
                     onNavigateToMain()
                 }
 
-                JoinSideEffect.NicknameSaveFailed -> {
+                JoinUiEffect.NicknameSaveFailed -> {
                     context.toastMessage(R.string.nickname_save_failed)
                 }
             }

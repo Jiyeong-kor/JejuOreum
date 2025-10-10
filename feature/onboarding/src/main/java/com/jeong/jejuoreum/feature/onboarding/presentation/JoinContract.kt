@@ -27,8 +27,8 @@ sealed interface JoinUiEvent {
     data object SubmitNickname : JoinUiEvent
 }
 
-sealed interface JoinSideEffect {
-    data object AuthenticationFailed : JoinSideEffect
-    data class NicknameSaved(val nickname: String) : JoinSideEffect
-    data object NicknameSaveFailed : JoinSideEffect
+sealed interface JoinUiEffect {
+    data object AuthenticationFailed : JoinUiEffect
+    data class NicknameSaved(val nickname: String) : JoinUiEffect
+    data object NicknameSaveFailed : JoinUiEffect
 }

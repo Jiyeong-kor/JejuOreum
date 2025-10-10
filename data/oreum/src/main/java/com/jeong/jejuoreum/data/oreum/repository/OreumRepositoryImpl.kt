@@ -3,6 +3,8 @@ package com.jeong.jejuoreum.data.oreum.repository
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.error.DomainError
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.common.result.ResultResource
+import com.jeong.jejuoreum.core.common.result.asResultResourceFlow
 import com.jeong.jejuoreum.data.oreum.datasource.local.OreumLocalDataSource
 import com.jeong.jejuoreum.data.oreum.mapper.toDomainOreum
 import com.jeong.jejuoreum.data.oreum.mapper.toDomainSummary
@@ -26,6 +28,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @Singleton
 internal class OreumRepositoryImpl @Inject constructor(
@@ -35,6 +39,7 @@ internal class OreumRepositoryImpl @Inject constructor(
 ) : OreumRepository {
 
     private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.io)
+    private val refreshMutex = Mutex()
 
     override val oreumListFlow: StateFlow<List<ResultSummary>> =
         localDataSource.observeOreums()
@@ -49,21 +54,25 @@ internal class OreumRepositoryImpl @Inject constructor(
         scope.launch { loadOreumListIfNeeded() }
     }
 
-    override fun observeOreums(): Flow<Result<List<Oreum>>> = flow {
-        loadOreumListIfNeeded().onFailure { emit(Result.failure(it)) }
+    override fun observeOreums(): Flow<ResultResource<List<Oreum>>> = flow {
+        loadOreumListIfNeeded().onFailure { throwable ->
+            emit(Result.failure<Resource<List<Oreum>>>(throwable))
+        }
+        emit(Result.success(Resource.Loading))
         emitAll(
-            oreumListFlow.map { summaries ->
-                Result.success(summaries.map { it.toDomainOreum() })
-            }
+            oreumListFlow
+                .map { summaries -> Resource.Success(summaries.map { it.toDomainOreum() }) }
+                .asResultResourceFlow()
         )
     }
 
-    override fun observeOreumSummaries(): Flow<Resource<List<ResultSummary>>> =
+    override fun observeOreumSummaries(): Flow<ResultResource<List<ResultSummary>>> =
         oreumListFlow
             .map<List<ResultSummary>, Resource<List<ResultSummary>>> { summaries ->
                 Resource.Success(summaries)
             }
             .onStart { emit(Resource.Loading) }
+            .asResultResourceFlow()
 
     override suspend fun getOreumDetail(id: String): Result<Oreum> =
         runCatching { fetchSingleOreumById(id).toDomainOreum() }
@@ -92,7 +101,7 @@ internal class OreumRepositoryImpl @Inject constructor(
                 ?: throw DomainError.NotFound(oreumIdx)
         }
 
-    private suspend fun refreshFromRemote() {
+    private suspend fun refreshFromRemote() = refreshMutex.withLock {
         val remote = remoteDataSource.fetchOreums()
         val merged = mergeUserState(remote, oreumListFlow.value)
         localDataSource.upsertAll(merged.map { it.toEntity() })

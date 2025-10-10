@@ -2,11 +2,11 @@ package com.jeong.jejuoreum.feature.onboarding.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
+import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.domain.user.usecase.CheckNicknameAvailabilityUseCase
 import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
 import com.jeong.jejuoreum.domain.user.usecase.SaveNicknameUseCase
 import com.jeong.jejuoreum.domain.user.usecase.ValidateNicknameUseCase
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -19,7 +19,7 @@ class JoinViewModel @Inject constructor(
     private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
     private val saveNicknameUseCase: SaveNicknameUseCase,
     private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
-) : BaseViewModel<JoinUiEvent, JoinSideEffect, JoinUiState>(JoinUiState()) {
+) : BaseViewModel<JoinUiEvent, JoinUiEffect, JoinUiState>(JoinUiState()) {
 
     private var availabilityJob: Job? = null
 
@@ -75,11 +75,11 @@ class JoinViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = { account ->
-                    sendEffect { JoinSideEffect.NicknameSaved(account.nickname.orEmpty()) }
+                    sendEffect { JoinUiEffect.NicknameSaved(account.nickname.orEmpty()) }
                 },
                 onFailure = { throwable ->
                     Timber.e(throwable, "Failed to save nickname")
-                    sendEffect { JoinSideEffect.NicknameSaveFailed }
+                    sendEffect { JoinUiEffect.NicknameSaveFailed }
                 }
             )
         }
@@ -90,7 +90,7 @@ class JoinViewModel @Inject constructor(
             ensureAnonymousUserUseCase()
                 .onFailure { throwable ->
                     Timber.e(throwable, "Failed to authenticate user")
-                    sendEffect { JoinSideEffect.AuthenticationFailed }
+                    sendEffect { JoinUiEffect.AuthenticationFailed }
                 }
         }
     }

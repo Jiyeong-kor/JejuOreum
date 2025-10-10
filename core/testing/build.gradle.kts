@@ -24,6 +24,9 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":domain:oreum"))
+    implementation(project(":domain:user"))
+    implementation(project(":domain:review"))
     implementation("junit:junit:4.13.2")
     implementation("androidx.test.ext:junit:1.1.5")
     implementation("androidx.test.espresso:espresso-core:3.5.1")

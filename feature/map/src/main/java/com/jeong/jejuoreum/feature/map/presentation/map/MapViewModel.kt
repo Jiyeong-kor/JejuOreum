@@ -128,32 +128,43 @@ class MapViewModel @Inject constructor(
 
     private fun observeOreums() {
         viewModelScope.launch {
-            observeOreumSummariesUseCase().collectLatest { resource ->
-                when (resource) {
-                    Resource.Loading -> setState {
-                        copy(isLoading = true, errorMessage = null)
-                    }
-
-                    is Resource.Success -> {
-                        oreumSummaries.value = resource.data
-                        setState { copy(isLoading = false, errorMessage = null) }
-                        val currentQuery = state.value.searchQuery
-                        if (currentQuery.isNotBlank()) {
-                            handleSearchQuery(currentQuery)
-                        }
-                        lastBounds?.let { bounds ->
-                            lastBounds = null
-                            handleViewport(bounds)
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        val message = resource.throwable?.message
-                            ?: "오름 데이터를 불러오지 못했어요."
+            observeOreumSummariesUseCase().collectLatest { result ->
+                result.fold(
+                    onSuccess = ::handleResource,
+                    onFailure = { throwable ->
+                        val message = throwable.message ?: "오름 데이터를 불러오지 못했어요."
                         setState { copy(isLoading = false, errorMessage = message) }
                         sendEffect { MapEffect.ShowMessage(message) }
                     }
+                )
+            }
+        }
+    }
+
+    private fun handleResource(resource: Resource<List<ResultSummary>>) {
+        when (resource) {
+            Resource.Loading -> setState {
+                copy(isLoading = true, errorMessage = null)
+            }
+
+            is Resource.Success -> {
+                oreumSummaries.value = resource.data
+                setState { copy(isLoading = false, errorMessage = null) }
+                val currentQuery = state.value.searchQuery
+                if (currentQuery.isNotBlank()) {
+                    handleSearchQuery(currentQuery)
                 }
+                lastBounds?.let { bounds ->
+                    lastBounds = null
+                    handleViewport(bounds)
+                }
+            }
+
+            is Resource.Error -> {
+                val message = resource.throwable?.message
+                    ?: "오름 데이터를 불러오지 못했어요."
+                setState { copy(isLoading = false, errorMessage = message) }
+                sendEffect { MapEffect.ShowMessage(message) }
             }
         }
     }

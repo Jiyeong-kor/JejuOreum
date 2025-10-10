@@ -1,6 +1,7 @@
 package com.jeong.jejuoreum.feature.map.presentation.oreum
 
 import androidx.lifecycle.viewModelScope
+import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.feature.map.domain.OreumOverviewInteractor
 import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
@@ -41,27 +42,37 @@ class OreumViewModel @Inject constructor(
 
             interactor.observeOreumOverviews()
                 .collectLatest { result ->
-                    result
-                        .onSuccess { overviews ->
-                            val uiModels = overviews.toUiModels()
-                            setState {
-                                copy(
-                                    isLoading = false,
-                                    errorMessage = null,
-                                    oreums = uiModels
-                                )
+                    result.fold(
+                        onSuccess = { resource ->
+                            when (resource) {
+                                Resource.Loading -> setState {
+                                    copy(isLoading = true, errorMessage = null)
+                                }
+
+                                is Resource.Success -> {
+                                    val uiModels = resource.data.toUiModels()
+                                    setState {
+                                        copy(
+                                            isLoading = false,
+                                            errorMessage = null,
+                                            oreums = uiModels
+                                        )
+                                    }
+                                }
+
+                                is Resource.Error -> handleFailure(resource.throwable)
                             }
-                        }
-                        .onFailure { throwable ->
-                            setState { copy(isLoading = false, errorMessage = throwable.message) }
-                            sendEffect {
-                                OreumEffect.ShowError(
-                                    throwable.message ?: "알 수 없는 오류 발생"
-                                )
-                            }
-                        }
+                        },
+                        onFailure = ::handleFailure
+                    )
                 }
         }
+    }
+
+    private fun handleFailure(throwable: Throwable?) {
+        val message = throwable?.message ?: "알 수 없는 오류 발생"
+        setState { copy(isLoading = false, errorMessage = message) }
+        sendEffect { OreumEffect.ShowError(message) }
     }
 
     private fun fetchOreumDetail(oreumId: String) {

@@ -12,6 +12,6 @@ sealed interface SplashUiEvent {
     data object ErrorConsumed : SplashUiEvent
 }
 
-sealed interface SplashSideEffect {
-    data class NavigateTo(val destination: SplashDestination) : SplashSideEffect
+sealed interface SplashUiEffect {
+    data class NavigateTo(val destination: SplashDestination) : SplashUiEffect
 }

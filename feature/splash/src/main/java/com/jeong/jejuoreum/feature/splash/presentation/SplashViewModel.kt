@@ -11,7 +11,7 @@ import timber.log.Timber
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val prepareSplashInteractor: PrepareSplashInteractor
-) : BaseViewModel<SplashUiEvent, SplashSideEffect, SplashUiState>(SplashUiState()) {
+) : BaseViewModel<SplashUiEvent, SplashUiEffect, SplashUiState>(SplashUiState()) {
 
     override fun handleEvent(event: SplashUiEvent) {
         when (event) {
@@ -28,7 +28,7 @@ class SplashViewModel @Inject constructor(
             result.fold(
                 onSuccess = { destination ->
                     setState { copy(isLoading = false) }
-                    sendEffect { SplashSideEffect.NavigateTo(destination) }
+                    sendEffect { SplashUiEffect.NavigateTo(destination) }
                 },
                 onFailure = { throwable ->
                     Timber.e(throwable, "❌ Splash 준비 실패")
