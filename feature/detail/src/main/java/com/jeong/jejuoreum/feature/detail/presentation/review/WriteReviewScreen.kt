@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -125,7 +126,10 @@ fun WriteReviewScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.reviews) { review ->
+                items(
+                    items = state.reviews,
+                    key = { it.userId }
+                ) { review ->
                     ReviewItemCard(
                         review = review,
                         currentUserId = state.currentUserId,
@@ -145,6 +149,7 @@ fun ReviewItemCard(
     onLikeClick: (ReviewUiModel) -> Unit,
     onDeleteClick: (ReviewUiModel) -> Unit,
 ) {
+    val formattedTime = remember(review.userTime) { review.formattedTime() }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -166,7 +171,7 @@ fun ReviewItemCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = review.userNickname, style = MaterialTheme.typography.titleMedium)
                     Text(
-                        text = review.formattedTime(),
+                        text = formattedTime,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

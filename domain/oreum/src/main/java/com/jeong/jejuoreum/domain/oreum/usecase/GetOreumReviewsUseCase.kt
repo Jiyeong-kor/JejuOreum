@@ -9,5 +9,5 @@ class GetOreumReviewsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(oreumIdx: String): Result<List<ReviewItem>> =
-        runCatching { reviewRepository.getReviews(oreumIdx) }
+        reviewRepository.fetchReviews(oreumIdx)
 }

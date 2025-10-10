@@ -8,5 +8,5 @@ class WriteReviewUseCase @Inject constructor(
     private val reviewRepository: ReviewRepository,
 ) {
     suspend operator fun invoke(oreumIdx: String, review: ReviewItem): Result<Unit> =
-        reviewRepository.writeReview(oreumIdx, review)
+        reviewRepository.submitReview(oreumIdx, review)
 }

@@ -1,18 +1,24 @@
 package com.jeong.jejuoreum.domain.review.usecase
 
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
+import javax.inject.Inject
 
-class BuildReviewItemUseCase {
+class BuildReviewItemUseCase @Inject constructor() {
     operator fun invoke(
-        id: String,
+        userId: String,
+        nickname: String,
         content: String,
-        author: String,
-        createdAt: Long
+        createdAt: Long,
+        likeCount: Int = 0,
+        isLiked: Boolean = false,
     ): ReviewItem {
         return ReviewItem(
-            id = id,
-            content = content,
-            author = author,
-            createdAt = createdAt
+            userId = userId,
+            userNickname = nickname,
+            userReview = content,
+            userTime = createdAt,
+            reviewLikeNum = likeCount,
+            isLiked = isLiked,
         )
     }
+}
