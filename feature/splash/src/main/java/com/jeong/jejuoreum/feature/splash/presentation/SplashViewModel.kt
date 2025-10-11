@@ -1,6 +1,8 @@
 package com.jeong.jejuoreum.feature.splash.presentation
 
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
+import com.jeong.jejuoreum.feature.splash.R
 import com.jeong.jejuoreum.feature.splash.domain.PrepareSplashInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -27,7 +29,7 @@ class SplashViewModel @Inject constructor(
         launch {
             setState { copy(isLoading = true, errorMessage = null) }
 
-            val result = runCatching { prepareSplashInteractor() }
+            val result = prepareSplashInteractor()
             result.fold(
                 onSuccess = { destination ->
                     setState { copy(isLoading = false) }
@@ -38,7 +40,8 @@ class SplashViewModel @Inject constructor(
                     setState {
                         copy(
                             isLoading = false,
-                            errorMessage = throwable.message ?: DEFAULT_ERROR_MESSAGE,
+                            errorMessage = throwable.message?.let(UiText::DynamicString)
+                                ?: UiText.StringResource(R.string.splash_error_generic),
                         )
                     }
                 }
@@ -48,9 +51,5 @@ class SplashViewModel @Inject constructor(
 
     private fun clearError() {
         setState { copy(errorMessage = null) }
-    }
-
-    companion object {
-        private const val DEFAULT_ERROR_MESSAGE = "오류가 발생하였습니다."
     }
 }

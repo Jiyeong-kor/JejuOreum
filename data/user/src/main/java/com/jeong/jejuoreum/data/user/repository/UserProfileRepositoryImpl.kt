@@ -42,4 +42,8 @@ internal class UserProfileRepositoryImpl @Inject constructor(
         preferenceManager.setNickname(nickname)
         UserAccount(id = currentUser.uid, nickname = nickname)
     }.mapToDomainError()
+
+    override suspend fun isUserRegistered(): Result<Boolean> = runCatching {
+        preferenceManager.isUserRegistered()
+    }.mapToDomainError()
 }

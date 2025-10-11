@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.ui.extensions.asString
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.feature.map.presentation.map.MapEffect.ShowToast
@@ -144,8 +145,3 @@ private fun OreumSummaryUiModel.asLatLng(): com.kakao.vectormap.LatLng =
     com.kakao.vectormap.LatLng.from(y, x)
 
 private fun OreumSummaryUiModel.asGeoPoint(): GeoPoint = GeoPoint(y, x)
-
-private fun UiText.asString(context: Context): String = when (this) {
-    is UiText.DynamicString -> value
-    is UiText.StringResource -> context.getString(resId, *args)
-}

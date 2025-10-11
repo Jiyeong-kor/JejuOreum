@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.jejuoreum.core.ui.extensions.asString
 import com.jeong.jejuoreum.feature.splash.domain.model.SplashDestination
 import kotlinx.coroutines.flow.collectLatest
 
@@ -40,7 +41,7 @@ fun SplashRoute(
 
     uiState.value.errorMessage?.let { message ->
         LaunchedEffect(message) {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, message.asString(context), Toast.LENGTH_SHORT).show()
             viewModel.onEvent(SplashUiEvent.ErrorConsumed)
         }
     }
