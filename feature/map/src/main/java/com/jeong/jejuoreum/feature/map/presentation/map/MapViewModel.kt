@@ -9,7 +9,7 @@ import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
-import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.GetOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase.Result as SearchResult
 import com.jeong.jejuoreum.domain.oreum.usecase.SelectOreumMarkerUseCase
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val observeOreumSummariesUseCase: ObserveOreumSummariesUseCase,
+    private val getOreumSummariesUseCase: GetOreumSummariesUseCase,
     private val searchOreumsUseCase: SearchOreumsUseCase,
     private val updateMapViewportUseCase: UpdateMapViewportUseCase,
     private val selectOreumMarkerUseCase: SelectOreumMarkerUseCase,
@@ -46,7 +46,7 @@ class MapViewModel @Inject constructor(
     }
 
     override fun initialState(): MapUiState = MapUiState(
-        cameraSnapshot = restoreCameraFromSavedState(savedStateHandle)
+        mapState = MapViewState(cameraSnapshot = restoreCameraFromSavedState(savedStateHandle))
     )
 
     override fun handleEvent(event: MapEvent) {
@@ -68,27 +68,30 @@ class MapViewModel @Inject constructor(
         val job = launch {
             when (val result = searchOreumsUseCase(oreumSummaries.value, query)) {
                 SearchResult.EmptyQuery -> setState {
-                    copy(
-                        searchQuery = "",
+                    val updatedSearch = searchState.copy(
+                        query = "",
                         panelState = MapPanelState.Hidden,
                         searchResults = emptyList(),
                     )
+                    copy(searchState = updatedSearch)
                 }
 
                 is SearchResult.Matches -> setState {
-                    copy(
-                        searchQuery = result.sanitizedQuery,
+                    val updatedSearch = searchState.copy(
+                        query = result.sanitizedQuery,
                         searchResults = result.results.map(summaryUiMapper::map),
                         panelState = MapPanelState.Results,
                     )
+                    copy(searchState = updatedSearch)
                 }
 
                 is SearchResult.NoMatches -> setState {
-                    copy(
-                        searchQuery = result.sanitizedQuery,
+                    val updatedSearch = searchState.copy(
+                        query = result.sanitizedQuery,
                         searchResults = emptyList(),
                         panelState = MapPanelState.NoResults,
                     )
+                    copy(searchState = updatedSearch)
                 }
             }
         }
@@ -102,8 +105,10 @@ class MapViewModel @Inject constructor(
         launch {
             val result = updateMapViewportUseCase(oreumSummaries.value, bounds)
             val pins = mapPinUiMapper.mapAll(result.visibleSummaries)
-            if (pins != currentState.visiblePins) {
-                setState { copy(visiblePins = pins) }
+            if (pins != currentState.mapState.visiblePins) {
+                setState {
+                    copy(mapState = mapState.copy(visiblePins = pins))
+                }
             }
         }
     }
@@ -111,13 +116,19 @@ class MapViewModel @Inject constructor(
     private fun handleMarkerSelection(point: GeoPoint) {
         launch {
             val selected = selectOreumMarkerUseCase(oreumSummaries.value, point)
-            setState { copy(selectedOreum = selected?.let(summaryUiMapper::map)) }
+            setState {
+                copy(
+                    mapState = mapState.copy(
+                        selectedOreum = selected?.let(summaryUiMapper::map)
+                    )
+                )
+            }
         }
     }
 
     private fun observeOreums() {
         launch {
-            observeOreumSummariesUseCase().collectLatest { resource ->
+            getOreumSummariesUseCase().collectLatest { resource ->
                 when (resource) {
                     Resource.Loading -> setState {
                         copy(isLoading = true, errorMessage = null)
@@ -139,30 +150,33 @@ class MapViewModel @Inject constructor(
     }
 
     private fun clearSelection() {
-        setState { copy(selectedOreum = null) }
+        setState { copy(mapState = mapState.copy(selectedOreum = null)) }
     }
 
     private fun closeSearchPanel() {
         searchJob?.cancel()
         searchJob = null
         setState {
-            copy(
-                searchQuery = "",
+            val updatedSearch = searchState.copy(
+                query = "",
                 panelState = MapPanelState.Hidden,
                 searchResults = emptyList(),
             )
+            copy(searchState = updatedSearch)
         }
     }
 
     private fun persistCamera(center: GeoPoint, zoomLevel: Int) {
-        setState { copy(cameraSnapshot = CameraSnapshot(center, zoomLevel)) }
+        setState {
+            copy(mapState = mapState.copy(cameraSnapshot = CameraSnapshot(center, zoomLevel)))
+        }
         savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_LATITUDE] = center.lat
         savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_LONGITUDE] = center.lon
         savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_ZOOM] = zoomLevel
     }
 
     private fun refreshSearchResults() {
-        val currentQuery = currentState.searchQuery
+        val currentQuery = currentState.searchState.query
         if (currentQuery.isNotBlank()) {
             handleSearchQuery(currentQuery)
         }
@@ -176,10 +190,10 @@ class MapViewModel @Inject constructor(
     private fun handleResourceError(error: ResourceError) {
         val message = when (error) {
             ResourceError.Network -> UiText.StringResource(R.string.error_network_unavailable)
-            is ResourceError.Api -> error.message?.let(UiText::DynamicString) ?: defaultLoadErrorMessage()
+            is ResourceError.Api -> defaultLoadErrorMessage()
             is ResourceError.NotFound -> UiText.StringResource(R.string.error_oreum_not_found)
             ResourceError.Unauthorized -> UiText.StringResource(R.string.error_authentication_required)
-            is ResourceError.Unknown -> error.throwable.message?.let(UiText::DynamicString) ?: defaultLoadErrorMessage()
+            is ResourceError.Unknown -> defaultLoadErrorMessage()
         }
         setState { copy(isLoading = false, errorMessage = message) }
         sendEffect { ShowToast(message) }

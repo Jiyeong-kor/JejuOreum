@@ -49,8 +49,8 @@ fun MapRoute(
 
     val mapViewModel: MapViewModel = hiltViewModel(activity)
     val mapState by mapViewModel.uiState.collectAsStateWithLifecycle()
-    val selectedOreum = mapState.selectedOreum
-    val query = mapState.searchQuery
+    val selectedOreum = mapState.mapState.selectedOreum
+    val query = mapState.searchState.query
 
     val focus = LocalFocusManager.current
 

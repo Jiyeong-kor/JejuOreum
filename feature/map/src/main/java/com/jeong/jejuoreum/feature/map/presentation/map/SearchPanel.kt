@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DividerDefaults
@@ -41,6 +42,8 @@ fun SearchPanel(
 ) {
     val focus = LocalFocusManager.current
 
+    val searchState = state.searchState
+
     Column(modifier) {
         OutlinedTextField(
             value = query,
@@ -63,7 +66,7 @@ fun SearchPanel(
             )
         )
 
-        when (state.panelState) {
+        when (searchState.panelState) {
             MapPanelState.Results -> {
                 Spacer(Modifier.height(8.dp))
                 Box(
@@ -77,7 +80,7 @@ fun SearchPanel(
                             .fillMaxSize()
                             .background(Color.White)
                     ) {
-                        items(state.searchResults, key = { "${'$'}{it.x},${'$'}{it.y}" }) { item ->
+                        items(searchState.searchResults, key = { "${'$'}{it.x},${'$'}{it.y}" }) { item ->
                             Column(
                                 Modifier
                                     .fillMaxWidth()

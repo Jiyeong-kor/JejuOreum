@@ -6,24 +6,32 @@ import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 
 data class MapUiState(
+    val searchState: SearchState = SearchState(),
+    val mapState: MapViewState = MapViewState(),
     val isLoading: Boolean = true,
     val errorMessage: UiText? = null,
-    val searchQuery: String = "",
-    val panelState: MapPanelState = MapPanelState.Hidden,
-    val searchResults: List<OreumSummaryUiModel> = emptyList(),
-    val visiblePins: List<MapPinUiModel> = emptyList(),
-    val selectedOreum: OreumSummaryUiModel? = null,
-    val cameraSnapshot: CameraSnapshot? = null
 ) {
     val isSearchPanelVisible: Boolean
-        get() = panelState != MapPanelState.Hidden
+        get() = searchState.panelState != MapPanelState.Hidden
 
     val isShowingResults: Boolean
-        get() = panelState == MapPanelState.Results
+        get() = searchState.panelState == MapPanelState.Results
 
     val isShowingEmptyResult: Boolean
-        get() = panelState == MapPanelState.NoResults
+        get() = searchState.panelState == MapPanelState.NoResults
 }
+
+data class SearchState(
+    val query: String = "",
+    val panelState: MapPanelState = MapPanelState.Hidden,
+    val searchResults: List<OreumSummaryUiModel> = emptyList(),
+)
+
+data class MapViewState(
+    val cameraSnapshot: CameraSnapshot? = null,
+    val visiblePins: List<MapPinUiModel> = emptyList(),
+    val selectedOreum: OreumSummaryUiModel? = null,
+)
 
 sealed interface MapPanelState {
     data object Hidden : MapPanelState

@@ -5,7 +5,7 @@ import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
-import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumsUseCase
 import com.jeong.jejuoreum.domain.user.usecase.ToggleFavoriteUseCase
 import com.jeong.jejuoreum.feature.profile.presentation.ProfileBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import timber.log.Timber
 class MyFavoriteViewModel @Inject constructor(
     private val loadOreumSummariesUseCase: LoadOreumSummariesUseCase,
     private val observeFavoriteOreumsUseCase: ObserveFavoriteOreumsUseCase,
-    private val refreshOreumSummariesUseCase: RefreshOreumSummariesUseCase,
+    private val refreshOreumsUseCase: RefreshOreumsUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val errorMessageProvider: MyFavoriteErrorMessageProvider,
     private val uiMapper: MyFavoriteUiMapper,
@@ -96,7 +96,7 @@ class MyFavoriteViewModel @Inject constructor(
             toggleResult
                 .onFailure(::handleFailure)
                 .onSuccess {
-                    refreshOreumSummariesUseCase()
+            refreshOreumsUseCase()
                         .onFailure(::handleFailure)
                 }
         }

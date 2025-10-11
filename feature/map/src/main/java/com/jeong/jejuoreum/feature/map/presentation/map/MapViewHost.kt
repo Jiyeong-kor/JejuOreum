@@ -40,8 +40,8 @@ fun MapViewHost(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val visiblePins = uiState.visiblePins
-    val cameraState = uiState.cameraSnapshot
+    val visiblePins = uiState.mapState.visiblePins
+    val cameraState = uiState.mapState.cameraSnapshot
 
     var renderer by remember { mutableStateOf<MapRenderer?>(null) }
     var kakaoMap by remember { mutableStateOf<KakaoMap?>(null) }

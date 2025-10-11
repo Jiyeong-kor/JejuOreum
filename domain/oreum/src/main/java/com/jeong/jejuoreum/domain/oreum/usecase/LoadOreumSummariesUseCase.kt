@@ -1,10 +1,9 @@
 package com.jeong.jejuoreum.domain.oreum.usecase
 
-import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
 import javax.inject.Inject
 
 class LoadOreumSummariesUseCase @Inject constructor(
-    private val oreumRepository: OreumRepository
+    private val refreshOreumsUseCase: RefreshOreumsUseCase
 ) {
-    suspend operator fun invoke(): Result<Unit> = oreumRepository.loadOreumListIfNeeded()
+    suspend operator fun invoke(): Result<Unit> = refreshOreumsUseCase()
 }

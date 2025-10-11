@@ -4,7 +4,7 @@ import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.model.Oreum
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumDetailUseCase
-import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.TryStampUseCase
 import com.jeong.jejuoreum.domain.review.usecase.FetchReviewsUseCase
 import com.jeong.jejuoreum.domain.user.usecase.GetOreumFavoriteStatusUseCase
@@ -25,7 +25,7 @@ class DetailViewModel @Inject constructor(
     private val fetchReviewsUseCase: FetchReviewsUseCase,
     private val tryStampUseCase: TryStampUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val refreshOreumSummariesUseCase: RefreshOreumSummariesUseCase,
+    private val refreshOreumsUseCase: RefreshOreumsUseCase,
     private val isLocationPermissionGrantedUseCase: IsLocationPermissionGrantedUseCase,
     private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase,
     private val stateReducer: DetailStateReducer,
@@ -115,7 +115,7 @@ class DetailViewModel @Inject constructor(
         launch {
             toggleFavoriteUseCase(oreumIdx, newIsFavorite)
                 .mapCatching { newTotal ->
-                    refreshOreumSummariesUseCase()
+                    refreshOreumsUseCase()
                         .map { newTotal }
                         .getOrElse { throw it }
                 }

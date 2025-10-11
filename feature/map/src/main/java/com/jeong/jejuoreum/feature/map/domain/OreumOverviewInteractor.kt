@@ -16,7 +16,7 @@ class OreumOverviewInteractor @Inject constructor(
 ) {
 
     fun observeOreumOverviews(): Flow<Resource<List<OreumOverview>>> =
-        observeOreumsUseCase(Unit).map { resource ->
+        observeOreumsUseCase().map { resource ->
             when (resource) {
                 Resource.Loading -> Resource.Loading
                 is Resource.Error -> resource
