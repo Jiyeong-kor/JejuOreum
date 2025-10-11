@@ -1,10 +1,8 @@
-package com.jeong.jejuoreum.core.ui.navigation
+package com.jeong.jejuoreum.core.navigation
 
 import androidx.compose.runtime.Composable
 
-interface BottomNavigationDestination {
-    val route: String
-
+interface BottomNavigationDestination : NavigationDestination {
     @Composable
     fun Icon(selected: Boolean)
 

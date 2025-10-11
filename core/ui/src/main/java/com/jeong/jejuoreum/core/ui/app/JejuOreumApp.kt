@@ -11,28 +11,45 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.jeong.jejuoreum.core.navigation.BottomNavigationDestination
 import com.jeong.jejuoreum.core.navigation.NavigationDestination
+import com.jeong.jejuoreum.core.navigation.NavigationProvider
 import com.jeong.jejuoreum.core.navigation.navigateToRoot
 import com.jeong.jejuoreum.core.ui.dialog.NetworkDialog
-import com.jeong.jejuoreum.core.ui.navigation.BottomNavigationDestination
 import com.jeong.jejuoreum.core.ui.theme.JJOreumTheme
 
 @Composable
 fun JejuOreumApp(
-    startDestination: String?,
-    destinations: List<NavigationDestination>,
-    bottomDestinations: List<BottomNavigationDestination>,
+    startDestination: String,
+    navigationProvider: NavigationProvider,
     showNetworkDialog: Boolean,
     onRetryClick: () -> Unit,
 ) {
     JJOreumTheme {
-        startDestination?.let { destination ->
-            MainScaffold(
-                startDestination = destination,
-                destinations = destinations,
-                bottomDestinations = bottomDestinations,
+        val detailNavigation = remember { navigationProvider.detailNavigation() }
+        val mapNavigation = remember { navigationProvider.mapNavigation() }
+        val onboardingNavigation = remember { navigationProvider.onboardingNavigation() }
+        val profileNavigation = remember { navigationProvider.profileNavigation() }
+        val splashNavigation = remember { navigationProvider.splashNavigation() }
+
+        val destinations = remember(detailNavigation, mapNavigation, onboardingNavigation, profileNavigation, splashNavigation) {
+            listOf(
+                splashNavigation,
+                onboardingNavigation,
+                mapNavigation,
+                profileNavigation,
+                detailNavigation,
             )
         }
+        val bottomDestinations = remember(mapNavigation, profileNavigation) {
+            listOf(mapNavigation, profileNavigation)
+        }
+
+        MainScaffold(
+            startDestination = startDestination,
+            destinations = destinations,
+            bottomDestinations = bottomDestinations,
+        )
         if (showNetworkDialog) {
             NetworkDialog(onRetryClick = onRetryClick)
         }

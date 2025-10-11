@@ -43,11 +43,7 @@ android {
 
 dependencies {
     implementation(project(":core:navigation"))
-    implementation(project(":feature:detail"))
-    implementation(project(":feature:map"))
-    implementation(project(":feature:onboarding"))
-    implementation(project(":feature:profile"))
-    implementation(project(":feature:splash"))
+    implementation(project(":core:ui"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))

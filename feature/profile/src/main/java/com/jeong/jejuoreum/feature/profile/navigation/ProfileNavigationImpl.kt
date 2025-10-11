@@ -1,15 +1,17 @@
 package com.jeong.jejuoreum.feature.profile.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
-import com.jeong.jejuoreum.feature.profile.presentation.profile.MyRoute
-import com.jeong.jejuoreum.core.ui.navigation.BottomNavigationDestination
+import com.jeong.jejuoreum.core.navigation.ProfileNavigation
 import com.jeong.jejuoreum.core.ui.navigation.BottomNavigationDefaults
+import com.jeong.jejuoreum.feature.profile.presentation.profile.MyRoute
+import javax.inject.Inject
 
-object ProfileNavigation : BottomNavigationDestination {
+class ProfileNavigationImpl @Inject constructor() : ProfileNavigation {
     override val route: String = OreumNavigation.MY
 
     @Composable
@@ -18,7 +20,23 @@ object ProfileNavigation : BottomNavigationDestination {
     @Composable
     override fun Label() = BottomNavigationDefaults.Profile.Label()
 
-    override fun register(navController: NavHostController, navGraphBuilder: NavGraphBuilder) {
+    override fun navigateToProfile(navController: NavController) {
+        val hostController = navController as? NavHostController
+        if (hostController != null) {
+            hostController.navigate(route) {
+                popUpTo(hostController.graph.startDestinationId) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        } else {
+            navController.navigate(route)
+        }
+    }
+
+    override fun registerGraph(
+        navGraphBuilder: NavGraphBuilder,
+        navController: NavController
+    ) {
         navGraphBuilder.composable(route) {
             MyRoute(
                 onFavoriteItemClick = { oreum ->
