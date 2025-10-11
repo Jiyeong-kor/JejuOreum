@@ -19,13 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.feature.map.presentation.map.MapEffect.ShowMessage
@@ -69,7 +70,7 @@ fun MapRoute(
                 is ShowMessage ->
                     Toast.makeText(
                         context,
-                        context.getString(effect.message.messageResId),
+                        effect.message.asString(context),
                         Toast.LENGTH_SHORT,
                     ).show()
             }
@@ -144,3 +145,8 @@ private fun OreumSummaryUiModel.asLatLng(): com.kakao.vectormap.LatLng =
     com.kakao.vectormap.LatLng.from(y, x)
 
 private fun OreumSummaryUiModel.asGeoPoint(): GeoPoint = GeoPoint(y, x)
+
+private fun UiText.asString(context: Context): String = when (this) {
+    is UiText.DynamicString -> value
+    is UiText.StringResource -> context.getString(resId, *args)
+}

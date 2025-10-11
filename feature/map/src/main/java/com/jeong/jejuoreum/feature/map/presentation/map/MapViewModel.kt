@@ -3,6 +3,7 @@ package com.jeong.jejuoreum.feature.map.presentation.map
 import androidx.lifecycle.SavedStateHandle
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
@@ -64,7 +65,7 @@ class MapViewModel @Inject constructor(
     }
 
     override fun buildErrorEffect(message: String): MapEffect =
-        MapEffect.ShowMessage(defaultLoadErrorMessage())
+        MapEffect.ShowMessage(UiText.DynamicString(message))
 
     private fun handleSearchQuery(query: String) {
         searchJob?.cancel()
@@ -141,7 +142,7 @@ class MapViewModel @Inject constructor(
                     onFailure = { throwable ->
                         val message = defaultLoadErrorMessage()
                         setState { copy(isLoading = false, errorMessage = message) }
-                        sendUserMessage(message)
+                        sendErrorEffect(message)
                     },
                 )
             }
@@ -170,7 +171,7 @@ class MapViewModel @Inject constructor(
             is Resource.Error -> {
                 val message = defaultLoadErrorMessage()
                 setState { copy(isLoading = false, errorMessage = message) }
-                sendUserMessage(message)
+                sendErrorEffect(message)
             }
         }
     }
@@ -198,10 +199,10 @@ class MapViewModel @Inject constructor(
         savedStateHandle[KEY_CAM_ZOOM] = zoomLevel
     }
 
-    private fun defaultLoadErrorMessage(): UserMessage =
-        UserMessage(R.string.error_failed_to_load_oreum_data)
+    private fun defaultLoadErrorMessage(): UiText =
+        UiText.StringResource(R.string.error_failed_to_load_oreum_data)
 
-    private fun sendUserMessage(message: UserMessage) {
+    private fun sendErrorEffect(message: UiText) {
         sendEffect { MapEffect.ShowMessage(message) }
     }
 
