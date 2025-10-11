@@ -9,13 +9,16 @@ import com.jeong.jejuoreum.feature.map.presentation.main.MainUiEvent
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val observeConnectivityStatusUseCase: ObserveConnectivityStatusUseCase,
     private val getCurrentConnectivityStatusUseCase: GetCurrentConnectivityStatusUseCase,
-) : CommonBaseViewModel<MainUiState, MainUiEvent, MainSideEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : CommonBaseViewModel<MainUiState, MainUiEvent, MainSideEffect>(ioDispatcher) {
 
     init {
         observeNetwork()

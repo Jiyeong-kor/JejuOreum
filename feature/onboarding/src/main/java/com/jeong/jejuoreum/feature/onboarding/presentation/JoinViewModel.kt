@@ -8,6 +8,8 @@ import com.jeong.jejuoreum.domain.user.usecase.SaveNicknameUseCase
 import com.jeong.jejuoreum.domain.user.usecase.ValidateNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import timber.log.Timber
 
@@ -17,7 +19,8 @@ class JoinViewModel @Inject constructor(
     private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
     private val saveNicknameUseCase: SaveNicknameUseCase,
     private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
-) : CommonBaseViewModel<JoinUiState, JoinUiEvent, JoinUiEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : CommonBaseViewModel<JoinUiState, JoinUiEvent, JoinUiEffect>(ioDispatcher) {
 
     private var availabilityJob: Job? = null
 

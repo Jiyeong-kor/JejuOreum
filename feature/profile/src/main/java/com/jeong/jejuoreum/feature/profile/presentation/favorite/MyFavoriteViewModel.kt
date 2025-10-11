@@ -2,15 +2,17 @@ package com.jeong.jejuoreum.feature.profile.presentation.favorite
 
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResultResource
-import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ToggleFavoriteUseCase
+import com.jeong.jejuoreum.feature.profile.presentation.ProfileBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -21,7 +23,8 @@ class MyFavoriteViewModel @Inject constructor(
     private val observeFavoriteOreumsUseCase: ObserveFavoriteOreumsUseCase,
     private val refreshOreumSummariesUseCase: RefreshOreumSummariesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-) : CommonBaseViewModel<MyFavoriteUiState, MyFavoriteUiEvent, MyFavoriteUiEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : ProfileBaseViewModel(ioDispatcher) {
 
     private var observeJob: Job? = null
 
@@ -43,6 +46,10 @@ class MyFavoriteViewModel @Inject constructor(
             is MyFavoriteUiEvent.FavoriteToggled -> toggleFavorite(event.oreumIdx, event.currentlyLiked)
             MyFavoriteUiEvent.ErrorConsumed -> setState { copy(errorMessage = null) }
         }
+    }
+
+    override fun handleError(t: Throwable) {
+        handleFailure(t)
     }
 
     private fun observeFavorites() {
@@ -73,7 +80,7 @@ class MyFavoriteViewModel @Inject constructor(
                     is Resource.Error -> handleFailure(resource.throwable)
                 }
             },
-            onFailure = ::handleFailure
+            onFailure = ::handleFailure,
         )
     }
 
@@ -82,7 +89,7 @@ class MyFavoriteViewModel @Inject constructor(
             copy(
                 isLoading = false,
                 errorMessage = null,
-                favorites = favorites.map(ResultSummary::toProfileUiModel)
+                favorites = favorites.map(ResultSummary::toProfileUiModel),
             )
         }
     }
@@ -99,7 +106,7 @@ class MyFavoriteViewModel @Inject constructor(
         val message = throwable?.message ?: "즐겨찾는 오름을 불러오지 못했어요."
         Timber.w(throwable, "Failed to process favorite oreum state")
         setState { copy(isLoading = false, errorMessage = message) }
-        sendEffect { MyFavoriteUiEffect.ShowError(message) }
+        emitErrorEffect(message)
     }
 }
 

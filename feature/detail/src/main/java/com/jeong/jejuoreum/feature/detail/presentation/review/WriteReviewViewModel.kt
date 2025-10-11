@@ -14,6 +14,8 @@ import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
 import com.jeong.jejuoreum.domain.user.usecase.GetCurrentUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 
@@ -30,7 +32,8 @@ class WriteReviewViewModel @Inject constructor(
     private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val getCurrentUserNicknameUseCase: GetCurrentUserNicknameUseCase,
-) : CommonBaseViewModel<WriteReviewUiState, WriteReviewUiEvent, WriteReviewUiEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : CommonBaseViewModel<WriteReviewUiState, WriteReviewUiEvent, WriteReviewUiEffect>(ioDispatcher) {
 
     private var observeJob: Job? = null
 
@@ -46,6 +49,9 @@ class WriteReviewViewModel @Inject constructor(
             WriteReviewUiEvent.RefreshRequested -> refreshReviews()
         }
     }
+
+    override fun createErrorEffect(message: String): WriteReviewUiEffect =
+        WriteReviewUiEffect.ShowMessage(message.ifBlank { DEFAULT_ERROR_MESSAGE })
 
     private fun initialize(oreumIdx: Int, oreumName: String) {
         val idx = oreumIdx.takeIf { it >= 0 }?.toString() ?: return
@@ -156,6 +162,6 @@ class WriteReviewViewModel @Inject constructor(
             is DomainError -> throwable.message
             else -> throwable?.message
         } ?: DEFAULT_ERROR_MESSAGE
-        sendEffect { WriteReviewUiEffect.ShowMessage(message) }
+        emitErrorEffect(message)
     }
 }

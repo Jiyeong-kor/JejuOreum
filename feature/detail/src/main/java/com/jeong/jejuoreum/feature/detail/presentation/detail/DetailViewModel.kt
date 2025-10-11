@@ -7,6 +7,8 @@ import com.jeong.jejuoreum.feature.detail.domain.model.OreumStampRequest
 import com.jeong.jejuoreum.feature.detail.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 
 private const val DEFAULT_ERROR_MESSAGE = "오류가 발생하였습니다."
 
@@ -14,7 +16,8 @@ private const val DEFAULT_ERROR_MESSAGE = "오류가 발생하였습니다."
 class DetailViewModel @Inject constructor(
     private val oreumDetailInteractor: OreumDetailInteractor,
     private val stateReducer: DetailStateReducer,
-) : CommonBaseViewModel<DetailUiState, DetailEvent, DetailEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : CommonBaseViewModel<DetailUiState, DetailEvent, DetailEffect>(ioDispatcher) {
 
     private var initializedOreumId: String? = null
 
@@ -29,6 +32,9 @@ class DetailViewModel @Inject constructor(
             is DetailEvent.LocationPermissionResult -> updateLocationPermission(event.granted)
         }
     }
+
+    override fun createErrorEffect(message: String): DetailEffect =
+        DetailEffect.ShowMessage(message.ifBlank { DEFAULT_ERROR_MESSAGE })
 
     private fun initialize(oreum: OreumSummaryUiModel) {
         val oreumIdx = oreum.idx.takeIf { it >= 0 }?.toString() ?: return
@@ -118,7 +124,7 @@ class DetailViewModel @Inject constructor(
                     oreumName = oreum.oreumKname,
                     latitude = oreum.y,
                     longitude = oreum.x,
-                )
+                ),
             ).onSuccess {
                 refreshStampStatus(oreum.idx.toString())
                 sendEffect { DetailEffect.StampCompleted(oreum.idx.toString()) }

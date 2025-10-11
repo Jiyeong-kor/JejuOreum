@@ -15,6 +15,8 @@ import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase
 import com.jeong.jejuoreum.feature.map.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -32,7 +34,8 @@ class MapViewModel @Inject constructor(
     private val findOreumByLocationUseCase: FindOreumByLocationUseCase,
     private val savedStateHandle: SavedStateHandle,
     private val dispatcherProvider: CoroutineDispatcherProvider,
-) : CommonBaseViewModel<MapUiState, MapEvent, MapEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : CommonBaseViewModel<MapUiState, MapEvent, MapEffect>(ioDispatcher) {
 
     private val oreumSummaries = MutableStateFlow<List<ResultSummary>>(emptyList())
 
@@ -58,6 +61,9 @@ class MapViewModel @Inject constructor(
             is MapEvent.CameraSaved -> persistCamera(event.center, event.zoomLevel)
         }
     }
+
+    override fun createErrorEffect(message: String): MapEffect =
+        MapEffect.ShowMessage(message)
 
     private fun handleSearchQuery(query: String) {
         searchJob?.cancel()
@@ -134,8 +140,8 @@ class MapViewModel @Inject constructor(
                     onFailure = { throwable ->
                         val message = throwable.message ?: "오름 데이터를 불러오지 못했어요."
                         setState { copy(isLoading = false, errorMessage = message) }
-                        sendEffect { MapEffect.ShowMessage(message) }
-                    }
+                        emitErrorEffect(message)
+                    },
                 )
             }
         }
@@ -164,7 +170,7 @@ class MapViewModel @Inject constructor(
                 val message = resource.throwable?.message
                     ?: "오름 데이터를 불러오지 못했어요."
                 setState { copy(isLoading = false, errorMessage = message) }
-                sendEffect { MapEffect.ShowMessage(message) }
+                emitErrorEffect(message)
             }
         }
     }

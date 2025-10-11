@@ -4,12 +4,15 @@ import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.feature.splash.domain.PrepareSplashInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import timber.log.Timber
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val prepareSplashInteractor: PrepareSplashInteractor,
-) : CommonBaseViewModel<SplashUiState, SplashUiEvent, SplashUiEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : CommonBaseViewModel<SplashUiState, SplashUiEvent, SplashUiEffect>(ioDispatcher) {
 
     override fun initialState(): SplashUiState = SplashUiState()
 

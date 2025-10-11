@@ -8,6 +8,8 @@ import com.jeong.jejuoreum.feature.map.presentation.mapper.OreumUiMapper
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 
@@ -15,7 +17,8 @@ import kotlinx.coroutines.flow.collectLatest
 class OreumViewModel @Inject constructor(
     private val interactor: OreumOverviewInteractor,
     private val uiMapper: OreumUiMapper,
-) : CommonBaseViewModel<OreumUiState, OreumEvent, OreumEffect>() {
+    @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+) : CommonBaseViewModel<OreumUiState, OreumEvent, OreumEffect>(ioDispatcher) {
 
     private var observeJob: Job? = null
 
@@ -75,10 +78,13 @@ class OreumViewModel @Inject constructor(
         }
     }
 
+    override fun createErrorEffect(message: String): OreumEffect =
+        OreumEffect.ShowError(message)
+
     private fun handleFailure(throwable: Throwable?) {
         val message = throwable?.message ?: "알 수 없는 오류 발생"
         setState { copy(isLoading = false, errorMessage = message) }
-        sendEffect { OreumEffect.ShowError(message) }
+        emitErrorEffect(message)
     }
 
     private fun fetchOreumDetail(oreumId: String) {
