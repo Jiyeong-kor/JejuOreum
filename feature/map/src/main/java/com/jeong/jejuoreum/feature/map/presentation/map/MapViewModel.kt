@@ -12,6 +12,7 @@ import com.jeong.jejuoreum.domain.oreum.usecase.FilterOreumsWithinBoundsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.FindOreumByLocationUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase
+import com.jeong.jejuoreum.feature.map.R
 import com.jeong.jejuoreum.feature.map.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -63,7 +64,7 @@ class MapViewModel @Inject constructor(
     }
 
     override fun buildErrorEffect(message: String): MapEffect =
-        MapEffect.ShowMessage(message)
+        MapEffect.ShowMessage(defaultLoadErrorMessage())
 
     private fun handleSearchQuery(query: String) {
         searchJob?.cancel()
@@ -138,9 +139,9 @@ class MapViewModel @Inject constructor(
                 result.fold(
                     onSuccess = ::handleResource,
                     onFailure = { throwable ->
-                        val message = throwable.message ?: "오름 데이터를 불러오지 못했어요."
+                        val message = defaultLoadErrorMessage()
                         setState { copy(isLoading = false, errorMessage = message) }
-                        sendErrorEffect(message)
+                        sendUserMessage(message)
                     },
                 )
             }
@@ -167,10 +168,9 @@ class MapViewModel @Inject constructor(
             }
 
             is Resource.Error -> {
-                val message = resource.throwable?.message
-                    ?: "오름 데이터를 불러오지 못했어요."
+                val message = defaultLoadErrorMessage()
                 setState { copy(isLoading = false, errorMessage = message) }
-                sendErrorEffect(message)
+                sendUserMessage(message)
             }
         }
     }
@@ -196,6 +196,13 @@ class MapViewModel @Inject constructor(
         savedStateHandle[KEY_CAM_LAT] = center.lat
         savedStateHandle[KEY_CAM_LON] = center.lon
         savedStateHandle[KEY_CAM_ZOOM] = zoomLevel
+    }
+
+    private fun defaultLoadErrorMessage(): UserMessage =
+        UserMessage(R.string.error_failed_to_load_oreum_data)
+
+    private fun sendUserMessage(message: UserMessage) {
+        sendEffect { MapEffect.ShowMessage(message) }
     }
 
     companion object {

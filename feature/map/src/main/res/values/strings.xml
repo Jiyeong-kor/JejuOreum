@@ -1,3 +1,4 @@
 <resources>
     <string name="map_view_detail">자세히 보기</string>
+    <string name="error_failed_to_load_oreum_data">오름 데이터를 불러오지 못했어요.</string>
 </resources>

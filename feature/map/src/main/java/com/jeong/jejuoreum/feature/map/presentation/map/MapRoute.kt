@@ -67,7 +67,11 @@ fun MapRoute(
         mapViewModel.effect.collectLatest { effect ->
             when (effect) {
                 is ShowMessage ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(effect.message.messageResId),
+                        Toast.LENGTH_SHORT,
+                    ).show()
             }
         }
     }
