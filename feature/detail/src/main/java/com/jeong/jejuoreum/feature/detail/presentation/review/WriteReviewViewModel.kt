@@ -13,14 +13,13 @@ import com.jeong.jejuoreum.domain.review.usecase.WriteReviewUseCase
 import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
 import com.jeong.jejuoreum.domain.user.usecase.GetCurrentUserIdUseCase
 import com.jeong.jejuoreum.domain.user.usecase.GetCurrentUserNicknameUseCase
+import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailMessageProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
-
-private const val DEFAULT_ERROR_MESSAGE = "요청 처리 중 오류가 발생했어요."
 
 @HiltViewModel
 class WriteReviewViewModel @Inject constructor(
@@ -33,6 +32,7 @@ class WriteReviewViewModel @Inject constructor(
     private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val getCurrentUserNicknameUseCase: GetCurrentUserNicknameUseCase,
+    private val detailMessageProvider: DetailMessageProvider, // Refactored to centralize message sourcing and remove literals.
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<WriteReviewUiState, WriteReviewUiEvent, WriteReviewUiEffect>(ioDispatcher) {
 
@@ -52,7 +52,7 @@ class WriteReviewViewModel @Inject constructor(
     }
 
     override fun buildErrorEffect(message: String): WriteReviewUiEffect =
-        WriteReviewUiEffect.ShowMessage(message.ifBlank { DEFAULT_ERROR_MESSAGE })
+        WriteReviewUiEffect.ShowMessage(message.ifBlank { detailMessageProvider.defaultError() })
 
     private fun initialize(oreumIdx: Int, oreumName: String) {
         val idx = oreumIdx.takeIf { it >= 0 }?.toString() ?: return
@@ -160,11 +160,11 @@ class WriteReviewViewModel @Inject constructor(
 
     private fun sendError(error: ResourceError) {
         val message = when (error) {
-            ResourceError.Network -> "네트워크 연결을 확인해 주세요."
-            is ResourceError.Api -> error.message ?: DEFAULT_ERROR_MESSAGE
-            is ResourceError.NotFound -> "요청한 리뷰를 찾을 수 없어요."
-            ResourceError.Unauthorized -> "로그인이 필요합니다."
-            is ResourceError.Unknown -> error.throwable.message ?: DEFAULT_ERROR_MESSAGE
+            ResourceError.Network -> detailMessageProvider.networkError()
+            is ResourceError.Api -> error.message ?: detailMessageProvider.defaultError()
+            is ResourceError.NotFound -> detailMessageProvider.reviewNotFound()
+            ResourceError.Unauthorized -> detailMessageProvider.loginRequired()
+            is ResourceError.Unknown -> error.throwable.message ?: detailMessageProvider.defaultError()
         }
         sendErrorEffect(message)
     }
@@ -173,7 +173,7 @@ class WriteReviewViewModel @Inject constructor(
         val message = when (throwable) {
             is DomainError -> throwable.message
             else -> throwable?.message
-        } ?: DEFAULT_ERROR_MESSAGE
+        } ?: detailMessageProvider.defaultError()
         sendErrorEffect(message)
     }
 }

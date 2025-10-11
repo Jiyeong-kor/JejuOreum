@@ -17,8 +17,6 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.CoroutineDispatcher
 
-private const val DEFAULT_ERROR_MESSAGE = "오류가 발생하였습니다."
-
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val getOreumDetailUseCase: GetOreumDetailUseCase,
@@ -31,6 +29,7 @@ class DetailViewModel @Inject constructor(
     private val isLocationPermissionGrantedUseCase: IsLocationPermissionGrantedUseCase,
     private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase,
     private val stateReducer: DetailStateReducer,
+    private val detailMessageProvider: DetailMessageProvider, // Refactored to apply DIP by injecting message abstraction.
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<DetailUiState, DetailEvent, DetailEffect>(ioDispatcher) {
 
@@ -49,7 +48,7 @@ class DetailViewModel @Inject constructor(
     }
 
     override fun buildErrorEffect(message: String): DetailEffect =
-        DetailEffect.ShowMessage(message.ifBlank { DEFAULT_ERROR_MESSAGE })
+        DetailEffect.ShowMessage(message.ifBlank { detailMessageProvider.defaultError() })
 
     private fun initialize(oreum: OreumSummaryUiModel) {
         val oreumIdx = oreum.idx.takeIf { it >= 0 }?.toString() ?: return
@@ -176,7 +175,7 @@ class DetailViewModel @Inject constructor(
 
     private fun sendError(message: String?) {
         sendEffect {
-            DetailEffect.ShowMessage(message ?: DEFAULT_ERROR_MESSAGE)
+            DetailEffect.ShowMessage(message ?: detailMessageProvider.defaultError())
         }
     }
 
