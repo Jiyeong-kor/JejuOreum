@@ -17,10 +17,26 @@ object CoroutineDispatchersModule {
 
     @Provides
     @Singleton
-    fun providesCoroutineDispatcherProvider(): CoroutineDispatcherProvider =
-        DefaultCoroutineDispatcherProvider()
+    fun providesCoroutineDispatcherProvider(
+        @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
+        @Named("defaultDispatcher") defaultDispatcher: CoroutineDispatcher,
+        @Named("mainDispatcher") mainDispatcher: CoroutineDispatcher,
+    ): CoroutineDispatcherProvider =
+        DefaultCoroutineDispatcherProvider(
+            io = ioDispatcher,
+            computation = defaultDispatcher,
+            main = mainDispatcher,
+        )
 
     @Provides
     @Named("ioDispatcher")
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @Named("defaultDispatcher")
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
+    @Provides
+    @Named("mainDispatcher")
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

@@ -1,14 +1,16 @@
 package com.jeong.jejuoreum.data.oreum.datasource.remote
 
+import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 @Singleton
-class StubOreumRemoteDataSource @Inject constructor() : OreumRemoteDataSource {
+class StubOreumRemoteDataSource @Inject constructor(
+    private val dispatcherProvider: CoroutineDispatcherProvider,
+) : OreumRemoteDataSource {
 
     private val oreums: Map<String, ResultSummary> = listOf(
         ResultSummary(
@@ -59,13 +61,13 @@ class StubOreumRemoteDataSource @Inject constructor() : OreumRemoteDataSource {
     ).associateBy { it.idx.toString() }
 
     override suspend fun fetchOreums(): List<ResultSummary> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcherProvider.computation) {
             delay(250)
             oreums.values.map { it.copy() }
         }
 
     override suspend fun fetchOreum(id: String): ResultSummary? =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcherProvider.computation) {
             delay(150)
             oreums[id]?.copy()
         }

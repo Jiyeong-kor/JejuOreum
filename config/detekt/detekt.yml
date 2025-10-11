@@ -3,22 +3,18 @@ style:
     active: true
     methods:
       - 'kotlinx.coroutines.Dispatchers.IO'
+      - 'kotlinx.coroutines.Dispatchers.Default'
+      - 'kotlinx.coroutines.Dispatchers.Main'
     excludes:
-      - '**/core/common/**'
-      - '**/data/**/di/**'
+      - '**/data/remote/di/**'
+      - '**/test/**'
+      - '**/androidTest/**'
       - '**/build-logic/**'
   ForbiddenImport:
     active: true
     imports:
       - 'androidx.lifecycle.ViewModel'
     excludes:
-      - '**/app/**'
-      - '**/core/common/**'
-      - '**/core/designsystem/**'
-      - '**/core/navigation/**'
       - '**/core/presentation/**'
-      - '**/core/testing/**'
-      - '**/data/**'
-      - '**/domain/**'
-      - '**/feature/**'
-      - '**/build-logic/**'
+      - '**/app/**'
+      - '**/feature/**/presentation/**'
