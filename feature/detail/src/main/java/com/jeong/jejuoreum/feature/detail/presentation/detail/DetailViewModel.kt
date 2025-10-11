@@ -2,9 +2,16 @@ package com.jeong.jejuoreum.feature.detail.presentation.detail
 
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
-import com.jeong.jejuoreum.feature.detail.domain.OreumDetailInteractor
-import com.jeong.jejuoreum.feature.detail.domain.model.OreumStampRequest
-import com.jeong.jejuoreum.feature.detail.presentation.model.toUiModel
+import com.jeong.jejuoreum.domain.oreum.model.Oreum
+import com.jeong.jejuoreum.domain.oreum.usecase.GetOreumDetailUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.TryStampUseCase
+import com.jeong.jejuoreum.domain.review.usecase.FetchReviewsUseCase
+import com.jeong.jejuoreum.domain.user.usecase.GetOreumFavoriteStatusUseCase
+import com.jeong.jejuoreum.domain.user.usecase.GetOreumStampStatusUseCase
+import com.jeong.jejuoreum.domain.user.usecase.IsLocationPermissionGrantedUseCase
+import com.jeong.jejuoreum.domain.user.usecase.ToggleFavoriteUseCase
+import com.jeong.jejuoreum.domain.user.usecase.UpdateLocationPermissionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import javax.inject.Named
@@ -14,7 +21,15 @@ private const val DEFAULT_ERROR_MESSAGE = "오류가 발생하였습니다."
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val oreumDetailInteractor: OreumDetailInteractor,
+    private val getOreumDetailUseCase: GetOreumDetailUseCase,
+    private val getOreumFavoriteStatusUseCase: GetOreumFavoriteStatusUseCase,
+    private val getOreumStampStatusUseCase: GetOreumStampStatusUseCase,
+    private val fetchReviewsUseCase: FetchReviewsUseCase,
+    private val tryStampUseCase: TryStampUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val refreshOreumSummariesUseCase: RefreshOreumSummariesUseCase,
+    private val isLocationPermissionGrantedUseCase: IsLocationPermissionGrantedUseCase,
+    private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase,
     private val stateReducer: DetailStateReducer,
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<DetailUiState, DetailEvent, DetailEffect>(ioDispatcher) {
@@ -52,8 +67,8 @@ class DetailViewModel @Inject constructor(
     private fun refreshDetail(oreumIdx: String) {
         launch {
             setState(stateReducer::onLoading)
-            oreumDetailInteractor.fetchOreumDetail(oreumIdx)
-                .map { it.toUiModel() }
+            getOreumDetailUseCase(oreumIdx)
+                .map { it.toUiModel(currentState.oreumDetail) }
                 .onSuccess { detail ->
                     setState { stateReducer.onDetailLoaded(this, detail) }
                 }
@@ -66,7 +81,7 @@ class DetailViewModel @Inject constructor(
 
     private fun refreshFavoriteStatus(oreumIdx: String) {
         launch {
-            oreumDetailInteractor.fetchFavoriteStatus(oreumIdx)
+            getOreumFavoriteStatusUseCase(oreumIdx)
                 .onSuccess { isFavorite ->
                     setState { stateReducer.onFavoriteStatusChanged(this, isFavorite) }
                 }
@@ -76,7 +91,7 @@ class DetailViewModel @Inject constructor(
 
     private fun refreshStampStatus(oreumIdx: String) {
         launch {
-            oreumDetailInteractor.fetchStampStatus(oreumIdx)
+            getOreumStampStatusUseCase(oreumIdx)
                 .onSuccess { hasStamp ->
                     setState { stateReducer.onStampStatusChanged(this, hasStamp) }
                 }
@@ -87,7 +102,7 @@ class DetailViewModel @Inject constructor(
     private fun refreshReviews() {
         val oreumIdx = currentOreumIdx() ?: return
         launch {
-            oreumDetailInteractor.fetchReviews(oreumIdx)
+            fetchReviewsUseCase(oreumIdx)
                 .onSuccess { reviews ->
                     setState { stateReducer.onReviewsLoaded(this, reviews) }
                 }
@@ -99,7 +114,12 @@ class DetailViewModel @Inject constructor(
         val oreumIdx = currentOreumIdx() ?: return
         val newIsFavorite = !currentState.isFavorite
         launch {
-            oreumDetailInteractor.toggleFavorite(oreumIdx, newIsFavorite)
+            toggleFavoriteUseCase(oreumIdx, newIsFavorite)
+                .mapCatching { newTotal ->
+                    refreshOreumSummariesUseCase()
+                        .map { newTotal }
+                        .getOrElse { throw it }
+                }
                 .onSuccess { newTotal ->
                     setState {
                         stateReducer.onFavoriteToggled(this, newIsFavorite, newTotal)
@@ -118,13 +138,11 @@ class DetailViewModel @Inject constructor(
     private fun stampOreum() {
         val oreum = currentState.oreumDetail ?: return
         launch {
-            oreumDetailInteractor.tryStamp(
-                OreumStampRequest(
-                    oreumIdx = oreum.idx.toString(),
-                    oreumName = oreum.oreumKname,
-                    latitude = oreum.y,
-                    longitude = oreum.x,
-                ),
+            tryStampUseCase(
+                oreumIdx = oreum.idx.toString(),
+                oreumName = oreum.oreumKname,
+                oreumLat = oreum.y,
+                oreumLng = oreum.x,
             ).onSuccess {
                 refreshStampStatus(oreum.idx.toString())
                 sendEffect { DetailEffect.StampCompleted(oreum.idx.toString()) }
@@ -136,7 +154,7 @@ class DetailViewModel @Inject constructor(
 
     private fun updateLocationPermission(granted: Boolean) {
         launch {
-            oreumDetailInteractor.updateLocationPermission(granted)
+            updateLocationPermissionUseCase(granted)
                 .onSuccess {
                     setState { stateReducer.onLocationPermissionChanged(this, granted) }
                 }
@@ -146,7 +164,7 @@ class DetailViewModel @Inject constructor(
 
     private fun loadLocationPermissionState() {
         launch {
-            oreumDetailInteractor.loadLocationPermissionState()
+            isLocationPermissionGrantedUseCase()
                 .onSuccess { granted ->
                     setState { stateReducer.onLocationPermissionChanged(this, granted) }
                 }
@@ -160,5 +178,19 @@ class DetailViewModel @Inject constructor(
         sendEffect {
             DetailEffect.ShowMessage(message ?: DEFAULT_ERROR_MESSAGE)
         }
+    }
+
+    private fun Oreum.toUiModel(previous: OreumSummaryUiModel?): OreumSummaryUiModel {
+        val base = previous ?: OreumSummaryUiModel()
+        return base.copy(
+            idx = id.toIntOrNull() ?: base.idx,
+            oreumKname = name.ifBlank { base.oreumKname },
+            oreumEname = if (base.oreumEname.isNotBlank()) base.oreumEname else name,
+            oreumAddr = location.ifBlank { base.oreumAddr },
+            explain = description.ifBlank { base.explain },
+            oreumAltitu = elevation.takeIf { it != 0.0 } ?: base.oreumAltitu,
+            imgPath = thumbnailUrl.ifBlank { base.imgPath },
+            userLiked = isFavorite,
+        )
     }
 }
