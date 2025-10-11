@@ -106,7 +106,7 @@ class MyFavoriteViewModel @Inject constructor(
         val message = throwable?.message ?: "즐겨찾는 오름을 불러오지 못했어요."
         Timber.w(throwable, "Failed to process favorite oreum state")
         setState { copy(isLoading = false, errorMessage = message) }
-        emitErrorEffect(message)
+        sendErrorEffect(message)
     }
 }
 

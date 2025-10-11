@@ -5,8 +5,7 @@ style:
       - 'kotlinx.coroutines.Dispatchers.IO'
     excludes:
       - '**/core/common/**'
-      - '**/core/presentation/**'
-      - '**/data/**'
+      - '**/data/**/di/**'
       - '**/build-logic/**'
   ForbiddenImport:
     active: true

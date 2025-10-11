@@ -50,7 +50,7 @@ class WriteReviewViewModel @Inject constructor(
         }
     }
 
-    override fun createErrorEffect(message: String): WriteReviewUiEffect =
+    override fun buildErrorEffect(message: String): WriteReviewUiEffect =
         WriteReviewUiEffect.ShowMessage(message.ifBlank { DEFAULT_ERROR_MESSAGE })
 
     private fun initialize(oreumIdx: Int, oreumName: String) {
@@ -162,6 +162,6 @@ class WriteReviewViewModel @Inject constructor(
             is DomainError -> throwable.message
             else -> throwable?.message
         } ?: DEFAULT_ERROR_MESSAGE
-        emitErrorEffect(message)
+        sendErrorEffect(message)
     }
 }

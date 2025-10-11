@@ -9,11 +9,10 @@ import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +24,7 @@ import kotlinx.coroutines.launch
  * 상태, 이벤트, 부수 효과 흐름을 표준화하여 각 기능 모듈이 일관되게 동작하게 함
  */
 public abstract class CommonBaseViewModel<S : UiState, E : UiEvent, F : UiEffect>(
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel(), UiContract<S, E, F> {
 
     /** 실제 UI가 구독하는 상태 스트림을 보유하고 있는 내부 저장소 */
@@ -34,7 +33,7 @@ public abstract class CommonBaseViewModel<S : UiState, E : UiEvent, F : UiEffect
 
     /** 단발성 알림을 전달하기 위해 사용되는 공유 플로우 */
     protected val _effect: MutableSharedFlow<F> = MutableSharedFlow(replay = 0)
-    override val effect: SharedFlow<F> = _effect.asSharedFlow()
+    override val effect: Flow<F> = _effect.asSharedFlow()
 
     /** 비즈니스 로직에서 즉시 접근할 수 있도록 현 상태를 노출 */
     protected val currentState: S
@@ -70,7 +69,7 @@ public abstract class CommonBaseViewModel<S : UiState, E : UiEvent, F : UiEffect
 
     /**
      * 비동기 작업을 실행하면서 공통적인 에러 처리를 적용
-     * 기본적으로 IO Dispatcher를 사용하지만 필요에 따라 재정의
+     * 주입받은 Dispatcher를 기본값으로 사용해 테스트에서도 일관성을 유지
      */
     protected fun launch(
         dispatcher: CoroutineDispatcher = ioDispatcher,
@@ -94,15 +93,15 @@ public abstract class CommonBaseViewModel<S : UiState, E : UiEvent, F : UiEffect
             is IOException -> "네트워크 오류가 발생했습니다."
             else -> "알 수 없는 오류가 발생했습니다."
         }
-        emitErrorEffect(message)
+        sendErrorEffect(message)
     }
 
-    /** 에러 메시지에 대응하는 effect를 만들어 반환 */
-    protected open fun createErrorEffect(message: String): F? = null
+    /** 에러 메시지를 UI 효과로 변환하는 훅으로, 필요 시 하위 클래스에서 구현 */
+    protected open fun buildErrorEffect(message: String): F? = null
 
     /** 공통 에러 effect를 발행하여 UI가 적절히 대응 */
-    protected fun emitErrorEffect(message: String) {
-        val effect = createErrorEffect(message) ?: return
+    protected fun sendErrorEffect(message: String) {
+        val effect = buildErrorEffect(message) ?: return
         viewModelScope.launch { _effect.emit(effect) }
     }
 }

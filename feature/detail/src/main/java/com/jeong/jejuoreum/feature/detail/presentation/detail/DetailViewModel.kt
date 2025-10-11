@@ -33,7 +33,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    override fun createErrorEffect(message: String): DetailEffect =
+    override fun buildErrorEffect(message: String): DetailEffect =
         DetailEffect.ShowMessage(message.ifBlank { DEFAULT_ERROR_MESSAGE })
 
     private fun initialize(oreum: OreumSummaryUiModel) {

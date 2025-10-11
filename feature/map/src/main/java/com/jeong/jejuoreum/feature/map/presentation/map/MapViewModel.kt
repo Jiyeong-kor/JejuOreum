@@ -62,7 +62,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    override fun createErrorEffect(message: String): MapEffect =
+    override fun buildErrorEffect(message: String): MapEffect =
         MapEffect.ShowMessage(message)
 
     private fun handleSearchQuery(query: String) {
@@ -140,7 +140,7 @@ class MapViewModel @Inject constructor(
                     onFailure = { throwable ->
                         val message = throwable.message ?: "오름 데이터를 불러오지 못했어요."
                         setState { copy(isLoading = false, errorMessage = message) }
-                        emitErrorEffect(message)
+                        sendErrorEffect(message)
                     },
                 )
             }
@@ -170,7 +170,7 @@ class MapViewModel @Inject constructor(
                 val message = resource.throwable?.message
                     ?: "오름 데이터를 불러오지 못했어요."
                 setState { copy(isLoading = false, errorMessage = message) }
-                emitErrorEffect(message)
+                sendErrorEffect(message)
             }
         }
     }

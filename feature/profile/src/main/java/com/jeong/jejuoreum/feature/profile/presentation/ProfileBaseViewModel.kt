@@ -10,6 +10,6 @@ public abstract class ProfileBaseViewModel(
     ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<MyFavoriteUiState, MyFavoriteUiEvent, MyFavoriteUiEffect>(ioDispatcher) {
 
-    override fun createErrorEffect(message: String): MyFavoriteUiEffect =
+    override fun buildErrorEffect(message: String): MyFavoriteUiEffect =
         MyFavoriteUiEffect.ShowError(message)
 }

@@ -78,13 +78,13 @@ class OreumViewModel @Inject constructor(
         }
     }
 
-    override fun createErrorEffect(message: String): OreumEffect =
+    override fun buildErrorEffect(message: String): OreumEffect =
         OreumEffect.ShowError(message)
 
     private fun handleFailure(throwable: Throwable?) {
         val message = throwable?.message ?: "알 수 없는 오류 발생"
         setState { copy(isLoading = false, errorMessage = message) }
-        emitErrorEffect(message)
+        sendErrorEffect(message)
     }
 
     private fun fetchOreumDetail(oreumId: String) {
