@@ -11,9 +11,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,7 +34,7 @@ public abstract class CommonBaseViewModel<S : UiState, E : UiEvent, F : UiEffect
 
     /** 단발성 알림을 전달하기 위해 사용되는 공유 플로우 */
     protected val _effect: MutableSharedFlow<F> = MutableSharedFlow(replay = 0)
-    override val effect: Flow<F> = _effect.asSharedFlow()
+    override val effect: SharedFlow<F> = _effect.asSharedFlow()
 
     /** 비즈니스 로직에서 즉시 접근할 수 있도록 현 상태를 노출 */
     protected val currentState: S
