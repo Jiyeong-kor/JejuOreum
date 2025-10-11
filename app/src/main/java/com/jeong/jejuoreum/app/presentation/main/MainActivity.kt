@@ -40,12 +40,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { splashViewModel.state.value.isLoading }
+        splashScreen.setKeepOnScreenCondition { splashViewModel.uiState.value.isLoading }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val splashUiState by splashViewModel.state.collectAsState()
-            val mainUiState by mainViewModel.state.collectAsState()
+            val splashUiState by splashViewModel.uiState.collectAsState()
+            val mainUiState by mainViewModel.uiState.collectAsState()
             val context = LocalContext.current
             var startDestination by remember { mutableStateOf<String?>(null) }
 

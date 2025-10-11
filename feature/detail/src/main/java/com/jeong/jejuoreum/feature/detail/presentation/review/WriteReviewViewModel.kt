@@ -1,9 +1,8 @@
 package com.jeong.jejuoreum.feature.detail.presentation.review
 
-import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.core.common.error.DomainError
 import com.jeong.jejuoreum.core.common.result.Resource
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentUserNicknameUseCase
 import com.jeong.jejuoreum.domain.review.usecase.BuildReviewItemUseCase
 import com.jeong.jejuoreum.domain.review.usecase.DeleteReviewUseCase
@@ -13,12 +12,10 @@ import com.jeong.jejuoreum.domain.review.usecase.ToggleReviewLikeUseCase
 import com.jeong.jejuoreum.domain.review.usecase.WriteReviewUseCase
 import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
 import com.jeong.jejuoreum.domain.user.usecase.GetCurrentUserIdUseCase
-import com.jeong.jejuoreum.feature.detail.presentation.review.toUiModels
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 private const val DEFAULT_ERROR_MESSAGE = "요청 처리 중 오류가 발생했어요."
 
@@ -33,9 +30,11 @@ class WriteReviewViewModel @Inject constructor(
     private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val getCurrentUserNicknameUseCase: GetCurrentUserNicknameUseCase,
-) : BaseViewModel<WriteReviewUiEvent, WriteReviewUiEffect, WriteReviewUiState>(WriteReviewUiState()) {
+) : CommonBaseViewModel<WriteReviewUiState, WriteReviewUiEvent, WriteReviewUiEffect>() {
 
     private var observeJob: Job? = null
+
+    override fun initialState(): WriteReviewUiState = WriteReviewUiState()
 
     override fun handleEvent(event: WriteReviewUiEvent) {
         when (event) {
@@ -50,7 +49,7 @@ class WriteReviewViewModel @Inject constructor(
 
     private fun initialize(oreumIdx: Int, oreumName: String) {
         val idx = oreumIdx.takeIf { it >= 0 }?.toString() ?: return
-        if (state.value.oreumIdx == idx) return
+        if (currentState.oreumIdx == idx) return
 
         setState { copy(oreumIdx = idx, oreumName = oreumName) }
         loadCurrentUser()
@@ -65,7 +64,7 @@ class WriteReviewViewModel @Inject constructor(
 
     private fun observeReviews(oreumIdx: String) {
         observeJob?.cancel()
-        observeJob = viewModelScope.launch {
+        observeJob = launch {
             observeReviewsUseCase(oreumIdx).collectLatest { resource ->
                 when (resource) {
                     Resource.Loading -> setState { copy(isLoading = true) }
@@ -82,8 +81,8 @@ class WriteReviewViewModel @Inject constructor(
     }
 
     private fun refreshReviews(showLoading: Boolean = true) {
-        val oreumIdx = state.value.oreumIdx ?: return
-        viewModelScope.launch {
+        val oreumIdx = currentState.oreumIdx ?: return
+        launch {
             if (showLoading) setState { copy(isLoading = true) }
             fetchReviewsUseCase(oreumIdx)
                 .onSuccess { reviews ->
@@ -97,11 +96,11 @@ class WriteReviewViewModel @Inject constructor(
     }
 
     private fun submitReview(defaultNickname: String) {
-        val oreumIdx = state.value.oreumIdx ?: return
-        val content = state.value.reviewInput.trim()
+        val oreumIdx = currentState.oreumIdx ?: return
+        val content = currentState.reviewInput.trim()
         if (content.isBlank()) return
 
-        viewModelScope.launch {
+        launch {
             setState { copy(isSubmitting = true) }
             ensureAnonymousUserUseCase()
                 .onSuccess { account ->
@@ -135,8 +134,8 @@ class WriteReviewViewModel @Inject constructor(
     }
 
     private fun toggleLike(review: ReviewUiModel) {
-        val oreumIdx = state.value.oreumIdx ?: return
-        viewModelScope.launch {
+        val oreumIdx = currentState.oreumIdx ?: return
+        launch {
             toggleReviewLikeUseCase(oreumIdx, review.userId)
                 .onSuccess { refreshReviews(showLoading = false) }
                 .onFailure { sendError(it) }
@@ -144,8 +143,8 @@ class WriteReviewViewModel @Inject constructor(
     }
 
     private fun deleteReview(review: ReviewUiModel) {
-        val oreumIdx = state.value.oreumIdx ?: return
-        viewModelScope.launch {
+        val oreumIdx = currentState.oreumIdx ?: return
+        launch {
             deleteReviewUseCase(oreumIdx, review.userId)
                 .onSuccess { refreshReviews(showLoading = false) }
                 .onFailure { sendError(it) }

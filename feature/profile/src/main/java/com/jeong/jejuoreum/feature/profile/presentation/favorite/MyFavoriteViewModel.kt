@@ -1,10 +1,9 @@
 package com.jeong.jejuoreum.feature.profile.presentation.favorite
 
-import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResultResource
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
@@ -14,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltViewModel
@@ -23,13 +21,15 @@ class MyFavoriteViewModel @Inject constructor(
     private val observeFavoriteOreumsUseCase: ObserveFavoriteOreumsUseCase,
     private val refreshOreumSummariesUseCase: RefreshOreumSummariesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-) : BaseViewModel<MyFavoriteUiEvent, MyFavoriteUiEffect, MyFavoriteUiState>(MyFavoriteUiState()) {
+) : CommonBaseViewModel<MyFavoriteUiState, MyFavoriteUiEvent, MyFavoriteUiEffect>() {
 
     private var observeJob: Job? = null
 
     init {
         onEvent(MyFavoriteUiEvent.Initialize)
     }
+
+    override fun initialState(): MyFavoriteUiState = MyFavoriteUiState()
 
     override fun onCleared() {
         observeJob?.cancel()
@@ -48,7 +48,7 @@ class MyFavoriteViewModel @Inject constructor(
     private fun observeFavorites() {
         if (observeJob != null) return
 
-        observeJob = viewModelScope.launch {
+        observeJob = launch {
             setState { copy(isLoading = true, errorMessage = null) }
             val loadResult = loadOreumSummariesUseCase()
             if (loadResult.isFailure) {
@@ -88,7 +88,7 @@ class MyFavoriteViewModel @Inject constructor(
     }
 
     private fun toggleFavorite(oreumIdx: String, currentlyLiked: Boolean) {
-        viewModelScope.launch {
+        launch {
             runCatching { toggleFavoriteUseCase(oreumIdx, !currentlyLiked) }
                 .onSuccess { refreshOreumSummariesUseCase() }
                 .onFailure(::handleFailure)

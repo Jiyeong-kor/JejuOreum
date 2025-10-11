@@ -1,14 +1,12 @@
 package com.jeong.jejuoreum.feature.detail.presentation.detail
 
-import androidx.lifecycle.viewModelScope
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.feature.detail.domain.OreumDetailInteractor
 import com.jeong.jejuoreum.feature.detail.domain.model.OreumStampRequest
 import com.jeong.jejuoreum.feature.detail.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.launch
 
 private const val DEFAULT_ERROR_MESSAGE = "오류가 발생하였습니다."
 
@@ -16,9 +14,11 @@ private const val DEFAULT_ERROR_MESSAGE = "오류가 발생하였습니다."
 class DetailViewModel @Inject constructor(
     private val oreumDetailInteractor: OreumDetailInteractor,
     private val stateReducer: DetailStateReducer,
-) : BaseViewModel<DetailEvent, DetailEffect, DetailUiState>(DetailUiState()) {
+) : CommonBaseViewModel<DetailUiState, DetailEvent, DetailEffect>() {
 
     private var initializedOreumId: String? = null
+
+    override fun initialState(): DetailUiState = DetailUiState()
 
     override fun handleEvent(event: DetailEvent) {
         when (event) {
@@ -44,7 +44,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun refreshDetail(oreumIdx: String) {
-        viewModelScope.launch {
+        launch {
             setState(stateReducer::onLoading)
             oreumDetailInteractor.fetchOreumDetail(oreumIdx)
                 .map { it.toUiModel() }
@@ -59,7 +59,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun refreshFavoriteStatus(oreumIdx: String) {
-        viewModelScope.launch {
+        launch {
             oreumDetailInteractor.fetchFavoriteStatus(oreumIdx)
                 .onSuccess { isFavorite ->
                     setState { stateReducer.onFavoriteStatusChanged(this, isFavorite) }
@@ -69,7 +69,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun refreshStampStatus(oreumIdx: String) {
-        viewModelScope.launch {
+        launch {
             oreumDetailInteractor.fetchStampStatus(oreumIdx)
                 .onSuccess { hasStamp ->
                     setState { stateReducer.onStampStatusChanged(this, hasStamp) }
@@ -80,7 +80,7 @@ class DetailViewModel @Inject constructor(
 
     private fun refreshReviews() {
         val oreumIdx = currentOreumIdx() ?: return
-        viewModelScope.launch {
+        launch {
             oreumDetailInteractor.fetchReviews(oreumIdx)
                 .onSuccess { reviews ->
                     setState { stateReducer.onReviewsLoaded(this, reviews) }
@@ -91,8 +91,8 @@ class DetailViewModel @Inject constructor(
 
     private fun toggleFavorite() {
         val oreumIdx = currentOreumIdx() ?: return
-        val newIsFavorite = !state.value.isFavorite
-        viewModelScope.launch {
+        val newIsFavorite = !currentState.isFavorite
+        launch {
             oreumDetailInteractor.toggleFavorite(oreumIdx, newIsFavorite)
                 .onSuccess { newTotal ->
                     setState {
@@ -110,8 +110,8 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun stampOreum() {
-        val oreum = state.value.oreumDetail ?: return
-        viewModelScope.launch {
+        val oreum = currentState.oreumDetail ?: return
+        launch {
             oreumDetailInteractor.tryStamp(
                 OreumStampRequest(
                     oreumIdx = oreum.idx.toString(),
@@ -129,7 +129,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun updateLocationPermission(granted: Boolean) {
-        viewModelScope.launch {
+        launch {
             oreumDetailInteractor.updateLocationPermission(granted)
                 .onSuccess {
                     setState { stateReducer.onLocationPermissionChanged(this, granted) }
@@ -139,7 +139,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun loadLocationPermissionState() {
-        viewModelScope.launch {
+        launch {
             oreumDetailInteractor.loadLocationPermissionState()
                 .onSuccess { granted ->
                     setState { stateReducer.onLocationPermissionChanged(this, granted) }
@@ -148,7 +148,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun currentOreumIdx(): String? = state.value.oreumDetail?.idx?.toString()
+    private fun currentOreumIdx(): String? = currentState.oreumDetail?.idx?.toString()
 
     private fun sendError(message: String?) {
         sendEffect {

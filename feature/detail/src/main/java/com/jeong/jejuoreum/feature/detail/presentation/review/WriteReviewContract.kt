@@ -1,5 +1,9 @@
 package com.jeong.jejuoreum.feature.detail.presentation.review
 
+import com.jeong.jejuoreum.core.common.UiEffect
+import com.jeong.jejuoreum.core.common.UiEvent
+import com.jeong.jejuoreum.core.common.UiState
+
 data class WriteReviewUiState(
     val oreumIdx: String? = null,
     val oreumName: String = "",
@@ -8,9 +12,9 @@ data class WriteReviewUiState(
     val currentUserId: String? = null,
     val isLoading: Boolean = false,
     val isSubmitting: Boolean = false,
-)
+) : UiState
 
-sealed interface WriteReviewUiEvent {
+sealed interface WriteReviewUiEvent : UiEvent {
     data class Initialize(val oreumIdx: Int, val oreumName: String) : WriteReviewUiEvent
     data class ReviewTextChanged(val text: String) : WriteReviewUiEvent
     data class SaveClicked(val defaultNickname: String) : WriteReviewUiEvent
@@ -19,6 +23,6 @@ sealed interface WriteReviewUiEvent {
     data object RefreshRequested : WriteReviewUiEvent
 }
 
-sealed interface WriteReviewUiEffect {
+sealed interface WriteReviewUiEffect : UiEffect {
     data class ShowMessage(val message: String) : WriteReviewUiEffect
 }

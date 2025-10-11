@@ -47,7 +47,7 @@ fun MapRoute(
     requireNotNull(activity)
 
     val mapViewModel: MapViewModel = hiltViewModel(activity)
-    val mapState by mapViewModel.state.collectAsStateWithLifecycle()
+    val mapState by mapViewModel.uiState.collectAsStateWithLifecycle()
     val selectedOreum = mapState.selectedOreum
     val query = mapState.searchQuery
 

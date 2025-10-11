@@ -1,9 +1,9 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
@@ -12,14 +12,12 @@ import com.jeong.jejuoreum.domain.oreum.usecase.FilterOreumsWithinBoundsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.FindOreumByLocationUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.feature.map.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val KEY_CAM_LAT = "cam_lat"
@@ -34,9 +32,7 @@ class MapViewModel @Inject constructor(
     private val findOreumByLocationUseCase: FindOreumByLocationUseCase,
     private val savedStateHandle: SavedStateHandle,
     private val dispatcherProvider: CoroutineDispatcherProvider,
-) : BaseViewModel<MapEvent, MapEffect, MapUiState>(
-    initialState = MapUiState(cameraSnapshot = restoreCameraFromSavedState(savedStateHandle))
-) {
+) : CommonBaseViewModel<MapUiState, MapEvent, MapEffect>() {
 
     private val oreumSummaries = MutableStateFlow<List<ResultSummary>>(emptyList())
 
@@ -47,6 +43,10 @@ class MapViewModel @Inject constructor(
     init {
         observeOreums()
     }
+
+    override fun initialState(): MapUiState = MapUiState(
+        cameraSnapshot = restoreCameraFromSavedState(savedStateHandle)
+    )
 
     override fun handleEvent(event: MapEvent) {
         when (event) {
@@ -73,7 +73,7 @@ class MapViewModel @Inject constructor(
             return
         }
         setState { copy(searchQuery = query) }
-        searchJob = viewModelScope.launch(dispatcherProvider.computation) {
+        searchJob = launch(dispatcherProvider.computation) {
             try {
                 val results = searchOreumsUseCase(oreumSummaries.value, query)
                     .map { it.toUiModel() }
@@ -100,7 +100,7 @@ class MapViewModel @Inject constructor(
     private fun handleViewport(bounds: GeoBounds) {
         if (bounds == lastBounds) return
         lastBounds = bounds
-        viewModelScope.launch(dispatcherProvider.computation) {
+        launch(dispatcherProvider.computation) {
             val visible = filterOreumsWithinBoundsUseCase(oreumSummaries.value, bounds)
             val pins = visible.map { summary ->
                 val point = GeoPoint(summary.y, summary.x).quantized()
@@ -108,7 +108,7 @@ class MapViewModel @Inject constructor(
                     MapPinUi(summary.oreumKname, summary.y, summary.x)
                 }
             }
-            if (pins != state.value.visiblePins) {
+            if (pins != currentState.visiblePins) {
                 withContext(dispatcherProvider.main) {
                     setState { copy(visiblePins = pins) }
                 }
@@ -117,7 +117,7 @@ class MapViewModel @Inject constructor(
     }
 
     private fun handleMarkerSelection(point: GeoPoint) {
-        viewModelScope.launch(dispatcherProvider.computation) {
+        launch(dispatcherProvider.computation) {
             val oreum = findOreumByLocationUseCase(oreumSummaries.value, point)
             val uiModel = oreum?.toUiModel()
             withContext(dispatcherProvider.main) {
@@ -127,7 +127,7 @@ class MapViewModel @Inject constructor(
     }
 
     private fun observeOreums() {
-        viewModelScope.launch {
+        launch {
             observeOreumSummariesUseCase().collectLatest { result ->
                 result.fold(
                     onSuccess = ::handleResource,
@@ -150,7 +150,7 @@ class MapViewModel @Inject constructor(
             is Resource.Success -> {
                 oreumSummaries.value = resource.data
                 setState { copy(isLoading = false, errorMessage = null) }
-                val currentQuery = state.value.searchQuery
+                val currentQuery = currentState.searchQuery
                 if (currentQuery.isNotBlank()) {
                     handleSearchQuery(currentQuery)
                 }

@@ -1,8 +1,7 @@
 package com.jeong.jejuoreum.feature.map.presentation.oreum
 
-import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.core.common.result.Resource
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.feature.map.domain.OreumOverviewInteractor
 import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
 import com.jeong.jejuoreum.feature.map.presentation.mapper.OreumUiMapper
@@ -11,18 +10,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class OreumViewModel @Inject constructor(
     private val interactor: OreumOverviewInteractor,
-    private val uiMapper: OreumUiMapper
-) : BaseViewModel<OreumEvent, OreumEffect, OreumUiState>(OreumUiState()) {
+    private val uiMapper: OreumUiMapper,
+) : CommonBaseViewModel<OreumUiState, OreumEvent, OreumEffect>() {
 
     private var observeJob: Job? = null
 
     init {
         onEvent(OreumEvent.ScreenInitialized)
+    }
+
+    override fun initialState(): OreumUiState = OreumUiState()
+
+    override fun onCleared() {
+        observeJob?.cancel()
+        observeJob = null
+        super.onCleared()
     }
 
     override fun handleEvent(event: OreumEvent) {
@@ -37,7 +43,7 @@ class OreumViewModel @Inject constructor(
         if (!forceRefresh && observeJob != null) return
 
         observeJob?.cancel()
-        observeJob = viewModelScope.launch {
+        observeJob = launch {
             setState { copy(isLoading = true, errorMessage = null) }
 
             interactor.observeOreumOverviews()
@@ -76,7 +82,7 @@ class OreumViewModel @Inject constructor(
     }
 
     private fun fetchOreumDetail(oreumId: String) {
-        viewModelScope.launch {
+        launch {
             interactor.getOreumOverview(oreumId)
                 .onSuccess { overview ->
                     sendEffect { OreumEffect.NavigateToDetail(overview.id) }

@@ -30,7 +30,7 @@ fun MyFavoriteScreen(
     onShowMessage: (String) -> Unit = {},
     viewModel: MyFavoriteViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     androidx.compose.runtime.LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->

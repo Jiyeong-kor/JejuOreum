@@ -1,5 +1,8 @@
 package com.jeong.jejuoreum.feature.onboarding.presentation
 
+import com.jeong.jejuoreum.core.common.UiEffect
+import com.jeong.jejuoreum.core.common.UiEvent
+import com.jeong.jejuoreum.core.common.UiState
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
 
 sealed interface NicknameAvailabilityState {
@@ -16,18 +19,18 @@ data class JoinUiState(
     val validation: NicknameValidationResult = NicknameValidationResult.Empty(),
     val availability: NicknameAvailabilityState = NicknameAvailabilityState.Idle,
     val isSaving: Boolean = false,
-) {
+) : UiState {
     val canSubmit: Boolean
         get() = availability is NicknameAvailabilityState.Available && !isSaving
 }
 
-sealed interface JoinUiEvent {
+sealed interface JoinUiEvent : UiEvent {
     data object Initialize : JoinUiEvent
     data class NicknameChanged(val value: String) : JoinUiEvent
     data object SubmitNickname : JoinUiEvent
 }
 
-sealed interface JoinUiEffect {
+sealed interface JoinUiEffect : UiEffect {
     data object AuthenticationFailed : JoinUiEffect
     data class NicknameSaved(val nickname: String) : JoinUiEffect
     data object NicknameSaveFailed : JoinUiEffect

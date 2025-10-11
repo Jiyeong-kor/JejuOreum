@@ -46,7 +46,7 @@ fun OreumRoute(
     onError: (String) -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->

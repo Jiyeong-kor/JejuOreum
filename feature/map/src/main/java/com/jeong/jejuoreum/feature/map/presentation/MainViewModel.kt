@@ -1,27 +1,27 @@
 package com.jeong.jejuoreum.feature.map.presentation
 
-import androidx.lifecycle.viewModelScope
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.core.common.network.NetworkStatus
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
+import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentConnectivityStatusUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.ObserveConnectivityStatusUseCase
 import com.jeong.jejuoreum.feature.map.presentation.main.MainSideEffect
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiEvent
 import com.jeong.jejuoreum.feature.map.presentation.main.MainUiState
-import com.jeong.jejuoreum.core.common.network.NetworkStatus
-import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentConnectivityStatusUseCase
-import com.jeong.jejuoreum.domain.oreum.usecase.ObserveConnectivityStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val observeConnectivityStatusUseCase: ObserveConnectivityStatusUseCase,
-    private val getCurrentConnectivityStatusUseCase: GetCurrentConnectivityStatusUseCase
-) : BaseViewModel<MainUiEvent, MainSideEffect, MainUiState>(MainUiState()) {
+    private val getCurrentConnectivityStatusUseCase: GetCurrentConnectivityStatusUseCase,
+) : CommonBaseViewModel<MainUiState, MainUiEvent, MainSideEffect>() {
 
     init {
         observeNetwork()
     }
+
+    override fun initialState(): MainUiState = MainUiState()
 
     override fun handleEvent(event: MainUiEvent) {
         when (event) {
@@ -30,19 +30,19 @@ class MainViewModel @Inject constructor(
     }
 
     private fun onRetry() {
-        viewModelScope.launch {
+        launch {
             val status = getCurrentConnectivityStatusUseCase()
             applyStatus(status, fromUser = true)
         }
     }
 
     private fun observeNetwork() {
-        viewModelScope.launch {
+        launch {
             observeConnectivityStatusUseCase().collectLatest { status ->
                 applyStatus(status)
             }
         }
-        viewModelScope.launch {
+        launch {
             val status = getCurrentConnectivityStatusUseCase()
             applyStatus(status)
         }
@@ -53,7 +53,7 @@ class MainViewModel @Inject constructor(
             NetworkStatus.Available, NetworkStatus.Losing, NetworkStatus.Unknown -> false
             NetworkStatus.Lost, NetworkStatus.Unavailable -> true
         }
-        val notifyRestored = !shouldShowDialog && (state.value.showNetworkDialog || fromUser)
+        val notifyRestored = !shouldShowDialog && (currentState.showNetworkDialog || fromUser)
 
         setState {
             copy(

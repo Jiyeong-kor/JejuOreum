@@ -1,8 +1,7 @@
 package com.jeong.jejuoreum.feature.onboarding.presentation
 
-import androidx.lifecycle.viewModelScope
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
 import com.jeong.jejuoreum.domain.user.usecase.CheckNicknameAvailabilityUseCase
 import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
 import com.jeong.jejuoreum.domain.user.usecase.SaveNicknameUseCase
@@ -10,7 +9,6 @@ import com.jeong.jejuoreum.domain.user.usecase.ValidateNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltViewModel
@@ -19,7 +17,7 @@ class JoinViewModel @Inject constructor(
     private val checkNicknameAvailabilityUseCase: CheckNicknameAvailabilityUseCase,
     private val saveNicknameUseCase: SaveNicknameUseCase,
     private val ensureAnonymousUserUseCase: EnsureAnonymousUserUseCase,
-) : BaseViewModel<JoinUiEvent, JoinUiEffect, JoinUiState>(JoinUiState()) {
+) : CommonBaseViewModel<JoinUiState, JoinUiEvent, JoinUiEffect>() {
 
     private var availabilityJob: Job? = null
 
@@ -32,6 +30,8 @@ class JoinViewModel @Inject constructor(
         availabilityJob = null
         super.onCleared()
     }
+
+    override fun initialState(): JoinUiState = JoinUiState()
 
     override fun handleEvent(event: JoinUiEvent) {
         when (event) {
@@ -65,12 +65,12 @@ class JoinViewModel @Inject constructor(
     }
 
     private fun handleSubmit() {
-        val currentState = state.value
-        if (!currentState.canSubmit) return
+        val latestState = currentState
+        if (!latestState.canSubmit) return
 
-        viewModelScope.launch {
+        launch {
             setState { copy(isSaving = true) }
-            val result = saveNicknameUseCase(currentState.nickname)
+            val result = saveNicknameUseCase(latestState.nickname)
             setState { copy(isSaving = false) }
 
             result.fold(
@@ -86,7 +86,7 @@ class JoinViewModel @Inject constructor(
     }
 
     private fun ensureAnonymousUser() {
-        viewModelScope.launch {
+        launch {
             ensureAnonymousUserUseCase()
                 .onFailure { throwable ->
                     Timber.e(throwable, "Failed to authenticate user")
@@ -96,7 +96,7 @@ class JoinViewModel @Inject constructor(
     }
 
     private fun checkNicknameAvailability(nickname: String) {
-        availabilityJob = viewModelScope.launch {
+        availabilityJob = launch {
             val result = checkNicknameAvailabilityUseCase(nickname)
             setState {
                 if (this.nickname != nickname) {

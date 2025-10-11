@@ -63,7 +63,7 @@ fun DetailRoute(
     onFavoriteToggled: (String) -> Unit,
     initialOreum: OreumSummaryUiModel? = null
 ) {
-    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val oreumDetail = uiState.oreumDetail
     val hasStamp = uiState.hasStamp
     val locationPermissionGranted = uiState.isLocationPermissionGranted

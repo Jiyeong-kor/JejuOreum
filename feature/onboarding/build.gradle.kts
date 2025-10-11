@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:presentation"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":domain:user"))

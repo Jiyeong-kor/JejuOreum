@@ -1,17 +1,17 @@
 package com.jeong.jejuoreum.feature.splash.presentation
 
-import androidx.lifecycle.viewModelScope
-import com.jeong.jejuoreum.core.ui.viewmodel.BaseViewModel
+import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.feature.splash.domain.PrepareSplashInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val prepareSplashInteractor: PrepareSplashInteractor
-) : BaseViewModel<SplashUiEvent, SplashUiEffect, SplashUiState>(SplashUiState()) {
+    private val prepareSplashInteractor: PrepareSplashInteractor,
+) : CommonBaseViewModel<SplashUiState, SplashUiEvent, SplashUiEffect>() {
+
+    override fun initialState(): SplashUiState = SplashUiState()
 
     override fun handleEvent(event: SplashUiEvent) {
         when (event) {
@@ -21,7 +21,7 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun initialize() {
-        viewModelScope.launch {
+        launch {
             setState { copy(isLoading = true, errorMessage = null) }
 
             val result = runCatching { prepareSplashInteractor() }
@@ -38,7 +38,8 @@ class SplashViewModel @Inject constructor(
                             errorMessage = throwable.message ?: DEFAULT_ERROR_MESSAGE,
                         )
                     }
-                })
+                }
+            )
         }
     }
 

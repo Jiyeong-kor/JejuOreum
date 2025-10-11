@@ -21,7 +21,7 @@ fun JoinRoute(
     val context = LocalContext.current
     var isTermChecked by remember { mutableStateOf(false) }
     var showTermDialog by remember { mutableStateOf(false) }
-    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
