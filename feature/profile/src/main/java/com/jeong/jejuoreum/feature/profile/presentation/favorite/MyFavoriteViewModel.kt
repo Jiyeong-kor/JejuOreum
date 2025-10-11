@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.feature.profile.presentation.favorite
 
 import com.jeong.jejuoreum.core.common.result.Resource
-import com.jeong.jejuoreum.core.common.result.ResultResource
+import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
@@ -66,23 +66,18 @@ class MyFavoriteViewModel @Inject constructor(
                 return@launch
             }
 
-            observeFavoriteOreumsUseCase().collectLatest { result ->
-                handleResult(result)
+            observeFavoriteOreumsUseCase().collectLatest { resource ->
+                handleResult(resource)
             }
         }
     }
 
-    private fun handleResult(result: ResultResource<List<ResultSummary>>) {
-        result.fold(
-            onSuccess = { resource ->
-                when (resource) {
-                    Resource.Loading -> setState { copy(isLoading = true, errorMessage = null) }
-                    is Resource.Success -> updateFavorites(resource.data)
-                    is Resource.Error -> handleFailure(resource.throwable)
-                }
-            },
-            onFailure = ::handleFailure,
-        )
+    private fun handleResult(resource: Resource<List<ResultSummary>>) {
+        when (resource) {
+            Resource.Loading -> setState { copy(isLoading = true, errorMessage = null) }
+            is Resource.Success -> updateFavorites(resource.data)
+            is Resource.Error -> handleFailure(resource.error)
+        }
     }
 
     private fun updateFavorites(favorites: List<ResultSummary>) {
@@ -105,6 +100,13 @@ class MyFavoriteViewModel @Inject constructor(
                         .onFailure(::handleFailure)
                 }
         }
+    }
+
+    private fun handleFailure(error: ResourceError) {
+        val message = errorMessageProvider.favoriteStreamFailed(error)
+        Timber.w("Favorite oreum stream failed: %s", error)
+        setState { copy(isLoading = false, errorMessage = message) }
+        sendErrorEffect(message)
     }
 
     private fun handleFailure(throwable: Throwable?) {

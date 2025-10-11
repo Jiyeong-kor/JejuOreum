@@ -1,6 +1,7 @@
 package com.jeong.jejuoreum.core.testing.fake
 
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 import com.jeong.jejuoreum.domain.review.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +24,9 @@ class FakeReviewRepository : ReviewRepository {
 
     override suspend fun fetchReviews(oreumIdx: String): Result<List<ReviewItem>> {
         fetchResult.onSuccess { reviews -> reviewsState.value = Resource.Success(reviews) }
-        fetchResult.onFailure { throwable -> reviewsState.value = Resource.Error(throwable) }
+        fetchResult.onFailure { throwable ->
+            reviewsState.value = Resource.Error(ResourceError.Unknown(throwable))
+        }
         return fetchResult
     }
 

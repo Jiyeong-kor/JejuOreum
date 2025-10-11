@@ -1,6 +1,7 @@
 package com.jeong.jejuoreum.feature.map.presentation.oreum
 
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.feature.map.domain.OreumOverviewInteractor
 import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
@@ -50,30 +51,25 @@ class OreumViewModel @Inject constructor(
             setState { copy(isLoading = true, errorMessage = null) }
 
             interactor.observeOreumOverviews()
-                .collectLatest { result ->
-                    result.fold(
-                        onSuccess = { resource ->
-                            when (resource) {
-                                Resource.Loading -> setState {
-                                    copy(isLoading = true, errorMessage = null)
-                                }
+                .collectLatest { resource ->
+                    when (resource) {
+                        Resource.Loading -> setState {
+                            copy(isLoading = true, errorMessage = null)
+                        }
 
-                                is Resource.Success -> {
-                                    val uiModels = resource.data.toUiModels()
-                                    setState {
-                                        copy(
-                                            isLoading = false,
-                                            errorMessage = null,
-                                            oreums = uiModels
-                                        )
-                                    }
-                                }
-
-                                is Resource.Error -> handleFailure(resource.throwable)
+                        is Resource.Success -> {
+                            val uiModels = resource.data.toUiModels()
+                            setState {
+                                copy(
+                                    isLoading = false,
+                                    errorMessage = null,
+                                    oreums = uiModels
+                                )
                             }
-                        },
-                        onFailure = ::handleFailure
-                    )
+                        }
+
+                        is Resource.Error -> handleFailure(resource.error)
+                    }
                 }
         }
     }
@@ -81,8 +77,14 @@ class OreumViewModel @Inject constructor(
     override fun buildErrorEffect(message: String): OreumEffect =
         OreumEffect.ShowError(message)
 
-    private fun handleFailure(throwable: Throwable?) {
-        val message = throwable?.message ?: "알 수 없는 오류 발생"
+    private fun handleFailure(error: ResourceError) {
+        val message = when (error) {
+            ResourceError.Network -> "네트워크 연결을 확인해 주세요."
+            is ResourceError.Api -> error.message ?: "데이터를 불러오지 못했어요."
+            is ResourceError.NotFound -> "선택한 오름 정보를 찾을 수 없어요."
+            ResourceError.Unauthorized -> "로그인이 필요합니다."
+            is ResourceError.Unknown -> error.throwable.message ?: "알 수 없는 오류 발생"
+        }
         setState { copy(isLoading = false, errorMessage = message) }
         sendErrorEffect(message)
     }

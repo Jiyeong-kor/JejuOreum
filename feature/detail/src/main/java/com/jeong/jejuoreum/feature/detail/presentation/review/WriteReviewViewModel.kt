@@ -2,6 +2,7 @@ package com.jeong.jejuoreum.feature.detail.presentation.review
 
 import com.jeong.jejuoreum.core.common.error.DomainError
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.review.usecase.BuildReviewItemUseCase
 import com.jeong.jejuoreum.domain.review.usecase.DeleteReviewUseCase
@@ -79,7 +80,7 @@ class WriteReviewViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         setState { copy(isLoading = false) }
-                        sendError(resource.throwable)
+                        sendError(resource.error)
                     }
                 }
             }
@@ -155,6 +156,17 @@ class WriteReviewViewModel @Inject constructor(
                 .onSuccess { refreshReviews(showLoading = false) }
                 .onFailure { sendError(it) }
         }
+    }
+
+    private fun sendError(error: ResourceError) {
+        val message = when (error) {
+            ResourceError.Network -> "네트워크 연결을 확인해 주세요."
+            is ResourceError.Api -> error.message ?: DEFAULT_ERROR_MESSAGE
+            is ResourceError.NotFound -> "요청한 리뷰를 찾을 수 없어요."
+            ResourceError.Unauthorized -> "로그인이 필요합니다."
+            is ResourceError.Unknown -> error.throwable.message ?: DEFAULT_ERROR_MESSAGE
+        }
+        sendErrorEffect(message)
     }
 
     private fun sendError(throwable: Throwable?) {

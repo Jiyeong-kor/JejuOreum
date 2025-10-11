@@ -1,7 +1,6 @@
 package com.jeong.jejuoreum.feature.map.domain
 
 import com.jeong.jejuoreum.core.common.result.Resource
-import com.jeong.jejuoreum.core.common.result.ResultResource
 import com.jeong.jejuoreum.feature.map.domain.mapper.OreumOverviewMapper
 import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
 import com.jeong.jejuoreum.domain.oreum.usecase.GetOreumDetailUseCase
@@ -16,21 +15,15 @@ class OreumOverviewInteractor @Inject constructor(
     private val mapper: OreumOverviewMapper
 ) {
 
-    fun observeOreumOverviews(): Flow<ResultResource<List<OreumOverview>>> =
-        observeOreumsUseCase(Unit).map { result ->
-            result.fold(
-                onSuccess = { resource ->
-                    val mapped = when (resource) {
-                        Resource.Loading -> Resource.Loading
-                        is Resource.Error -> Resource.Error(resource.throwable)
-                        is Resource.Success -> Resource.Success(
-                            resource.data.map(mapper::map)
-                        )
-                    }
-                    Result.success(mapped)
-                },
-                onFailure = { throwable -> Result.failure(throwable) }
-            )
+    fun observeOreumOverviews(): Flow<Resource<List<OreumOverview>>> =
+        observeOreumsUseCase(Unit).map { resource ->
+            when (resource) {
+                Resource.Loading -> Resource.Loading
+                is Resource.Error -> resource
+                is Resource.Success -> Resource.Success(
+                    resource.data.map(mapper::map)
+                )
+            }
         }
 
     suspend fun getOreumOverview(oreumId: String): Result<OreumOverview> =

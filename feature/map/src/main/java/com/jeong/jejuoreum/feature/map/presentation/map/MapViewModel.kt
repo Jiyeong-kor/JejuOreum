@@ -1,21 +1,16 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
 import androidx.lifecycle.SavedStateHandle
-import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.result.Resource
+import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
-import com.jeong.jejuoreum.domain.oreum.entity.quantized
-import com.jeong.jejuoreum.domain.oreum.usecase.FilterOreumsWithinBoundsUseCase
-import com.jeong.jejuoreum.domain.oreum.usecase.FindOreumByLocationUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumSummariesUseCase
-import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase
 import com.jeong.jejuoreum.feature.map.R
-import com.jeong.jejuoreum.feature.map.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import javax.inject.Named
@@ -23,23 +18,19 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val observeOreumSummariesUseCase: ObserveOreumSummariesUseCase,
-    private val filterOreumsWithinBoundsUseCase: FilterOreumsWithinBoundsUseCase,
-    private val searchOreumsUseCase: SearchOreumsUseCase,
-    private val findOreumByLocationUseCase: FindOreumByLocationUseCase,
+    private val searchHandler: MapSearchHandler,
+    private val viewportManager: MapViewportManager,
+    private val selectionHandler: MapSelectionHandler,
     private val savedStateHandle: SavedStateHandle,
-    private val dispatcherProvider: CoroutineDispatcherProvider,
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<MapUiState, MapEvent, MapEffect>(ioDispatcher) {
 
     private val oreumSummaries = MutableStateFlow<List<ResultSummary>>(emptyList())
-
-    private val pinCache = mutableMapOf<GeoPoint, MapPinUiModel>()
-    private var lastBounds: GeoBounds? = null
+    private var currentViewportBounds: GeoBounds? = null
     private var searchJob: Job? = null
 
     init {
@@ -66,7 +57,8 @@ class MapViewModel @Inject constructor(
 
     private fun handleSearchQuery(query: String) {
         searchJob?.cancel()
-        if (query.isBlank()) {
+        val sanitized = query.trim()
+        if (sanitized.isEmpty()) {
             searchJob = null
             setState {
                 copy(
@@ -77,24 +69,16 @@ class MapViewModel @Inject constructor(
             }
             return
         }
-        setState { copy(searchQuery = query) }
-        searchJob = launch(dispatcherProvider.computation) {
+        setState { copy(searchQuery = sanitized) }
+        searchJob = launch {
             try {
-                val results = searchOreumsUseCase(oreumSummaries.value, query)
-                    .map { it.toUiModel() }
-                val panelState = if (results.isEmpty()) {
-                    MapPanelState.NoResults
-                } else {
-                    MapPanelState.Results
-                }
-                withContext(dispatcherProvider.main) {
-                    setState {
-                        copy(
-                            searchQuery = query,
-                            searchResults = results,
-                            panelState = panelState,
-                        )
-                    }
+                val result = searchHandler.search(sanitized, oreumSummaries.value)
+                setState {
+                    copy(
+                        searchQuery = sanitized,
+                        searchResults = result.results,
+                        panelState = result.panelState,
+                    )
                 }
             } finally {
                 searchJob = null
@@ -103,74 +87,43 @@ class MapViewModel @Inject constructor(
     }
 
     private fun handleViewport(bounds: GeoBounds) {
-        if (bounds == lastBounds) return
-        lastBounds = bounds
-        launch(dispatcherProvider.computation) {
-            val visible = filterOreumsWithinBoundsUseCase(oreumSummaries.value, bounds)
-            val pins = visible.map { summary ->
-                val point = GeoPoint(summary.y, summary.x).quantized()
-                pinCache.getOrPut(point) {
-                    MapPinUiModel(summary.oreumKname, summary.y, summary.x)
-                }
-            }
-            if (pins != currentState.visiblePins) {
-                withContext(dispatcherProvider.main) {
-                    setState { copy(visiblePins = pins) }
-                }
+        currentViewportBounds = bounds
+        launch {
+            val result = viewportManager.calculatePins(bounds, oreumSummaries.value) ?: return@launch
+            if (result.pins != currentState.visiblePins) {
+                setState { copy(visiblePins = result.pins) }
             }
         }
     }
 
     private fun handleMarkerSelection(point: GeoPoint) {
-        launch(dispatcherProvider.computation) {
-            val oreum = findOreumByLocationUseCase(oreumSummaries.value, point)
-            val uiModel = oreum?.toUiModel()
-            withContext(dispatcherProvider.main) {
-                setState { copy(selectedOreum = uiModel) }
-            }
+        launch {
+            val uiModel = selectionHandler.resolveSelection(point, oreumSummaries.value)
+            setState { copy(selectedOreum = uiModel) }
         }
     }
 
     private fun observeOreums() {
         launch {
-            observeOreumSummariesUseCase().collectLatest { result ->
-                result.fold(
-                    onSuccess = ::handleResource,
-                    onFailure = { throwable ->
-                        val message = defaultLoadErrorMessage()
-                        setState { copy(isLoading = false, errorMessage = message) }
-                        sendErrorEffect(message)
-                    },
-                )
+            observeOreumSummariesUseCase().collectLatest { resource ->
+                when (resource) {
+                    Resource.Loading -> setState {
+                        copy(isLoading = true, errorMessage = null)
+                    }
+
+                    is Resource.Success -> handleSummaries(resource.data)
+
+                    is Resource.Error -> handleResourceError(resource.error)
+                }
             }
         }
     }
 
-    private fun handleResource(resource: Resource<List<ResultSummary>>) {
-        when (resource) {
-            Resource.Loading -> setState {
-                copy(isLoading = true, errorMessage = null)
-            }
-
-            is Resource.Success -> {
-                oreumSummaries.value = resource.data
-                setState { copy(isLoading = false, errorMessage = null) }
-                val currentQuery = currentState.searchQuery
-                if (currentQuery.isNotBlank()) {
-                    handleSearchQuery(currentQuery)
-                }
-                lastBounds?.let { bounds ->
-                    lastBounds = null
-                    handleViewport(bounds)
-                }
-            }
-
-            is Resource.Error -> {
-                val message = defaultLoadErrorMessage()
-                setState { copy(isLoading = false, errorMessage = message) }
-                sendErrorEffect(message)
-            }
-        }
+    private fun handleSummaries(summaries: List<ResultSummary>) {
+        oreumSummaries.value = summaries
+        setState { copy(isLoading = false, errorMessage = null) }
+        refreshSearchResults()
+        refreshViewportPins()
     }
 
     private fun clearSelection() {
@@ -196,12 +149,32 @@ class MapViewModel @Inject constructor(
         savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_ZOOM] = zoomLevel
     }
 
-    private fun defaultLoadErrorMessage(): UiText =
-        UiText.StringResource(R.string.error_failed_to_load_oreum_data)
+    private fun refreshSearchResults() {
+        val currentQuery = currentState.searchQuery
+        if (currentQuery.isNotBlank()) {
+            handleSearchQuery(currentQuery)
+        }
+    }
 
-    private fun sendErrorEffect(message: UiText) {
+    private fun refreshViewportPins() {
+        viewportManager.reset()
+        currentViewportBounds?.let { bounds -> handleViewport(bounds) }
+    }
+
+    private fun handleResourceError(error: ResourceError) {
+        val message = when (error) {
+            ResourceError.Network -> UiText.StringResource(R.string.error_network_unavailable)
+            is ResourceError.Api -> error.message?.let(UiText::DynamicString) ?: defaultLoadErrorMessage()
+            is ResourceError.NotFound -> UiText.StringResource(R.string.error_oreum_not_found)
+            ResourceError.Unauthorized -> UiText.StringResource(R.string.error_authentication_required)
+            is ResourceError.Unknown -> error.throwable.message?.let(UiText::DynamicString) ?: defaultLoadErrorMessage()
+        }
+        setState { copy(isLoading = false, errorMessage = message) }
         sendEffect { MapEffect.ShowMessage(message) }
     }
+
+    private fun defaultLoadErrorMessage(): UiText =
+        UiText.StringResource(R.string.error_failed_to_load_oreum_data)
 
     companion object {
         private fun restoreCameraFromSavedState(savedStateHandle: SavedStateHandle): CameraSnapshot? {

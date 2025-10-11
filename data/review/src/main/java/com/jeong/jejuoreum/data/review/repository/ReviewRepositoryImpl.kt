@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jeong.jejuoreum.core.common.error.DomainError
 import com.jeong.jejuoreum.core.common.error.toDomainError
+import com.jeong.jejuoreum.core.common.error.toResourceError
 import com.jeong.jejuoreum.core.common.firestore.FirestoreConstants
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.mapToDomainError
@@ -28,7 +29,7 @@ internal class ReviewRepositoryImpl @Inject constructor(
             emit(Resource.Success(loadReviews(oreumIdx)))
         }.catch { throwable ->
             val domainError = throwable.toDomainError()
-            emit(Resource.Error(domainError))
+            emit(Resource.Error(domainError.toResourceError()))
         }
     }
 
