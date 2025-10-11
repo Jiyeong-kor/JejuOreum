@@ -12,7 +12,7 @@ import com.jeong.jejuoreum.feature.map.presentation.map.MapRoute
 import javax.inject.Inject
 
 class MapNavigationImpl @Inject constructor() : MapNavigation {
-    override val route: String = OreumNavigation.MAP
+    override val route: String = OreumNavigation.Map.ROUTE
 
     @Composable
     override fun Icon(selected: Boolean) = BottomNavigationDefaults.Map.Icon(selected)
@@ -23,13 +23,13 @@ class MapNavigationImpl @Inject constructor() : MapNavigation {
     override fun navigateToMap(navController: NavController) {
         val hostController = navController as? NavHostController
         if (hostController != null) {
-            hostController.navigate(OreumNavigation.MAP) {
+            hostController.navigate(OreumNavigation.Map.ROUTE) {
                 popUpTo(hostController.graph.startDestinationId) { saveState = true }
                 launchSingleTop = true
                 restoreState = true
             }
         } else {
-            navController.navigate(OreumNavigation.MAP)
+            navController.navigate(OreumNavigation.Map.ROUTE)
         }
     }
 
@@ -42,8 +42,8 @@ class MapNavigationImpl @Inject constructor() : MapNavigation {
                 onNavigateToDetail = { oreum ->
                     navController.currentBackStackEntry
                         ?.savedStateHandle
-                        ?.set(OreumNavigation.DETAIL_OREUM_KEY, oreum)
-                    navController.navigate(OreumNavigation.DETAIL)
+                        ?.set(OreumNavigation.Detail.INITIAL_OREUM_KEY, oreum)
+                    navController.navigate(OreumNavigation.Detail.ROUTE)
                 }
             )
         }

@@ -4,13 +4,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.navigation.SplashNavigation
+import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.feature.splash.presentation.SplashRoute
 import javax.inject.Inject
 
 class SplashNavigationImpl @Inject constructor() : SplashNavigation {
-    override val route: String = OreumNavigation.SPLASH
+    override val route: String = OreumNavigation.Splash.ROUTE
 
     override fun navigateToSplash(navController: NavController) {
         val hostController = navController as? NavHostController
@@ -32,12 +32,12 @@ class SplashNavigationImpl @Inject constructor() : SplashNavigation {
         navGraphBuilder.composable(route) {
             SplashRoute(
                 onNavigateToOnboarding = {
-                    navController.navigate(OreumNavigation.ONBOARDING) {
+                    navController.navigate(OreumNavigation.Onboarding.ROUTE) {
                         popUpTo(route) { inclusive = true }
                     }
                 },
                 onNavigateToMap = {
-                    navController.navigate(OreumNavigation.MAP) {
+                    navController.navigate(OreumNavigation.Map.ROUTE) {
                         popUpTo(route) { inclusive = true }
                     }
                 }

@@ -11,7 +11,7 @@ import com.jeong.jejuoreum.feature.onboarding.presentation.JoinRoute
 import javax.inject.Inject
 
 class OnboardingNavigationImpl @Inject constructor() : OnboardingNavigation {
-    override val route: String = OreumNavigation.ONBOARDING
+    override val route: String = OreumNavigation.Onboarding.ROUTE
 
     override fun navigateToOnboarding(navController: NavController) {
         val hostController = navController as? NavHostController
@@ -35,9 +35,9 @@ class OnboardingNavigationImpl @Inject constructor() : OnboardingNavigation {
                 onNavigateToMain = {
                     val hostController = navController as? NavHostController
                     if (hostController != null) {
-                        hostController.navigateToRoot(OreumNavigation.MAP)
+                        hostController.navigateToRoot(OreumNavigation.Map.ROUTE)
                     } else {
-                        navController.navigate(OreumNavigation.MAP)
+                        navController.navigate(OreumNavigation.Map.ROUTE)
                     }
                     navController.popBackStack(route, inclusive = true)
                 }

@@ -1,9 +1,9 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
 import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
-import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 
 data class MapUiState(
     val isLoading: Boolean = true,
@@ -11,7 +11,7 @@ data class MapUiState(
     val searchQuery: String = "",
     val panelState: MapPanelState = MapPanelState.Hidden,
     val searchResults: List<OreumSummaryUiModel> = emptyList(),
-    val visiblePins: List<MapPinUi> = emptyList(),
+    val visiblePins: List<MapPinUiModel> = emptyList(),
     val selectedOreum: OreumSummaryUiModel? = null,
     val cameraSnapshot: CameraSnapshot? = null
 ) {

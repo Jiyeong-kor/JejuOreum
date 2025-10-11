@@ -57,10 +57,10 @@ class MapRenderer(private val map: KakaoMap) {
         )
     }
 
-    private fun MapPinUi.quantKey(): GeoPoint = GeoPoint(lat, lon).quantized()
+    private fun MapPinUiModel.quantKey(): GeoPoint = GeoPoint(lat, lon).quantized()
     private fun LatLng.quantKey(): GeoPoint = GeoPoint(latitude, longitude).quantized()
 
-    fun syncMarkers(pins: List<MapPinUi>) {
+    fun syncMarkers(pins: List<MapPinUiModel>) {
         val layer = labelLayer ?: return
         val newKeyByPin = pins.associateBy { it.quantKey() }
         val oldKeys = markersByPoint.keys

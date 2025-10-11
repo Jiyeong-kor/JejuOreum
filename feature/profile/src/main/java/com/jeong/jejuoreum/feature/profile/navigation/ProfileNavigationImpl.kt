@@ -5,14 +5,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.navigation.ProfileNavigation
+import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.ui.navigation.BottomNavigationDefaults
 import com.jeong.jejuoreum.feature.profile.presentation.profile.MyRoute
 import javax.inject.Inject
 
 class ProfileNavigationImpl @Inject constructor() : ProfileNavigation {
-    override val route: String = OreumNavigation.MY
+    override val route: String = OreumNavigation.Profile.ROUTE
 
     @Composable
     override fun Icon(selected: Boolean) = BottomNavigationDefaults.Profile.Icon(selected)
@@ -42,11 +42,11 @@ class ProfileNavigationImpl @Inject constructor() : ProfileNavigation {
                 onFavoriteItemClick = { oreum ->
                     navController.currentBackStackEntry
                         ?.savedStateHandle
-                        ?.set(OreumNavigation.DETAIL_OREUM_KEY, oreum)
-                    navController.navigate(OreumNavigation.DETAIL)
+                        ?.set(OreumNavigation.Detail.INITIAL_OREUM_KEY, oreum)
+                    navController.navigate(OreumNavigation.Detail.ROUTE)
                 },
                 onNavigateToWriteReview = { idx, name ->
-                    navController.navigate(OreumNavigation.writeReviewRoute(idx, name))
+                    navController.navigate(OreumNavigation.Review.route(idx, name))
                 }
             )
         }

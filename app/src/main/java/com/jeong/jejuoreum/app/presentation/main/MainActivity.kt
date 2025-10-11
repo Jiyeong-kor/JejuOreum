@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             JejuOreumApp(
-                startDestination = OreumNavigation.SPLASH,
+                startDestination = OreumNavigation.Splash.ROUTE,
                 navigationProvider = navigationProvider,
                 showNetworkDialog = false,
                 onRetryClick = {}

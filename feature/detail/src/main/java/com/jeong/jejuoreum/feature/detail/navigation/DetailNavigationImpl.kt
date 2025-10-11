@@ -19,13 +19,13 @@ import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewViewMod
 import javax.inject.Inject
 
 class DetailNavigationImpl @Inject constructor() : DetailNavigation {
-    override val route: String = OreumNavigation.DETAIL
+    override val route: String = OreumNavigation.Detail.ROUTE
 
     override fun navigateToDetail(navController: NavController, oreum: Parcelable) {
         navController.currentBackStackEntry
             ?.savedStateHandle
-            ?.set(OreumNavigation.DETAIL_OREUM_KEY, oreum)
-        navController.navigate(OreumNavigation.DETAIL)
+            ?.set(OreumNavigation.Detail.INITIAL_OREUM_KEY, oreum)
+        navController.navigate(OreumNavigation.Detail.ROUTE)
     }
 
     override fun registerGraph(
@@ -38,12 +38,12 @@ class DetailNavigationImpl @Inject constructor() : DetailNavigation {
             val initialOreum = remember(entry, navController.previousBackStackEntry) {
                 navController.previousBackStackEntry
                     ?.savedStateHandle
-                    ?.remove<OreumSummaryUiModel>(OreumNavigation.DETAIL_OREUM_KEY)
-                    ?: entry.savedStateHandle.get<OreumSummaryUiModel>(OreumNavigation.DETAIL_OREUM_KEY)
+                    ?.remove<OreumSummaryUiModel>(OreumNavigation.Detail.INITIAL_OREUM_KEY)
+                    ?: entry.savedStateHandle.get<OreumSummaryUiModel>(OreumNavigation.Detail.INITIAL_OREUM_KEY)
             }
             DetailRoute(
                 onNavigateToWriteReview = { idx, name ->
-                    navController.navigate(OreumNavigation.writeReviewRoute(idx, name))
+                    navController.navigate(OreumNavigation.Review.route(idx, name))
                 },
                 showToast = { message ->
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -54,21 +54,21 @@ class DetailNavigationImpl @Inject constructor() : DetailNavigation {
         }
 
         navGraphBuilder.composable(
-            route = "${OreumNavigation.WRITE_REVIEW}/" +
-                    "{${OreumNavigation.WRITE_REVIEW_ARG_IDX}}/" +
-                    "{${OreumNavigation.WRITE_REVIEW_ARG_NAME}}",
+            route = "${OreumNavigation.Review.ROUTE}/" +
+                    "{${OreumNavigation.Review.ARG_OREUM_ID}}/" +
+                    "{${OreumNavigation.Review.ARG_OREUM_NAME}}",
             arguments = listOf(
-                navArgument(OreumNavigation.WRITE_REVIEW_ARG_IDX) {
+                navArgument(OreumNavigation.Review.ARG_OREUM_ID) {
                     type = NavType.IntType
                 },
-                navArgument(OreumNavigation.WRITE_REVIEW_ARG_NAME) {
+                navArgument(OreumNavigation.Review.ARG_OREUM_NAME) {
                     type = NavType.StringType
                 }
             )
         ) { entry ->
             val context = LocalContext.current
-            val oreumIdx = entry.arguments?.getInt(OreumNavigation.WRITE_REVIEW_ARG_IDX) ?: return@composable
-            val oreumName = entry.arguments?.getString(OreumNavigation.WRITE_REVIEW_ARG_NAME).orEmpty()
+            val oreumIdx = entry.arguments?.getInt(OreumNavigation.Review.ARG_OREUM_ID) ?: return@composable
+            val oreumName = entry.arguments?.getString(OreumNavigation.Review.ARG_OREUM_NAME).orEmpty()
             val viewModel: WriteReviewViewModel = hiltViewModel()
 
             WriteReviewRoute(

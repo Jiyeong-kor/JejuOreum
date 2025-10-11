@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
@@ -24,10 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 
-private const val KEY_CAM_LAT = "cam_lat"
-private const val KEY_CAM_LON = "cam_lon"
-private const val KEY_CAM_ZOOM = "cam_zoom"
-
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val observeOreumSummariesUseCase: ObserveOreumSummariesUseCase,
@@ -41,7 +38,7 @@ class MapViewModel @Inject constructor(
 
     private val oreumSummaries = MutableStateFlow<List<ResultSummary>>(emptyList())
 
-    private val pinCache = mutableMapOf<GeoPoint, MapPinUi>()
+    private val pinCache = mutableMapOf<GeoPoint, MapPinUiModel>()
     private var lastBounds: GeoBounds? = null
     private var searchJob: Job? = null
 
@@ -113,7 +110,7 @@ class MapViewModel @Inject constructor(
             val pins = visible.map { summary ->
                 val point = GeoPoint(summary.y, summary.x).quantized()
                 pinCache.getOrPut(point) {
-                    MapPinUi(summary.oreumKname, summary.y, summary.x)
+                    MapPinUiModel(summary.oreumKname, summary.y, summary.x)
                 }
             }
             if (pins != currentState.visiblePins) {
@@ -194,9 +191,9 @@ class MapViewModel @Inject constructor(
 
     private fun persistCamera(center: GeoPoint, zoomLevel: Int) {
         setState { copy(cameraSnapshot = CameraSnapshot(center, zoomLevel)) }
-        savedStateHandle[KEY_CAM_LAT] = center.lat
-        savedStateHandle[KEY_CAM_LON] = center.lon
-        savedStateHandle[KEY_CAM_ZOOM] = zoomLevel
+        savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_LATITUDE] = center.lat
+        savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_LONGITUDE] = center.lon
+        savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_ZOOM] = zoomLevel
     }
 
     private fun defaultLoadErrorMessage(): UiText =
@@ -208,9 +205,9 @@ class MapViewModel @Inject constructor(
 
     companion object {
         private fun restoreCameraFromSavedState(savedStateHandle: SavedStateHandle): CameraSnapshot? {
-            val lat = savedStateHandle.get<Double>(KEY_CAM_LAT)
-            val lon = savedStateHandle.get<Double>(KEY_CAM_LON)
-            val zoom = savedStateHandle.get<Int>(KEY_CAM_ZOOM)
+            val lat = savedStateHandle.get<Double>(OreumNavigation.Map.SavedStateKeys.CAMERA_LATITUDE)
+            val lon = savedStateHandle.get<Double>(OreumNavigation.Map.SavedStateKeys.CAMERA_LONGITUDE)
+            val zoom = savedStateHandle.get<Int>(OreumNavigation.Map.SavedStateKeys.CAMERA_ZOOM)
             return if (lat != null && lon != null && zoom != null) {
                 CameraSnapshot(GeoPoint(lat, lon), zoom)
             } else {
