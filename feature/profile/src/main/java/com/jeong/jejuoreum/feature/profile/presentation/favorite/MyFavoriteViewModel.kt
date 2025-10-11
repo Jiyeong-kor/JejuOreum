@@ -2,7 +2,6 @@ package com.jeong.jejuoreum.feature.profile.presentation.favorite
 
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResultResource
-import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
@@ -23,6 +22,8 @@ class MyFavoriteViewModel @Inject constructor(
     private val observeFavoriteOreumsUseCase: ObserveFavoriteOreumsUseCase,
     private val refreshOreumSummariesUseCase: RefreshOreumSummariesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val errorMessageProvider: MyFavoriteErrorMessageProvider,
+    private val uiMapper: MyFavoriteUiMapper,
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : ProfileBaseViewModel(ioDispatcher) {
 
@@ -89,7 +90,7 @@ class MyFavoriteViewModel @Inject constructor(
             copy(
                 isLoading = false,
                 errorMessage = null,
-                favorites = favorites.map(ResultSummary::toProfileUiModel),
+                favorites = uiMapper.mapToUiModels(favorites),
             )
         }
     }
@@ -107,26 +108,9 @@ class MyFavoriteViewModel @Inject constructor(
     }
 
     private fun handleFailure(throwable: Throwable?) {
-        val message = throwable?.message ?: "즐겨찾는 오름을 불러오지 못했어요."
+        val message = errorMessageProvider.favoriteLoadingFailed(throwable)
         Timber.w(throwable, "Failed to process favorite oreum state")
         setState { copy(isLoading = false, errorMessage = message) }
         sendErrorEffect(message)
     }
 }
-
-private fun ResultSummary.toProfileUiModel(): OreumSummaryUiModel =
-    OreumSummaryUiModel(
-        idx = idx,
-        oreumEname = oreumEname,
-        oreumKname = oreumKname,
-        oreumAddr = oreumAddr,
-        oreumAltitu = oreumAltitu,
-        x = x,
-        y = y,
-        explain = explain,
-        imgPath = imgPath,
-        totalFavorites = totalFavorites,
-        totalStamps = totalStamps,
-        userLiked = userLiked,
-        userStamped = userStamped,
-    )
