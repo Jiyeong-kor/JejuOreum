@@ -7,7 +7,7 @@ import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveFavoriteOreumsUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
-import com.jeong.jejuoreum.domain.oreum.usecase.ToggleFavoriteUseCase
+import com.jeong.jejuoreum.domain.user.usecase.ToggleFavoriteUseCase
 import com.jeong.jejuoreum.feature.profile.presentation.ProfileBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -96,9 +96,13 @@ class MyFavoriteViewModel @Inject constructor(
 
     private fun toggleFavorite(oreumIdx: String, currentlyLiked: Boolean) {
         launch {
-            runCatching { toggleFavoriteUseCase(oreumIdx, !currentlyLiked) }
-                .onSuccess { refreshOreumSummariesUseCase() }
+            val toggleResult = toggleFavoriteUseCase(oreumIdx, !currentlyLiked)
+            toggleResult
                 .onFailure(::handleFailure)
+                .onSuccess {
+                    refreshOreumSummariesUseCase()
+                        .onFailure(::handleFailure)
+                }
         }
     }
 

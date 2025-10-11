@@ -3,7 +3,6 @@ package com.jeong.jejuoreum.feature.detail.presentation.review
 import com.jeong.jejuoreum.core.common.error.DomainError
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
-import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentUserNicknameUseCase
 import com.jeong.jejuoreum.domain.review.usecase.BuildReviewItemUseCase
 import com.jeong.jejuoreum.domain.review.usecase.DeleteReviewUseCase
 import com.jeong.jejuoreum.domain.review.usecase.FetchReviewsUseCase
@@ -12,6 +11,7 @@ import com.jeong.jejuoreum.domain.review.usecase.ToggleReviewLikeUseCase
 import com.jeong.jejuoreum.domain.review.usecase.WriteReviewUseCase
 import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase
 import com.jeong.jejuoreum.domain.user.usecase.GetCurrentUserIdUseCase
+import com.jeong.jejuoreum.domain.user.usecase.GetCurrentUserNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import javax.inject.Named
