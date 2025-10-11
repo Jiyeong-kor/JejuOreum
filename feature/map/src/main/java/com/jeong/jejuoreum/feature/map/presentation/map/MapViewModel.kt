@@ -1,16 +1,22 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
 import androidx.lifecycle.SavedStateHandle
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResourceError
-import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.SearchOreumsUseCase.Result as SearchResult
+import com.jeong.jejuoreum.domain.oreum.usecase.SelectOreumMarkerUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.UpdateMapViewportUseCase
 import com.jeong.jejuoreum.feature.map.R
+import com.jeong.jejuoreum.feature.map.presentation.map.MapEffect.ShowToast
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import javax.inject.Named
@@ -22,9 +28,11 @@ import kotlinx.coroutines.flow.collectLatest
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val observeOreumSummariesUseCase: ObserveOreumSummariesUseCase,
-    private val searchHandler: MapSearchHandler,
-    private val viewportManager: MapViewportManager,
-    private val selectionHandler: MapSelectionHandler,
+    private val searchOreumsUseCase: SearchOreumsUseCase,
+    private val updateMapViewportUseCase: UpdateMapViewportUseCase,
+    private val selectOreumMarkerUseCase: SelectOreumMarkerUseCase,
+    private val summaryUiMapper: OreumSummaryUiMapper,
+    private val mapPinUiMapper: MapPinUiMapper,
     private val savedStateHandle: SavedStateHandle,
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<MapUiState, MapEvent, MapEffect>(ioDispatcher) {
@@ -53,53 +61,57 @@ class MapViewModel @Inject constructor(
     }
 
     override fun buildErrorEffect(message: String): MapEffect =
-        MapEffect.ShowMessage(UiText.DynamicString(message))
+        ShowToast(UiText.DynamicString(message))
 
     private fun handleSearchQuery(query: String) {
         searchJob?.cancel()
-        val sanitized = query.trim()
-        if (sanitized.isEmpty()) {
-            searchJob = null
-            setState {
-                copy(
-                    searchQuery = "",
-                    panelState = MapPanelState.Hidden,
-                    searchResults = emptyList(),
-                )
-            }
-            return
-        }
-        setState { copy(searchQuery = sanitized) }
-        searchJob = launch {
-            try {
-                val result = searchHandler.search(sanitized, oreumSummaries.value)
-                setState {
+        val job = launch {
+            when (val result = searchOreumsUseCase(oreumSummaries.value, query)) {
+                SearchResult.EmptyQuery -> setState {
                     copy(
-                        searchQuery = sanitized,
-                        searchResults = result.results,
-                        panelState = result.panelState,
+                        searchQuery = "",
+                        panelState = MapPanelState.Hidden,
+                        searchResults = emptyList(),
                     )
                 }
-            } finally {
-                searchJob = null
+
+                is SearchResult.Matches -> setState {
+                    copy(
+                        searchQuery = result.sanitizedQuery,
+                        searchResults = result.results.map(summaryUiMapper::map),
+                        panelState = MapPanelState.Results,
+                    )
+                }
+
+                is SearchResult.NoMatches -> setState {
+                    copy(
+                        searchQuery = result.sanitizedQuery,
+                        searchResults = emptyList(),
+                        panelState = MapPanelState.NoResults,
+                    )
+                }
             }
         }
+        job.invokeOnCompletion { searchJob = null }
+        searchJob = job
     }
 
-    private fun handleViewport(bounds: GeoBounds) {
+    private fun handleViewport(bounds: GeoBounds, force: Boolean = false) {
+        if (!force && bounds == currentViewportBounds) return
         currentViewportBounds = bounds
         launch {
-            val result = viewportManager.calculatePins(bounds, oreumSummaries.value) ?: return@launch
-            if (result.pins != currentState.visiblePins) {
-                setState { copy(visiblePins = result.pins) }
+            val result = updateMapViewportUseCase(oreumSummaries.value, bounds)
+            val pins = mapPinUiMapper.mapAll(result.visibleSummaries)
+            if (pins != currentState.visiblePins) {
+                setState { copy(visiblePins = pins) }
             }
         }
     }
 
     private fun handleMarkerSelection(point: GeoPoint) {
         launch {
-            val uiModel = selectionHandler.resolveSelection(point, oreumSummaries.value)
-            setState { copy(selectedOreum = uiModel) }
+            val selected = selectOreumMarkerUseCase(oreumSummaries.value, point)
+            setState { copy(selectedOreum = selected?.let(summaryUiMapper::map)) }
         }
     }
 
@@ -157,8 +169,8 @@ class MapViewModel @Inject constructor(
     }
 
     private fun refreshViewportPins() {
-        viewportManager.reset()
-        currentViewportBounds?.let { bounds -> handleViewport(bounds) }
+        mapPinUiMapper.clear()
+        currentViewportBounds?.let { bounds -> handleViewport(bounds, force = true) }
     }
 
     private fun handleResourceError(error: ResourceError) {
@@ -170,7 +182,7 @@ class MapViewModel @Inject constructor(
             is ResourceError.Unknown -> error.throwable.message?.let(UiText::DynamicString) ?: defaultLoadErrorMessage()
         }
         setState { copy(isLoading = false, errorMessage = message) }
-        sendEffect { MapEffect.ShowMessage(message) }
+        sendEffect { ShowToast(message) }
     }
 
     private fun defaultLoadErrorMessage(): UiText =

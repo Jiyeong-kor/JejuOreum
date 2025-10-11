@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
+import com.jeong.jejuoreum.feature.map.R
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
 import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumEffect
 import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumEvent
@@ -62,7 +64,7 @@ fun OreumRoute(
 
     Scaffold(
         modifier = modifier,
-        topBar = { TopAppBar(title = { Text(text = "Jeju Oreum") }) },
+        topBar = { TopAppBar(title = { Text(text = stringResource(R.string.map_top_bar_title)) }) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         OreumScreen(

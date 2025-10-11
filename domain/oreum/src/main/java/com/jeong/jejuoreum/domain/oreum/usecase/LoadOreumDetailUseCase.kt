@@ -5,7 +5,7 @@ import com.jeong.jejuoreum.domain.oreum.model.Oreum
 import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
 import javax.inject.Inject
 
-class GetOreumDetailUseCase @Inject constructor(
+class LoadOreumDetailUseCase @Inject constructor(
     private val repository: OreumRepository,
 ) : SuspendUseCase<String, Result<Oreum>> {
 

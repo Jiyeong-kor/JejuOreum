@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
-import com.jeong.jejuoreum.feature.map.presentation.map.MapEffect.ShowMessage
+import com.jeong.jejuoreum.feature.map.presentation.map.MapEffect.ShowToast
 import kotlinx.coroutines.flow.collectLatest
 
 private tailrec fun Context.findActivity(): ComponentActivity? = when (this) {
@@ -67,12 +67,11 @@ fun MapRoute(
     LaunchedEffect(Unit) {
         mapViewModel.effect.collectLatest { effect ->
             when (effect) {
-                is ShowMessage ->
-                    Toast.makeText(
-                        context,
-                        effect.message.asString(context),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                is ShowToast -> Toast.makeText(
+                    context,
+                    effect.message.asString(context),
+                    Toast.LENGTH_SHORT,
+                ).show()
             }
         }
     }

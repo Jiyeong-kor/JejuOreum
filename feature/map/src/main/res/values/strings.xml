@@ -4,4 +4,5 @@
     <string name="error_network_unavailable">네트워크 연결을 확인해 주세요.</string>
     <string name="error_oreum_not_found">선택한 오름을 찾을 수 없어요.</string>
     <string name="error_authentication_required">로그인이 필요합니다.</string>
+    <string name="map_top_bar_title">Jeju Oreum</string>
 </resources>

@@ -1,5 +1,11 @@
 import java.util.Properties
 
+private fun Properties.requireNonEmpty(key: String): String =
+    getProperty(key)?.takeIf(String::isNotBlank)
+        ?: error("Missing \"${'$'}key\" in local.properties")
+
+private fun String.asBuildConfigString(): String = "\"${'$'}{replace("\"", "\\\"")}\""
+
 plugins {
     alias(libs.plugins.google.gms.google.services)
     id("jejuoreum.android.application")
@@ -23,11 +29,11 @@ android {
                 file.inputStream().use { load(it) }
             }
         }
-        val appKey = localProperties.getProperty("appKey") ?: ""
-        buildConfigField("String", "APP_KEY", "\"$appKey\"")
+        val appKey = localProperties.requireNonEmpty("appKey")
+        buildConfigField("String", "APP_KEY", appKey.asBuildConfigString())
 
-        val jejuOreumBaseUrl = localProperties.getProperty("jejuOreumBaseUrl") ?: ""
-        buildConfigField("String", "JEJU_OREUM_URL", "\"$jejuOreumBaseUrl\"")
+        val jejuOreumBaseUrl = localProperties.requireNonEmpty("jejuOreumBaseUrl")
+        buildConfigField("String", "JEJU_OREUM_URL", jejuOreumBaseUrl.asBuildConfigString())
     }
 
     buildTypes {

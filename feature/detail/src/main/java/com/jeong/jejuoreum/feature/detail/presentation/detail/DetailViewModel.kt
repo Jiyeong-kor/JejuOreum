@@ -3,7 +3,7 @@ package com.jeong.jejuoreum.feature.detail.presentation.detail
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.model.Oreum
-import com.jeong.jejuoreum.domain.oreum.usecase.GetOreumDetailUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumDetailUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumSummariesUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.TryStampUseCase
 import com.jeong.jejuoreum.domain.review.usecase.FetchReviewsUseCase
@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getOreumDetailUseCase: GetOreumDetailUseCase,
+    private val loadOreumDetailUseCase: LoadOreumDetailUseCase,
     private val getOreumFavoriteStatusUseCase: GetOreumFavoriteStatusUseCase,
     private val getOreumStampStatusUseCase: GetOreumStampStatusUseCase,
     private val fetchReviewsUseCase: FetchReviewsUseCase,
@@ -66,7 +66,7 @@ class DetailViewModel @Inject constructor(
     private fun refreshDetail(oreumIdx: String) {
         launch {
             setState(stateReducer::onLoading)
-            getOreumDetailUseCase(oreumIdx)
+            loadOreumDetailUseCase(oreumIdx)
                 .map { it.toUiModel(currentState.oreumDetail) }
                 .onSuccess { detail ->
                     setState { stateReducer.onDetailLoaded(this, detail) }

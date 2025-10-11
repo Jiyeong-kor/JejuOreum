@@ -41,7 +41,7 @@ sealed interface MapEvent {
 }
 
 sealed interface MapEffect {
-    data class ShowMessage(val message: UiText) : MapEffect
+    data class ShowToast(val message: UiText) : MapEffect
 }
 
 data class CameraSnapshot(val center: GeoPoint, val zoomLevel: Int)
