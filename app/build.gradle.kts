@@ -1,10 +1,4 @@
-import java.util.Properties
-
-private fun Properties.requireNonEmpty(key: String): String =
-    getProperty(key)?.takeIf(String::isNotBlank)
-        ?: error("Missing \"${'$'}key\" in local.properties")
-
-private fun String.asBuildConfigString(): String = "\"${'$'}{replace("\"", "\\\"")}\""
+import com.jeong.jejuoreum.buildlogic.SecretKey
 
 plugins {
     alias(libs.plugins.google.gms.google.services)
@@ -12,6 +6,7 @@ plugins {
     id("jejuoreum.compose")
     id("jejuoreum.hilt")
     id("kotlin-parcelize")
+    id("jejuoreum.secrets")
 }
 
 android {
@@ -22,18 +17,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        val localProperties = Properties().apply {
-            val file = rootProject.file("local.properties")
-            if (file.exists()) {
-                file.inputStream().use { load(it) }
-            }
-        }
-        val appKey = localProperties.requireNonEmpty("appKey")
-        buildConfigField("String", "APP_KEY", appKey.asBuildConfigString())
-
-        val jejuOreumBaseUrl = localProperties.requireNonEmpty("jejuOreumBaseUrl")
-        buildConfigField("String", "JEJU_OREUM_URL", jejuOreumBaseUrl.asBuildConfigString())
     }
 
     buildTypes {
@@ -69,4 +52,9 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)
+}
+
+secrets {
+    stringField(name = "APP_KEY", key = SecretKey.AppKey)
+    stringField(name = "JEJU_OREUM_URL", key = SecretKey.JejuOreumBaseUrl)
 }

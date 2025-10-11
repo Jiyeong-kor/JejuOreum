@@ -42,5 +42,9 @@ gradlePlugin {
             id = "jejuoreum.hilt"
             implementationClass = "com.jeong.jejuoreum.buildlogic.HiltConventionPlugin"
         }
+        register("secrets") {
+            id = "jejuoreum.secrets"
+            implementationClass = "com.jeong.jejuoreum.buildlogic.SecretsConventionPlugin"
+        }
     }
 }
