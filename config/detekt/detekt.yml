@@ -1,0 +1,25 @@
+style:
+  ForbiddenMethodCall:
+    active: true
+    methods:
+      - 'kotlinx.coroutines.Dispatchers.IO'
+    excludes:
+      - '**/core/common/**'
+      - '**/core/presentation/**'
+      - '**/data/**'
+      - '**/build-logic/**'
+  ForbiddenImport:
+    active: true
+    imports:
+      - 'androidx.lifecycle.ViewModel'
+    excludes:
+      - '**/app/**'
+      - '**/core/common/**'
+      - '**/core/designsystem/**'
+      - '**/core/navigation/**'
+      - '**/core/presentation/**'
+      - '**/core/testing/**'
+      - '**/data/**'
+      - '**/domain/**'
+      - '**/feature/**'
+      - '**/build-logic/**'

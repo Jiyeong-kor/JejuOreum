@@ -9,6 +9,7 @@ converterGson = "3.0.0"
 coreKtx = "1.17.0"
 coreSplashscreen = "1.0.1"
 datastore = "1.1.7"
+detekt = "1.23.6"
 espressoCore = "3.7.0"
 firebaseAuthKtx = "23.2.1"
 firebaseBom = "34.3.0"
@@ -115,3 +116,4 @@ jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrai
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "compose-compiler" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
