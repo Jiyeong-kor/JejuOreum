@@ -1,5 +1,8 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
+import android.content.res.Resources
+import androidx.annotation.ColorInt
+import androidx.core.content.res.ResourcesCompat
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.domain.oreum.entity.quantized
 import com.jeong.jejuoreum.feature.map.R
@@ -19,10 +22,26 @@ import com.kakao.vectormap.label.LabelTextStyle
 import com.kakao.vectormap.label.OrderingType
 import timber.log.Timber
 
-class MapRenderer(private val map: KakaoMap) {
+class MapRenderer(
+    private val map: KakaoMap,
+    private val resources: Resources,
+) {
+    private val layerId: String = resources.getString(R.string.map_label_layer_id)
+    private val markerTagPattern: String = resources.getString(R.string.map_marker_tag_pattern)
+    private val unselectedTextSizePx: Int =
+        resources.getDimensionPixelSize(R.dimen.map_marker_text_size_unselected)
+    private val selectedTextSizePx: Int =
+        resources.getDimensionPixelSize(R.dimen.map_marker_text_size_selected)
+    @ColorInt
+    private val markerTextColor: Int = ResourcesCompat.getColor(
+        resources,
+        R.color.map_marker_label_text,
+        null,
+    )
+
     private val labelLayer: LabelLayer? = runCatching {
         map.labelManager?.addLayer(
-            LabelLayerOptions.from("oreumLayer")
+            LabelLayerOptions.from(layerId)
                 .setOrderingType(OrderingType.Rank)
                 .setCompetitionUnit(CompetitionUnit.IconAndText)
                 .setCompetitionType(CompetitionType.All)
@@ -40,20 +59,28 @@ class MapRenderer(private val map: KakaoMap) {
         LabelStyles.from(
             LabelStyle.from(R.drawable.oreum_marker_unselected).apply {
                 setTextStyles(
-                    LabelTextStyle
-                        .from(24, 0xFF000000.toInt(), 0, 0)
+                    LabelTextStyle.from(
+                        unselectedTextSizePx,
+                        markerTextColor,
+                        0,
+                        0,
+                    ),
                 )
-            }
+            },
         )
     }
     private val selectedStyle: LabelStyles by lazy(LazyThreadSafetyMode.NONE) {
         LabelStyles.from(
             LabelStyle.from(R.drawable.oreum_marker_selected).apply {
                 setTextStyles(
-                    LabelTextStyle
-                        .from(32, 0xFF000000.toInt(), 0, 0)
+                    LabelTextStyle.from(
+                        selectedTextSizePx,
+                        markerTextColor,
+                        0,
+                        0,
+                    ),
                 )
-            }
+            },
         )
     }
 
@@ -80,7 +107,7 @@ class MapRenderer(private val map: KakaoMap) {
                         .from(LatLng.from(p.lat, p.lon))
                         .setTexts(LabelTextBuilder().setTexts(p.title))
                         .setStyles(unselectedStyle)
-                        .setTag("oreum:${p.title}")
+                        .setTag(markerTagFor(p.title))
                 )
                 markersByPoint[key] = label
             }
@@ -88,6 +115,8 @@ class MapRenderer(private val map: KakaoMap) {
             layer.isVisible = wasVisible
         }
     }
+
+    private fun markerTagFor(title: String): String = markerTagPattern.format(title)
 
     fun selectMarkerAt(latLng: LatLng) {
         selectedLabel?.changeStyles(unselectedStyle)

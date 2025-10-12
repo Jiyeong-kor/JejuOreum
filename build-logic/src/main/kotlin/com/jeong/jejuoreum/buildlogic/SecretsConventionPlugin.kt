@@ -28,7 +28,7 @@ class SecretsConventionPlugin : Plugin<Project> {
 }
 
 @Suppress("UnstableApiUsage")
-class SecretsExtension(private val project: Project) {
+open class SecretsExtension(private val project: Project) {
     private val declarations = mutableListOf<SecretDeclaration>()
     private val properties: Properties by lazy { project.loadLocalProperties() }
 
@@ -42,9 +42,7 @@ class SecretsExtension(private val project: Project) {
 
             commonExtension.defaultConfig {
                 declarations.forEach { declaration ->
-                    val rawValue = properties.getProperty(declaration.key.propertyName)
-                        ?.takeIf(String::isNotBlank)
-                        ?: error("Missing \"${'$'}{declaration.key.propertyName}\" in local.properties")
+                    val rawValue = this@SecretsExtension.properties.requireSecret(declaration.key)
 
                     buildConfigField(
                         declaration.fieldType.typeName,
@@ -60,7 +58,11 @@ class SecretsExtension(private val project: Project) {
 private enum class SecretFieldType(val typeName: String) {
     STRING("String");
 
-    fun format(value: String): String = "\"${'$'}{value.replace("\"", "\\\"")}\""
+    fun format(value: String): String = buildString {
+        append('"')
+        append(value.replace("\"", "\\\""))
+        append('"')
+    }
 }
 
 private data class SecretDeclaration(
@@ -84,4 +86,10 @@ internal fun Project.loadLocalProperties(): Properties {
 enum class SecretKey(internal val propertyName: String) {
     AppKey("appKey"),
     JejuOreumBaseUrl("jejuOreumBaseUrl"),
+}
+
+private fun Properties.requireSecret(key: SecretKey): String {
+    val value = get(key.propertyName) as? String
+    return value?.takeIf(String::isNotBlank)
+        ?: error("Missing \"${'$'}{key.propertyName}\" in local.properties")
 }

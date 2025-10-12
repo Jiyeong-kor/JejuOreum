@@ -2,4 +2,6 @@
 <resources>
     <dimen name="map_search_panel_padding_horizontal">16dp</dimen>
     <dimen name="map_search_panel_padding_vertical">12dp</dimen>
+    <dimen name="map_marker_text_size_unselected">12sp</dimen>
+    <dimen name="map_marker_text_size_selected">16sp</dimen>
 </resources>

@@ -104,7 +104,7 @@ fun MapViewHost(
                 object : KakaoMapReadyCallback() {
                     override fun onMapReady(map: KakaoMap) {
                         kakaoMap = map
-                        renderer = MapRenderer(map)
+                        renderer = MapRenderer(map, mapView.resources)
                         isReady = true
                         onMapReady(
                             MapController(
