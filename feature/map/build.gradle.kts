@@ -13,8 +13,6 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":domain:oreum"))
-    implementation(project(":domain:review"))
-    implementation(project(":domain:user"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation)

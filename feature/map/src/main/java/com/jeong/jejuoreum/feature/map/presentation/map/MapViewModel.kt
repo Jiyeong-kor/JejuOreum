@@ -1,10 +1,8 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
-import androidx.lifecycle.SavedStateHandle
 import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResourceError
-import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
@@ -16,7 +14,6 @@ import com.jeong.jejuoreum.domain.oreum.usecase.SelectOreumMarkerUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.UpdateMapViewportUseCase
 import com.jeong.jejuoreum.feature.map.R
 import com.jeong.jejuoreum.feature.map.presentation.map.MapEffect.ShowToast
-import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import javax.inject.Named
@@ -31,9 +28,9 @@ class MapViewModel @Inject constructor(
     private val searchOreumsUseCase: SearchOreumsUseCase,
     private val updateMapViewportUseCase: UpdateMapViewportUseCase,
     private val selectOreumMarkerUseCase: SelectOreumMarkerUseCase,
-    private val summaryUiMapper: OreumSummaryUiMapper,
-    private val mapPinUiMapper: MapPinUiMapper,
-    private val savedStateHandle: SavedStateHandle,
+    private val searchStateReducer: MapSearchStateReducer,
+    private val mapViewStateReducer: MapViewStateReducer,
+    private val cameraStateStorage: MapCameraStateStorage,
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<MapUiState, MapEvent, MapEffect>(ioDispatcher) {
 
@@ -46,7 +43,7 @@ class MapViewModel @Inject constructor(
     }
 
     override fun initialState(): MapUiState = MapUiState(
-        mapState = MapViewState(cameraSnapshot = restoreCameraFromSavedState(savedStateHandle))
+        mapState = MapViewState(cameraSnapshot = cameraStateStorage.restore())
     )
 
     override fun handleEvent(event: MapEvent) {
@@ -66,32 +63,14 @@ class MapViewModel @Inject constructor(
         searchJob?.cancel()
         val job = launch {
             when (val result = searchOreumsUseCase(oreumSummaries.value, query)) {
-                SearchResult.EmptyQuery -> setState {
-                    val updatedSearch = searchState.copy(
-                        query = "",
-                        panelState = MapPanelState.Hidden,
-                        searchResults = emptyList(),
-                    )
-                    copy(searchState = updatedSearch)
-                }
+                SearchResult.EmptyQuery -> reduceSearchState(MapSearchChange.EmptyQuery)
+                is SearchResult.Matches -> reduceSearchState(
+                    MapSearchChange.Matches(result.sanitizedQuery, result.results)
+                )
 
-                is SearchResult.Matches -> setState {
-                    val updatedSearch = searchState.copy(
-                        query = result.sanitizedQuery,
-                        searchResults = result.results.map(summaryUiMapper::map),
-                        panelState = MapPanelState.Results,
-                    )
-                    copy(searchState = updatedSearch)
-                }
-
-                is SearchResult.NoMatches -> setState {
-                    val updatedSearch = searchState.copy(
-                        query = result.sanitizedQuery,
-                        searchResults = emptyList(),
-                        panelState = MapPanelState.NoResults,
-                    )
-                    copy(searchState = updatedSearch)
-                }
+                is SearchResult.NoMatches -> reduceSearchState(
+                    MapSearchChange.NoMatches(result.sanitizedQuery)
+                )
             }
         }
         job.invokeOnCompletion { searchJob = null }
@@ -103,25 +82,14 @@ class MapViewModel @Inject constructor(
         currentViewportBounds = bounds
         launch {
             val result = updateMapViewportUseCase(oreumSummaries.value, bounds)
-            val pins = mapPinUiMapper.mapAll(result.visibleSummaries)
-            if (pins != currentState.mapState.visiblePins) {
-                setState {
-                    copy(mapState = mapState.copy(visiblePins = pins))
-                }
-            }
+            reduceMapState(MapViewChange.VisiblePins(result.visibleSummaries, force))
         }
     }
 
     private fun handleMarkerSelection(point: GeoPoint) {
         launch {
             val selected = selectOreumMarkerUseCase(oreumSummaries.value, point)
-            setState {
-                copy(
-                    mapState = mapState.copy(
-                        selectedOreum = selected?.let(summaryUiMapper::map)
-                    )
-                )
-            }
+            reduceMapState(MapViewChange.Selection(selected))
         }
     }
 
@@ -149,29 +117,19 @@ class MapViewModel @Inject constructor(
     }
 
     private fun clearSelection() {
-        setState { copy(mapState = mapState.copy(selectedOreum = null)) }
+        reduceMapState(MapViewChange.ClearSelection)
     }
 
     private fun closeSearchPanel() {
         searchJob?.cancel()
         searchJob = null
-        setState {
-            val updatedSearch = searchState.copy(
-                query = "",
-                panelState = MapPanelState.Hidden,
-                searchResults = emptyList(),
-            )
-            copy(searchState = updatedSearch)
-        }
+        reduceSearchState(MapSearchChange.PanelClosed)
     }
 
     private fun persistCamera(center: GeoPoint, zoomLevel: Int) {
-        setState {
-            copy(mapState = mapState.copy(cameraSnapshot = CameraSnapshot(center, zoomLevel)))
-        }
-        savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_LATITUDE] = center.lat
-        savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_LONGITUDE] = center.lon
-        savedStateHandle[OreumNavigation.Map.SavedStateKeys.CAMERA_ZOOM] = zoomLevel
+        val snapshot = CameraSnapshot(center, zoomLevel)
+        reduceMapState(MapViewChange.CameraSaved(snapshot))
+        cameraStateStorage.persist(snapshot)
     }
 
     private fun refreshSearchResults() {
@@ -182,7 +140,6 @@ class MapViewModel @Inject constructor(
     }
 
     private fun refreshViewportPins() {
-        mapPinUiMapper.clear()
         currentViewportBounds?.let { bounds -> handleViewport(bounds, force = true) }
     }
 
@@ -201,16 +158,17 @@ class MapViewModel @Inject constructor(
     private fun defaultLoadErrorMessage(): UiText =
         UiText.StringResource(R.string.error_failed_to_load_oreum_data)
 
-    companion object {
-        private fun restoreCameraFromSavedState(savedStateHandle: SavedStateHandle): CameraSnapshot? {
-            val lat = savedStateHandle.get<Double>(OreumNavigation.Map.SavedStateKeys.CAMERA_LATITUDE)
-            val lon = savedStateHandle.get<Double>(OreumNavigation.Map.SavedStateKeys.CAMERA_LONGITUDE)
-            val zoom = savedStateHandle.get<Int>(OreumNavigation.Map.SavedStateKeys.CAMERA_ZOOM)
-            return if (lat != null && lon != null && zoom != null) {
-                CameraSnapshot(GeoPoint(lat, lon), zoom)
-            } else {
-                null
-            }
+    private fun reduceSearchState(change: MapSearchChange) {
+        setState {
+            val updatedSearch = searchStateReducer.reduce(searchState, change)
+            if (updatedSearch == searchState) this else copy(searchState = updatedSearch)
+        }
+    }
+
+    private fun reduceMapState(change: MapViewChange) {
+        setState {
+            val updatedMap = mapViewStateReducer.reduce(mapState, change)
+            if (updatedMap == mapState) this else copy(mapState = updatedMap)
         }
     }
 }
