@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="profile_stamp_header_top_padding">10dp</dimen>
+    <dimen name="profile_stamp_header_icon_spacing">20dp</dimen>
+    <dimen name="profile_stamp_header_counter_spacing">5dp</dimen>
+    <dimen name="profile_stamp_header_icon_size">30dp</dimen>
+    <dimen name="profile_stamp_grid_padding">10dp</dimen>
+    <dimen name="profile_stamp_item_padding">10dp</dimen>
+    <dimen name="profile_stamp_item_icon_size">100dp</dimen>
+</resources>

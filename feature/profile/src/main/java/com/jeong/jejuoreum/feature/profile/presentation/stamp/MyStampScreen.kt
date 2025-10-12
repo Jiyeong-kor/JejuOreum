@@ -24,12 +24,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.jejuoreum.core.designsystem.theme.spacing
 import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
 import com.jeong.jejuoreum.domain.oreum.entity.MyStampItem
 import com.jeong.jejuoreum.feature.profile.R
@@ -53,7 +54,7 @@ fun MyStampScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp),
+                .padding(top = dimensionResource(id = R.dimen.profile_stamp_header_top_padding)),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -61,14 +62,24 @@ fun MyStampScreen(
                 text = stringResource(id = R.string.oreum_my_stamp_title, uiState.nickname),
                 style = MaterialTheme.typography.titleMedium
             )
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(
+                modifier = Modifier.width(
+                    dimensionResource(id = R.dimen.profile_stamp_header_icon_spacing)
+                )
+            )
             Image(
                 painter = painterResource(id = DesignSystemAssets.Drawable.stamp),
                 contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.size(
+                    dimensionResource(id = R.dimen.profile_stamp_header_icon_size)
+                ),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(
+                modifier = Modifier.width(
+                    dimensionResource(id = R.dimen.profile_stamp_header_counter_spacing)
+                )
+            )
             Text(
                 text = stringResource(id = R.string.oreum_stamp_count, count),
                 style = MaterialTheme.typography.titleMedium,
@@ -94,7 +105,9 @@ fun MyStampScreen(
                     columns = GridCells.Fixed(3),
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 10.dp)
+                        .padding(top = dimensionResource(id = R.dimen.profile_stamp_grid_padding)),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
                     items(uiState.stampedList) { item ->
                         StampItem(item) {
@@ -114,14 +127,16 @@ private fun StampItem(
 ) {
     Column(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(dimensionResource(id = R.dimen.profile_stamp_item_padding))
             .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(id = DesignSystemAssets.Drawable.stampMarkerSelected),
             contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
-            modifier = Modifier.size(100.dp)
+            modifier = Modifier.size(
+                dimensionResource(id = R.dimen.profile_stamp_item_icon_size)
+            )
         )
         Text(
             text = item.oreumName,
