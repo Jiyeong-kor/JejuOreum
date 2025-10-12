@@ -1,37 +1,31 @@
 package com.jeong.jejuoreum.data.oreum.di
 
+import com.jeong.jejuoreum.data.oreum.local.source.InMemoryOreumLocalDataSource
+import com.jeong.jejuoreum.data.oreum.local.source.OreumLocalDataSource
+import com.jeong.jejuoreum.data.oreum.remote.source.NetworkOreumRemoteDataSource
+import com.jeong.jejuoreum.data.oreum.remote.source.OreumRemoteDataSource
+import com.jeong.jejuoreum.data.oreum.repository.StampRepositoryImpl
 import com.jeong.jejuoreum.data.oreum.repository.OreumRepositoryImpl
 import com.jeong.jejuoreum.domain.oreum.repository.OreumRepository
-import com.jeong.jejuoreum.domain.oreum.usecase.ObserveOreumsUseCase
-import com.jeong.jejuoreum.domain.oreum.usecase.RefreshOreumsUseCase
+import com.jeong.jejuoreum.domain.oreum.repository.StampRepository
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface OreumBindsModule {
+interface OreumDataModule {
+
     @Binds
-    fun bindOreumRepository(
-        repository: OreumRepositoryImpl
-    ): OreumRepository
-}
+    fun bindsOreumRepository(impl: OreumRepositoryImpl): OreumRepository
 
-@Module
-@InstallIn(SingletonComponent::class)
-object OreumProvidesModule {
-    @Provides
-    @Singleton
-    fun provideObserveOreumsUseCase(
-        repository: OreumRepository
-    ): ObserveOreumsUseCase = ObserveOreumsUseCase(repository)
+    @Binds
+    fun bindsOreumRemoteDataSource(impl: NetworkOreumRemoteDataSource): OreumRemoteDataSource
 
-    @Provides
-    @Singleton
-    fun provideRefreshOreumsUseCase(
-        repository: OreumRepository
-    ): RefreshOreumsUseCase = RefreshOreumsUseCase(repository)
+    @Binds
+    fun bindsOreumLocalDataSource(impl: InMemoryOreumLocalDataSource): OreumLocalDataSource
+
+    @Binds
+    fun bindsStampRepository(impl: StampRepositoryImpl): StampRepository
 }

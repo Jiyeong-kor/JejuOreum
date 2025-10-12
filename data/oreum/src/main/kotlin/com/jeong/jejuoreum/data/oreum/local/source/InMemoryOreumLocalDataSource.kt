@@ -1,0 +1,32 @@
+package com.jeong.jejuoreum.data.oreum.local.source
+
+import com.jeong.jejuoreum.data.oreum.local.model.OreumEntity
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+@Singleton
+class InMemoryOreumLocalDataSource @Inject constructor() : OreumLocalDataSource {
+
+    private val cachedOreums = MutableStateFlow<List<OreumEntity>>(emptyList())
+
+    override fun observeOreums(): Flow<List<OreumEntity>> = cachedOreums.asStateFlow()
+
+    override suspend fun upsertAll(entities: List<OreumEntity>) {
+        cachedOreums.value = entities.associateBy { it.idx }
+            .let { current ->
+                val merged = cachedOreums.value.associateBy { it.idx } + current
+                merged.values.sortedBy { it.oreumKname.ifBlank { it.oreumEname } }
+            }
+    }
+
+    override suspend fun upsert(entity: OreumEntity) {
+        val current = cachedOreums.value.associateBy { it.idx } + (entity.idx to entity)
+        cachedOreums.value = current.values.sortedBy { it.oreumKname.ifBlank { it.oreumEname } }
+    }
+
+    override suspend fun findById(id: String): OreumEntity? =
+        cachedOreums.value.firstOrNull { it.idx.toString() == id }
+}

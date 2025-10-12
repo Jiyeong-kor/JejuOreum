@@ -24,15 +24,21 @@ android {
         val imageBaseUrl = localProperties.getProperty("jejuOreumImageBaseUrl")
             ?: throw GradleException("Missing jejuOreumImageBaseUrl in local.properties")
         buildConfigField("String", "OREUM_IMAGE_BASE_URL", "\"$imageBaseUrl\"")
+
+        val apiBaseUrl = localProperties.getProperty("jejuOreumBaseUrl")
+            ?: throw GradleException("Missing jejuOreumBaseUrl in local.properties")
+        buildConfigField("String", "OREUM_BASE_URL", "\"$apiBaseUrl\"")
     }
 }
 
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":domain:oreum"))
-    implementation(project(":data:local"))
-    implementation(project(":data:remote"))
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.logging.interceptor)
+    implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
