@@ -1,5 +1,6 @@
 package com.jeong.jejuoreum.feature.detail.presentation.review
 
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.common.error.DomainError
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResourceError
@@ -51,8 +52,14 @@ class WriteReviewViewModel @Inject constructor(
         }
     }
 
-    override fun buildErrorEffect(message: String): WriteReviewUiEffect =
-        WriteReviewUiEffect.ShowMessage(message.ifBlank { detailMessageProvider.defaultError() })
+    override fun buildErrorEffect(message: UiText): WriteReviewUiEffect {
+        val resolvedMessage = if (message is UiText.DynamicString && message.value.isBlank()) {
+            detailMessageProvider.defaultError()
+        } else {
+            message
+        }
+        return WriteReviewUiEffect.ShowMessage(resolvedMessage)
+    }
 
     private fun initialize(oreumIdx: Int, oreumName: String) {
         val idx = oreumIdx.takeIf { it >= 0 }?.toString() ?: return
@@ -161,18 +168,20 @@ class WriteReviewViewModel @Inject constructor(
     private fun sendError(error: ResourceError) {
         val message = when (error) {
             ResourceError.Network -> detailMessageProvider.networkError()
-            is ResourceError.Api -> error.message ?: detailMessageProvider.defaultError()
+            is ResourceError.Api -> error.message?.let(UiText::DynamicString)
+                ?: detailMessageProvider.defaultError()
             is ResourceError.NotFound -> detailMessageProvider.reviewNotFound()
             ResourceError.Unauthorized -> detailMessageProvider.loginRequired()
-            is ResourceError.Unknown -> error.throwable.message ?: detailMessageProvider.defaultError()
+            is ResourceError.Unknown -> error.throwable?.message?.let(UiText::DynamicString)
+                ?: detailMessageProvider.defaultError()
         }
         sendErrorEffect(message)
     }
 
     private fun sendError(throwable: Throwable?) {
         val message = when (throwable) {
-            is DomainError -> throwable.message
-            else -> throwable?.message
+            is DomainError -> throwable.message?.let(UiText::DynamicString)
+            else -> throwable?.message?.let(UiText::DynamicString)
         } ?: detailMessageProvider.defaultError()
         sendErrorEffect(message)
     }

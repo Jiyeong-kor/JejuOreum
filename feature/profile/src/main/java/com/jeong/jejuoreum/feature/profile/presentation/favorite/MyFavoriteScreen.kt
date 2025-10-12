@@ -19,15 +19,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.feature.profile.R
 import com.jeong.jejuoreum.feature.profile.presentation.list.OreumListItem
-import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MyFavoriteScreen(
     onItemClick: (OreumSummaryUiModel) -> Unit,
-    onShowMessage: (String) -> Unit = {},
+    onShowMessage: (UiText) -> Unit = {},
     viewModel: MyFavoriteViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

@@ -3,6 +3,8 @@ package com.jeong.jejuoreum.core.presentation
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
+import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.R
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,7 +52,7 @@ class CommonBaseViewModelTest {
         advanceUntilIdle()
         val effect = viewModel.effect.first()
 
-        assertEquals("오류", (effect as TestEffect.ShowError).message)
+        assertEquals(UiText.StringResource(R.string.core_error_unknown), (effect as TestEffect.ShowError).message)
     }
 
     private class TestViewModel(
@@ -66,7 +68,7 @@ class CommonBaseViewModelTest {
             }
         }
 
-        override fun buildErrorEffect(message: String): TestEffect = TestEffect.ShowError(message)
+        override fun buildErrorEffect(message: UiText): TestEffect = TestEffect.ShowError(message)
     }
 
     private data class TestState(
@@ -79,6 +81,6 @@ class CommonBaseViewModelTest {
     }
 
     private sealed interface TestEffect : UiEffect {
-        data class ShowError(val message: String) : TestEffect
+        data class ShowError(val message: UiText) : TestEffect
     }
 }

@@ -3,9 +3,11 @@ package com.jeong.jejuoreum.feature.detail.presentation.detail
 /**
  * Provides user-facing error messages for the Detail feature.
  */
+import com.jeong.jejuoreum.core.common.UiText
+
 interface DetailMessageProvider {
-    fun defaultError(): String
-    fun networkError(): String
-    fun reviewNotFound(): String
-    fun loginRequired(): String
+    fun defaultError(): UiText
+    fun networkError(): UiText
+    fun reviewNotFound(): UiText
+    fun loginRequired(): UiText
 }

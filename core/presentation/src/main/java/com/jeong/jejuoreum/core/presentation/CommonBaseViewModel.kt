@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
+import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.R
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -90,17 +92,17 @@ public abstract class CommonBaseViewModel<S : UiState, E : UiEvent, F : UiEffect
      */
     protected open fun handleError(t: Throwable) {
         val message = when (t) {
-            is IOException -> "네트워크 오류가 발생했습니다."
-            else -> "알 수 없는 오류가 발생했습니다."
+            is IOException -> UiText.StringResource(R.string.core_error_network)
+            else -> UiText.StringResource(R.string.core_error_unknown)
         }
         sendErrorEffect(message)
     }
 
     /** 에러 메시지를 UI 효과로 변환하는 훅으로, 필요 시 하위 클래스에서 구현 */
-    protected open fun buildErrorEffect(message: String): F? = null
+    protected open fun buildErrorEffect(message: UiText): F? = null
 
     /** 공통 에러 effect를 발행하여 UI가 적절히 대응 */
-    protected fun sendErrorEffect(message: String) {
+    protected fun sendErrorEffect(message: UiText) {
         val effect = buildErrorEffect(message) ?: return
         viewModelScope.launch { _effect.emit(effect) }
     }

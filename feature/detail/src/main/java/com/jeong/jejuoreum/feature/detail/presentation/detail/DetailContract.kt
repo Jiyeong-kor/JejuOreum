@@ -3,6 +3,7 @@ package com.jeong.jejuoreum.feature.detail.presentation.detail
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 
@@ -24,7 +25,7 @@ sealed interface DetailEvent : UiEvent {
 }
 
 sealed interface DetailEffect : UiEffect {
-    data class ShowMessage(val message: String) : DetailEffect
+    data class ShowMessage(val message: UiText) : DetailEffect
     data class FavoriteStatusChanged(val oreumIdx: String, val isFavorite: Boolean) : DetailEffect
     data class StampCompleted(val oreumIdx: String) : DetailEffect
 }

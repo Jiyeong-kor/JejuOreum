@@ -41,7 +41,11 @@ fun OreumListItem(
             )
         }
         Text(
-            text = "★ ${oreum.totalFavorites} · 리뷰 ${oreum.totalStamps}",
+            text = stringResource(
+                id = R.string.profile_oreum_meta,
+                oreum.totalFavorites,
+                oreum.totalStamps,
+            ),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

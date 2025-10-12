@@ -39,17 +39,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import com.jeong.jejuoreum.domain.review.entity.ReviewItem
-import com.jeong.jejuoreum.feature.detail.R
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
+import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,7 +51,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel(),
     onNavigateToWriteReview: (Int, String) -> Unit,
-    showToast: (String) -> Unit,
+    showToast: (UiText) -> Unit,
     onFavoriteToggled: (String) -> Unit,
     initialOreum: OreumSummaryUiModel? = null
 ) {
@@ -80,7 +72,7 @@ fun DetailRoute(
         if (isGranted) {
             viewModel.onEvent(DetailEvent.StampRequested)
         } else {
-            showToast(context.getString(R.string.oreum_permission_required_message))
+            showToast(UiText.StringResource(R.string.oreum_permission_required_message))
         }
     }
 
@@ -89,16 +81,17 @@ fun DetailRoute(
             when (effect) {
                 is DetailEffect.ShowMessage -> showToast(effect.message)
                 is DetailEffect.FavoriteStatusChanged -> {
-                    val message = context.getString(
-                        if (effect.isFavorite) R.string.oreum_favorite_added_message
-                        else R.string.oreum_favorite_removed_message
-                    )
+                    val message = if (effect.isFavorite) {
+                        UiText.StringResource(R.string.oreum_favorite_added_message)
+                    } else {
+                        UiText.StringResource(R.string.oreum_favorite_removed_message)
+                    }
                     showToast(message)
                     onFavoriteToggled(effect.oreumIdx)
                 }
 
                 is DetailEffect.StampCompleted -> {
-                    showToast(context.getString(R.string.oreum_stamp_success_message))
+                    showToast(UiText.StringResource(R.string.oreum_stamp_success_message))
                     onFavoriteToggled(effect.oreumIdx)
                 }
             }
@@ -125,9 +118,7 @@ fun DetailRoute(
                     else -> {
                         when (locationPermissionGranted) {
                             false -> showToast(
-                                context.getString(
-                                    R.string.oreum_permission_required_message
-                                )
+                                UiText.StringResource(R.string.oreum_permission_required_message)
                             )
 
                             else -> permissionLauncher.launch(

@@ -3,12 +3,13 @@ package com.jeong.jejuoreum.feature.profile.presentation.favorite
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 
 data class MyFavoriteUiState(
     val isLoading: Boolean = true,
     val favorites: List<OreumSummaryUiModel> = emptyList(),
-    val errorMessage: String? = null,
+    val errorMessage: UiText? = null,
 ) : UiState
 
 sealed interface MyFavoriteUiEvent : UiEvent {
@@ -18,5 +19,5 @@ sealed interface MyFavoriteUiEvent : UiEvent {
 }
 
 sealed interface MyFavoriteUiEffect : UiEffect {
-    data class ShowError(val message: String) : MyFavoriteUiEffect
+    data class ShowError(val message: UiText) : MyFavoriteUiEffect
 }

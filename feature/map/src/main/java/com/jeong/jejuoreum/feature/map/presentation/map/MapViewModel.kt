@@ -60,8 +60,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    override fun buildErrorEffect(message: String): MapEffect =
-        ShowToast(UiText.DynamicString(message))
+    override fun buildErrorEffect(message: UiText): MapEffect = ShowToast(message)
 
     private fun handleSearchQuery(query: String) {
         searchJob?.cancel()

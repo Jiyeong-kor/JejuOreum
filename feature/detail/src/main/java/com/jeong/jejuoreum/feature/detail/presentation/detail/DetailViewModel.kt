@@ -1,5 +1,6 @@
 package com.jeong.jejuoreum.feature.detail.presentation.detail
 
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.model.Oreum
@@ -47,8 +48,14 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    override fun buildErrorEffect(message: String): DetailEffect =
-        DetailEffect.ShowMessage(message.ifBlank { detailMessageProvider.defaultError() })
+    override fun buildErrorEffect(message: UiText): DetailEffect {
+        val resolvedMessage = if (message is UiText.DynamicString && message.value.isBlank()) {
+            detailMessageProvider.defaultError()
+        } else {
+            message
+        }
+        return DetailEffect.ShowMessage(resolvedMessage)
+    }
 
     private fun initialize(oreum: OreumSummaryUiModel) {
         val oreumIdx = oreum.idx.takeIf { it >= 0 }?.toString() ?: return
@@ -174,9 +181,8 @@ class DetailViewModel @Inject constructor(
     private fun currentOreumIdx(): String? = currentState.oreumDetail?.idx?.toString()
 
     private fun sendError(message: String?) {
-        sendEffect {
-            DetailEffect.ShowMessage(message ?: detailMessageProvider.defaultError())
-        }
+        val uiText = message?.let(UiText::DynamicString) ?: detailMessageProvider.defaultError()
+        sendEffect { DetailEffect.ShowMessage(uiText) }
     }
 
     private fun Oreum.toUiModel(previous: OreumSummaryUiModel?): OreumSummaryUiModel {

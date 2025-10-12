@@ -3,6 +3,7 @@ package com.jeong.jejuoreum.feature.detail.presentation.review
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
+import com.jeong.jejuoreum.core.common.UiText
 
 data class WriteReviewUiState(
     val oreumIdx: String? = null,
@@ -24,5 +25,5 @@ sealed interface WriteReviewUiEvent : UiEvent {
 }
 
 sealed interface WriteReviewUiEffect : UiEffect {
-    data class ShowMessage(val message: String) : WriteReviewUiEffect
+    data class ShowMessage(val message: UiText) : WriteReviewUiEffect
 }

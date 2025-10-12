@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.jeong.jejuoreum.core.navigation.DetailNavigation
 import com.jeong.jejuoreum.core.navigation.OreumNavigation
+import com.jeong.jejuoreum.core.ui.extensions.asString
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.feature.detail.presentation.detail.DetailRoute
 import com.jeong.jejuoreum.feature.detail.presentation.review.WriteReviewRoute
@@ -46,7 +47,7 @@ class DetailNavigationImpl @Inject constructor() : DetailNavigation {
                     navController.navigate(OreumNavigation.Review.route(idx, name))
                 },
                 showToast = { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, message.asString(context), Toast.LENGTH_SHORT).show()
                 },
                 onFavoriteToggled = {},
                 initialOreum = initialOreum
@@ -79,7 +80,7 @@ class DetailNavigationImpl @Inject constructor() : DetailNavigation {
                     onBack()
                 },
                 showToast = { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, message.asString(context), Toast.LENGTH_SHORT).show()
                 }
             )
         }

@@ -78,8 +78,7 @@ class OreumViewModel @Inject constructor(
         }
     }
 
-    override fun buildErrorEffect(message: String): OreumEffect =
-        OreumEffect.ShowError(UiText.DynamicString(message))
+    override fun buildErrorEffect(message: UiText): OreumEffect = OreumEffect.ShowError(message)
 
     private fun handleFailure(error: ResourceError) {
         val message = when (error) {
