@@ -1,10 +1,13 @@
 package com.jeong.jejuoreum.feature.map.presentation.oreum
 
+import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
-import com.jeong.jejuoreum.feature.map.domain.OreumOverviewInteractor
-import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
+import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
+import com.jeong.jejuoreum.domain.oreum.usecase.GetOreumSummariesUseCase
+import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumDetailUseCase
+import com.jeong.jejuoreum.feature.map.R
 import com.jeong.jejuoreum.feature.map.presentation.mapper.OreumUiMapper
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +19,8 @@ import kotlinx.coroutines.flow.collectLatest
 
 @HiltViewModel
 class OreumViewModel @Inject constructor(
-    private val interactor: OreumOverviewInteractor,
+    private val getOreumSummariesUseCase: GetOreumSummariesUseCase,
+    private val loadOreumDetailUseCase: LoadOreumDetailUseCase,
     private val uiMapper: OreumUiMapper,
     @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
 ) : CommonBaseViewModel<OreumUiState, OreumEvent, OreumEffect>(ioDispatcher) {
@@ -50,7 +54,7 @@ class OreumViewModel @Inject constructor(
         observeJob = launch {
             setState { copy(isLoading = true, errorMessage = null) }
 
-            interactor.observeOreumOverviews()
+            getOreumSummariesUseCase()
                 .collectLatest { resource ->
                     when (resource) {
                         Resource.Loading -> setState {
@@ -63,7 +67,7 @@ class OreumViewModel @Inject constructor(
                                 copy(
                                     isLoading = false,
                                     errorMessage = null,
-                                    oreums = uiModels
+                                    oreums = uiModels,
                                 )
                             }
                         }
@@ -75,35 +79,35 @@ class OreumViewModel @Inject constructor(
     }
 
     override fun buildErrorEffect(message: String): OreumEffect =
-        OreumEffect.ShowError(message)
+        OreumEffect.ShowError(UiText.DynamicString(message))
 
     private fun handleFailure(error: ResourceError) {
         val message = when (error) {
-            ResourceError.Network -> "네트워크 연결을 확인해 주세요."
-            is ResourceError.Api -> error.message ?: "데이터를 불러오지 못했어요."
-            is ResourceError.NotFound -> "선택한 오름 정보를 찾을 수 없어요."
-            ResourceError.Unauthorized -> "로그인이 필요합니다."
-            is ResourceError.Unknown -> error.throwable.message ?: "알 수 없는 오류 발생"
+            ResourceError.Network -> UiText.StringResource(R.string.error_network_unavailable)
+            is ResourceError.Api -> error.message?.let(UiText::DynamicString)
+                ?: UiText.StringResource(R.string.error_failed_to_load_oreum_data)
+            is ResourceError.NotFound -> UiText.StringResource(R.string.error_oreum_not_found)
+            ResourceError.Unauthorized -> UiText.StringResource(R.string.error_authentication_required)
+            is ResourceError.Unknown -> error.throwable.message?.let(UiText::DynamicString)
+                ?: UiText.StringResource(R.string.error_unknown)
         }
         setState { copy(isLoading = false, errorMessage = message) }
-        sendErrorEffect(message)
+        sendEffect { OreumEffect.ShowError(message) }
     }
 
     private fun fetchOreumDetail(oreumId: String) {
         launch {
-            interactor.getOreumOverview(oreumId)
-                .onSuccess { overview ->
-                    sendEffect { OreumEffect.NavigateToDetail(overview.id) }
+            loadOreumDetailUseCase(oreumId)
+                .onSuccess { oreum ->
+                    sendEffect { OreumEffect.NavigateToDetail(oreum.id) }
                 }
                 .onFailure { throwable ->
-                    sendEffect {
-                        OreumEffect.ShowError(
-                            throwable.message ?: "선택한 오름 정보를 불러오지 못했어요."
-                        )
-                    }
+                    val message = throwable.message?.let(UiText::DynamicString)
+                        ?: UiText.StringResource(R.string.error_failed_to_load_selected_oreum)
+                    sendEffect { OreumEffect.ShowError(message) }
                 }
         }
     }
 
-    private fun List<OreumOverview>.toUiModels(): List<OreumUiModel> = map(uiMapper::map)
+    private fun List<ResultSummary>.toUiModels(): List<OreumUiModel> = map(uiMapper::map)
 }

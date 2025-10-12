@@ -25,18 +25,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import androidx.compose.ui.res.stringResource
+import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.ui.extensions.asString
 import com.jeong.jejuoreum.feature.map.R
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
-import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumEffect
-import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumEvent
-import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumUiState
-import com.jeong.jejuoreum.feature.map.presentation.oreum.OreumViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,10 +44,11 @@ fun OreumRoute(
     modifier: Modifier = Modifier,
     viewModel: OreumViewModel = hiltViewModel(),
     onNavigateToDetail: (String) -> Unit = {},
-    onError: (String) -> Unit = {}
+    onError: (UiText) -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -56,7 +56,7 @@ fun OreumRoute(
                 is OreumEffect.NavigateToDetail -> onNavigateToDetail(effect.oreumId)
                 is OreumEffect.ShowError -> {
                     onError(effect.message)
-                    snackbarHostState.showSnackbar(effect.message)
+                    snackbarHostState.showSnackbar(effect.message.asString(context))
                 }
             }
         }
@@ -81,6 +81,7 @@ fun OreumScreen(
     onEvent: (OreumEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Box(modifier = modifier.fillMaxSize()) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -103,7 +104,7 @@ fun OreumScreen(
 
         state.errorMessage?.let { message ->
             Text(
-                text = message,
+                text = message.asString(context),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
@@ -152,7 +153,10 @@ private fun OreumCard(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
             Text(
-                text = oreum.elevation,
+                text = stringResource(
+                    id = R.string.map_oreum_elevation_format,
+                    oreum.elevationMeters.toInt()
+                ),
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )

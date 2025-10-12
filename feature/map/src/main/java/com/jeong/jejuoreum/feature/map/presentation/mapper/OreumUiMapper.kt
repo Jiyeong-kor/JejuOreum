@@ -1,22 +1,21 @@
 package com.jeong.jejuoreum.feature.map.presentation.mapper
 
-import com.jeong.jejuoreum.feature.map.domain.model.OreumOverview
+import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
+import com.jeong.jejuoreum.domain.oreum.model.OreumDifficulty
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
 import javax.inject.Inject
 
 class OreumUiMapper @Inject constructor() {
 
-    fun map(overview: OreumOverview): OreumUiModel = OreumUiModel(
-        id = overview.id,
-        name = overview.name,
-        location = overview.location,
-        description = overview.description,
-        elevation = formatElevation(overview.elevation),
-        difficulty = overview.difficulty,
-        thumbnailUrl = overview.thumbnailUrl,
-        previewImages = overview.previewImages,
-        isFavorite = overview.isFavorite
+    fun map(summary: ResultSummary): OreumUiModel = OreumUiModel(
+        id = summary.idx.toString(),
+        name = summary.oreumKname.ifBlank { summary.oreumEname },
+        location = summary.oreumAddr,
+        description = summary.explain,
+        elevationMeters = summary.oreumAltitu,
+        difficulty = OreumDifficulty.MODERATE,
+        thumbnailUrl = summary.imgPath,
+        previewImages = listOf(summary.imgPath),
+        isFavorite = summary.userLiked,
     )
-
-    private fun formatElevation(elevation: Double): String = "${elevation.toInt()} m"
 }

@@ -7,7 +7,7 @@ data class OreumUiModel(
     val name: String,
     val location: String,
     val description: String,
-    val elevation: String,
+    val elevationMeters: Double,
     val difficulty: OreumDifficulty,
     val thumbnailUrl: String,
     val previewImages: List<String>,
