@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.core.ui.extensions
 
 import android.content.Context
-import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.UiText
 
 fun UiText.asString(context: Context): String = when (this) {
     is UiText.DynamicString -> value

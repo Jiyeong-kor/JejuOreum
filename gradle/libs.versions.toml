@@ -2,6 +2,7 @@
 activityCompose = "1.11.0"
 agp = "8.13.0"
 appcompat = "1.7.1"
+annotation = "1.9.1"
 coilBom = "3.3.0"
 compose-compiler = "2.2.20"
 composeBom = "2025.09.01"
@@ -55,6 +56,7 @@ timber = "5.0.1"
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

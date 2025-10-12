@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.profile.presentation.favorite
 
-import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.UiText
 import com.jeong.jejuoreum.core.common.result.ResourceError
 import com.jeong.jejuoreum.feature.profile.R
 import javax.inject.Inject

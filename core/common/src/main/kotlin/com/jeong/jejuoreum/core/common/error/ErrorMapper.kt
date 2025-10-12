@@ -2,7 +2,6 @@ package com.jeong.jejuoreum.core.common.error
 
 import com.jeong.jejuoreum.core.common.result.ResourceError
 import java.io.IOException
-import retrofit2.HttpException
 
 fun Throwable.toDomainError(): DomainError = when (this) {
     is DomainError -> this
@@ -12,7 +11,6 @@ fun Throwable.toDomainError(): DomainError = when (this) {
 fun Throwable.toResourceError(): ResourceError = when (this) {
     is DomainError -> this.toResourceError()
     is IOException -> ResourceError.Network
-    is HttpException -> ResourceError.Api(code(), message())
     else -> ResourceError.Unknown(this)
 }
 

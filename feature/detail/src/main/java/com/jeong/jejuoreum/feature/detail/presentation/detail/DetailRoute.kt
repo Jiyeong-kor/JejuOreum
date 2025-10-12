@@ -39,7 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
 import java.text.SimpleDateFormat

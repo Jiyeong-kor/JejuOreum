@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.feature.detail.presentation.detail
 
-import com.jeong.jejuoreum.core.common.UiText
-import com.jeong.jejuoreum.core.common.viewmodel.CommonBaseViewModel
+import com.jeong.jejuoreum.core.presentation.UiText
+import com.jeong.jejuoreum.core.presentation.viewmodel.CommonBaseViewModel
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.model.Oreum
 import com.jeong.jejuoreum.domain.oreum.usecase.LoadOreumDetailUseCase

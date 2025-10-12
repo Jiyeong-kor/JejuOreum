@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.detail.presentation.detail
 
-import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.UiText
 import com.jeong.jejuoreum.feature.detail.R
 import javax.inject.Inject
 import javax.inject.Singleton

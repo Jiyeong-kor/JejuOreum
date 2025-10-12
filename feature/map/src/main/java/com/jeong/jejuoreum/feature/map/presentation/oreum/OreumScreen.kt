@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.UiText
 import com.jeong.jejuoreum.core.ui.extensions.asString
 import com.jeong.jejuoreum.feature.map.R
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel

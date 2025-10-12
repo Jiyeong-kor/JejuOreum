@@ -3,7 +3,7 @@ package com.jeong.jejuoreum.feature.detail.presentation.review
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
-import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.UiText
 
 data class WriteReviewUiState(
     val oreumIdx: String? = null,

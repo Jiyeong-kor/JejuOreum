@@ -3,7 +3,7 @@ package com.jeong.jejuoreum.feature.map.presentation.oreum
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
-import com.jeong.jejuoreum.core.common.UiText
+import com.jeong.jejuoreum.core.presentation.UiText
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumUiModel
 
 sealed interface OreumEvent : UiEvent {

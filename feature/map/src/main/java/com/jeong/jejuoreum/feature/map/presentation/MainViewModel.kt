@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.feature.map.presentation
 
 import com.jeong.jejuoreum.core.common.network.NetworkStatus
-import com.jeong.jejuoreum.core.common.viewmodel.CommonBaseViewModel
+import com.jeong.jejuoreum.core.presentation.viewmodel.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.usecase.GetCurrentConnectivityStatusUseCase
 import com.jeong.jejuoreum.domain.oreum.usecase.ObserveConnectivityStatusUseCase
 import com.jeong.jejuoreum.feature.map.presentation.main.MainSideEffect

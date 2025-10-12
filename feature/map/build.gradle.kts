@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:presentation"))
     implementation(project(":domain:oreum"))
 
     implementation(libs.androidx.core.ktx)

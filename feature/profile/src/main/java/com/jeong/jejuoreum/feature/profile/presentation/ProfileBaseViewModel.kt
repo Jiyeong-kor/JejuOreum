@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.feature.profile.presentation
 
-import com.jeong.jejuoreum.core.common.UiText
-import com.jeong.jejuoreum.core.common.viewmodel.CommonBaseViewModel
+import com.jeong.jejuoreum.core.presentation.UiText
+import com.jeong.jejuoreum.core.presentation.viewmodel.CommonBaseViewModel
 import com.jeong.jejuoreum.feature.profile.presentation.favorite.MyFavoriteUiEffect
 import com.jeong.jejuoreum.feature.profile.presentation.favorite.MyFavoriteUiEvent
 import com.jeong.jejuoreum.feature.profile.presentation.favorite.MyFavoriteUiState
