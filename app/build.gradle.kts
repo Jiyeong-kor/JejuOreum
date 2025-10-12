@@ -32,7 +32,9 @@ android {
 
 dependencies {
     implementation(project(":core:navigation"))
-    implementation(project(":core:ui"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":feature:map"))
+    implementation(project(":data:oreum"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))

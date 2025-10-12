@@ -30,6 +30,8 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":domain:oreum"))
+    implementation(project(":data:local"))
+    implementation(project(":data:remote"))
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
