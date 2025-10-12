@@ -3,7 +3,7 @@ package com.jeong.jejuoreum.feature.map.presentation.map
 import com.jeong.jejuoreum.core.common.UiText
 import com.jeong.jejuoreum.core.common.result.Resource
 import com.jeong.jejuoreum.core.common.result.ResourceError
-import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
+import com.jeong.jejuoreum.core.common.viewmodel.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary

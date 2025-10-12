@@ -1,7 +1,7 @@
 package com.jeong.jejuoreum.feature.splash.presentation
 
 import com.jeong.jejuoreum.core.common.UiText
-import com.jeong.jejuoreum.core.presentation.CommonBaseViewModel
+import com.jeong.jejuoreum.core.common.viewmodel.CommonBaseViewModel
 import com.jeong.jejuoreum.feature.splash.R
 import com.jeong.jejuoreum.feature.splash.domain.PrepareSplashInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel

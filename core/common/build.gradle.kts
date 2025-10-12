@@ -1,8 +1,13 @@
 plugins {
-    id("jejuoreum.kotlin.library")
+    id("jejuoreum.android.library")
 }
-group = "com.jeong.jejuoreum.core.common"
+
+android {
+    namespace = "com.jeong.jejuoreum.core.common"
+}
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 }

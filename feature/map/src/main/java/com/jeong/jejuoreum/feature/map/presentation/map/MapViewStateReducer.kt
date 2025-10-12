@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.map.presentation.map
 
-import com.jeong.jejuoreum.core.presentation.state.StateReducer
+import com.jeong.jejuoreum.core.common.state.StateReducer
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import javax.inject.Inject
 

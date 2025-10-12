@@ -1,7 +1,16 @@
 package com.jeong.jejuoreum.core.common
 
-public interface UiState
+/**
+ * Marker interface for immutable UI state models exposed to the presentation layer.
+ */
+interface UiState
 
-public interface UiEvent
+/**
+ * Marker interface for user-driven events propagated from the UI layer.
+ */
+interface UiEvent
 
-public interface UiEffect
+/**
+ * Marker interface for one-off side effects such as navigation or toast messages.
+ */
+interface UiEffect

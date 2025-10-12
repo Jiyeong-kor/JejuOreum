@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.map.presentation
 
-import com.jeong.jejuoreum.core.presentation.model.UiState
+import com.jeong.jejuoreum.core.common.UiState
 import com.jeong.jejuoreum.domain.oreum.model.Oreum
 
 data class MapUiState(
