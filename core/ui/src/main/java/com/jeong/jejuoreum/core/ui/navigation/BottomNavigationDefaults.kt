@@ -6,9 +6,9 @@ import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
 object BottomNavigationDefaults {
     object Map {
         private val visuals = BottomNavigationVisuals(
-            iconRes = DesignSystemAssets.Icon.HomeUnselected,
-            selectedIconRes = DesignSystemAssets.Icon.HomeSelected,
-            labelRes = DesignSystemAssets.String.HomeTitle
+            iconRes = DesignSystemAssets.Drawable.map,
+            selectedIconRes = DesignSystemAssets.Drawable.map,
+            labelRes = DesignSystemAssets.Strings.mapTitle
         )
 
         @Composable
@@ -20,9 +20,9 @@ object BottomNavigationDefaults {
 
     object Profile {
         private val visuals = BottomNavigationVisuals(
-            iconRes = DesignSystemAssets.Icon.ProfileUnselected,
-            selectedIconRes = DesignSystemAssets.Icon.ProfileSelected,
-            labelRes = DesignSystemAssets.String.ProfileTitle
+            iconRes = DesignSystemAssets.Drawable.profileUnselected,
+            selectedIconRes = DesignSystemAssets.Drawable.profileSelected,
+            labelRes = DesignSystemAssets.Strings.profileTitle
         )
 
         @Composable

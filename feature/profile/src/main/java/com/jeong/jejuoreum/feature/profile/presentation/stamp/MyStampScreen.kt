@@ -63,7 +63,7 @@ fun MyStampScreen(
             )
             Spacer(modifier = Modifier.width(20.dp))
             Image(
-                painter = painterResource(id = DesignSystemAssets.Drawable.Stamp),
+                painter = painterResource(id = DesignSystemAssets.Drawable.stamp),
                 contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
                 modifier = Modifier.size(30.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
@@ -119,7 +119,7 @@ private fun StampItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = DesignSystemAssets.Drawable.StampMarkerSelected),
+            painter = painterResource(id = DesignSystemAssets.Drawable.stampMarkerSelected),
             contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
             modifier = Modifier.size(100.dp)
         )

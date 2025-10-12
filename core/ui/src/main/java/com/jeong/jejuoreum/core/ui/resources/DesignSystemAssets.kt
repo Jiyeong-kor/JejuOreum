@@ -8,35 +8,35 @@ object DesignSystemAssets {
 
     object Drawable {
         @DrawableRes
-        val Map: Int = DesignSystemR.drawable.ic_map
+        val map: Int = DesignSystemR.drawable.ic_map
 
         @DrawableRes
-        val List: Int = DesignSystemR.drawable.ic_list
+        val list: Int = DesignSystemR.drawable.ic_list
 
         @DrawableRes
-        val ProfileSelected: Int = DesignSystemR.drawable.ic_my_selected
+        val profileSelected: Int = DesignSystemR.drawable.ic_my_selected
 
         @DrawableRes
-        val ProfileUnselected: Int = DesignSystemR.drawable.ic_my_unselected
+        val profileUnselected: Int = DesignSystemR.drawable.ic_my_unselected
 
         @DrawableRes
-        val Stamp: Int = DesignSystemR.drawable.oreum_stamp
+        val stamp: Int = DesignSystemR.drawable.oreum_stamp
 
         @DrawableRes
-        val StampBadge: Int = DesignSystemR.drawable.oreum_stamp_badge
+        val stampBadge: Int = DesignSystemR.drawable.oreum_stamp_badge
 
         @DrawableRes
-        val StampMarkerSelected: Int = DesignSystemR.drawable.oreum_marker_selected
+        val stampMarkerSelected: Int = DesignSystemR.drawable.oreum_marker_selected
     }
 
-    object String {
+    object Strings {
         @StringRes
-        val MapTitle: Int = DesignSystemR.string.map_title
+        val mapTitle: Int = DesignSystemR.string.map_title
 
         @StringRes
-        val ListTitle: Int = DesignSystemR.string.list_title
+        val listTitle: Int = DesignSystemR.string.list_title
 
         @StringRes
-        val ProfileTitle: Int = DesignSystemR.string.my_title
+        val profileTitle: Int = DesignSystemR.string.my_title
     }
 }

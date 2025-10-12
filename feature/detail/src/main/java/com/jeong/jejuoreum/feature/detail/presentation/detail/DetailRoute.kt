@@ -187,7 +187,7 @@ private fun DetailScreen(
                     )
                     if (oreum.userStamped) {
                         Image(
-                            painter = painterResource(id = DesignSystemAssets.Drawable.StampBadge),
+                            painter = painterResource(id = DesignSystemAssets.Drawable.stampBadge),
                             contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
