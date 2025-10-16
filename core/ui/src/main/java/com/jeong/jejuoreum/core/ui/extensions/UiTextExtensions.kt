@@ -5,5 +5,5 @@ import com.jeong.jejuoreum.core.presentation.UiText
 
 fun UiText.asString(context: Context): String = when (this) {
     is UiText.DynamicString -> value
-    is UiText.StringResource -> context.getString(resId, *args)
+    is UiText.StringResource -> context.getString(resId, *args.toTypedArray())
 }

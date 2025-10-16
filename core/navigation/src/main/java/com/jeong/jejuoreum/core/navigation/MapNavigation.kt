@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 
 interface MapNavigation : BottomNavigationDestination {
-    val route: String
+    override val route: String
 
     fun navigateToMap(navController: NavController)
 

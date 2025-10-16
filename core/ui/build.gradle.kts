@@ -1,6 +1,7 @@
 plugins {
     id("jejuoreum.android.library")
     id("jejuoreum.compose")
+    id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {

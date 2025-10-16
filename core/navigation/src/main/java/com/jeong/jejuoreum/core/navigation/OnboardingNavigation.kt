@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 
 interface OnboardingNavigation : NavigationDestination {
-    val route: String
+    override val route: String
 
     fun navigateToOnboarding(navController: NavController)
 

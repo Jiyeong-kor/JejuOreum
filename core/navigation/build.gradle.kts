@@ -11,4 +11,6 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
+    implementation(libs.hilt.android)
+    implementation(libs.javax.inject)
 }

@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 
 interface DetailNavigation : NavigationDestination {
-    val route: String
+    override val route: String
 
     fun navigateToDetail(navController: NavController, oreum: Parcelable)
 

@@ -9,5 +9,5 @@ class LoadOreumDetailUseCase @Inject constructor(
     private val repository: OreumRepository,
 ) : SuspendUseCase<String, Result<Oreum>> {
 
-    override suspend fun invoke(params: String): Result<Oreum> = repository.getOreumDetail(params)
+    override suspend fun invoke(param: String): Result<Oreum> = repository.getOreumDetail(param)
 }

@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 
 interface ProfileNavigation : BottomNavigationDestination {
-    val route: String
+    override val route: String
 
     fun navigateToProfile(navController: NavController)
 

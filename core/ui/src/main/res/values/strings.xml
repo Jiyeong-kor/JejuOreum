@@ -1,3 +1,5 @@
 <resources>
     <string name="jeju_oreum_app_name">Jeju Oreum</string>
+    <string name="network_error">Network error occurred. Please try again.</string>
+    <string name="network_retry">Retry</string>
 </resources>

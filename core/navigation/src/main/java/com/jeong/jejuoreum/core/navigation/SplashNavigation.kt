@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 
 interface SplashNavigation : NavigationDestination {
-    val route: String
+    override val route: String
 
     fun navigateToSplash(navController: NavController)
 
