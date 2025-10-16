@@ -21,10 +21,6 @@ android {
             }
         }
 
-        val imageBaseUrl = localProperties.getProperty("jejuOreumImageBaseUrl")
-            ?: throw GradleException("Missing jejuOreumImageBaseUrl in local.properties")
-        buildConfigField("String", "OREUM_IMAGE_BASE_URL", "\"$imageBaseUrl\"")
-
         val apiBaseUrl = localProperties.getProperty("jejuOreumBaseUrl")
             ?: throw GradleException("Missing jejuOreumBaseUrl in local.properties")
         buildConfigField("String", "OREUM_BASE_URL", "\"$apiBaseUrl\"")
