@@ -9,8 +9,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 
 class BottomNavigationVisuals(
-    @DrawableRes private val iconRes: Int,
-    @StringRes private val labelRes: Int,
+    @param:DrawableRes private val iconRes: Int,
+    @param:StringRes private val labelRes: Int,
     private val selectedIconRes: Int? = null,
 ) {
     @Composable
