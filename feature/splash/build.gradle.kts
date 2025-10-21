@@ -24,6 +24,10 @@ android {
     }
 }
 
+val useKakaoStub = providers.environmentVariable("USE_KAKAO_STUB").orNull?.toBoolean()
+    ?: (rootProject.findProperty("useKakaoStub")?.toString()?.toBoolean())
+    ?: false
+
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:presentation"))
@@ -32,7 +36,9 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.kakao.vectormap)
+    if (!useKakaoStub) {
+        implementation(libs.kakao.vectormap)
+    }
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.play.services.basement)
     implementation(libs.timber)

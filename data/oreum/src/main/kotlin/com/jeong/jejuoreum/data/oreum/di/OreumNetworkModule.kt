@@ -53,3 +53,6 @@ object OreumNetworkModule {
     @Singleton
     fun provideOreumApi(
         @Named(OREUM_RETROFIT) retrofit: Retrofit,
+    ): OreumRetrofitInterface =
+        retrofit.create(OreumRetrofitInterface::class.java)
+}

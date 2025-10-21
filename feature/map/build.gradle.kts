@@ -8,6 +8,10 @@ android {
     namespace = "com.jeong.jejuoreum.feature.map"
 }
 
+val useKakaoStub = providers.environmentVariable("USE_KAKAO_STUB").orNull?.toBoolean()
+    ?: (rootProject.findProperty("useKakaoStub")?.toString()?.toBoolean())
+    ?: false
+
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
@@ -25,8 +29,10 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kakao.v2.all)
-    implementation(libs.kakao.vectormap)
+    if (!useKakaoStub) {
+        implementation(libs.kakao.v2.all)
+        implementation(libs.kakao.vectormap)
+    }
     implementation(libs.play.services.location)
     implementation(libs.timber)
     implementation(platform(libs.androidx.compose.bom))

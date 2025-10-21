@@ -2,6 +2,7 @@ package com.jeong.jejuoreum.feature.map.presentation.map
 
 import com.jeong.jejuoreum.core.common.state.StateReducer
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
+import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiMapper
 import javax.inject.Inject
 
 internal class MapViewStateReducer @Inject constructor(
