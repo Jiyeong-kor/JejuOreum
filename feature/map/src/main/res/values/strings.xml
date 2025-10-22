@@ -3,4 +3,17 @@
     <string name="map_refresh">Refresh</string>
     <string name="map_empty">No oreum information available yet.</string>
     <string name="map_elevation_format">%1$d m</string>
+    <string name="map_view_detail">View details</string>
+    <string name="map_label_layer_id">oreum_marker_layer</string>
+    <string name="map_marker_tag_pattern">oreum_marker_%1$s</string>
+    <string name="oreum_search_placeholder">Search for an oreum</string>
+    <string name="oreum_search_empty">No oreum found.</string>
+    <string name="map_top_bar_title">Jeju Oreum</string>
+    <string name="map_oreum_elevation_format">%1$d m</string>
+    <string name="error_network_unavailable">Network is unavailable. Please check your connection.</string>
+    <string name="error_oreum_not_found">The requested oreum could not be found.</string>
+    <string name="error_authentication_required">Please sign in to continue.</string>
+    <string name="error_failed_to_load_oreum_data">Failed to load oreum information. Please try again.</string>
+    <string name="error_failed_to_load_selected_oreum">Failed to load the selected oreum.</string>
+    <string name="error_unknown">Something went wrong. Please try again later.</string>
 </resources>

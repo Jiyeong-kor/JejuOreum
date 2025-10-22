@@ -4,7 +4,7 @@ import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import javax.inject.Inject
 
-internal class OreumSummaryUiMapper @Inject constructor() {
+class OreumSummaryUiMapper @Inject constructor() {
 
     fun map(summary: ResultSummary): OreumSummaryUiModel = OreumSummaryUiModel(
         idx = summary.idx,

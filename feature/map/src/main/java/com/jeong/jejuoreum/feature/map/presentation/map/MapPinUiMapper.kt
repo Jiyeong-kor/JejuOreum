@@ -5,7 +5,7 @@ import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.domain.oreum.entity.quantized
 import javax.inject.Inject
 
-internal class MapPinUiMapper @Inject constructor() {
+class MapPinUiMapper @Inject constructor() {
 
     private val pinCache = mutableMapOf<GeoPoint, MapPinUiModel>()
 

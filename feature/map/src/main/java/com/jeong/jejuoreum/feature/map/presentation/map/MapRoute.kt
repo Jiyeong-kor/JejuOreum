@@ -37,3 +37,7 @@ fun MapRoute(
         }
     }
 }
+
+object MapRouteDefaults {
+    val noopNavigateToDetail: (OreumSummaryUiModel) -> Unit = { _ -> }
+}

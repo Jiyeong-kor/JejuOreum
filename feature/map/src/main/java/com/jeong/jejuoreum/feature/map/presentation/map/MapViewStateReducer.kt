@@ -5,7 +5,7 @@ import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiMapper
 import javax.inject.Inject
 
-internal class MapViewStateReducer @Inject constructor(
+class MapViewStateReducer @Inject constructor(
     private val summaryUiMapper: OreumSummaryUiMapper,
     private val mapPinUiMapper: MapPinUiMapper,
 ) : StateReducer<MapViewState, MapViewChange> {
@@ -39,13 +39,13 @@ internal class MapViewStateReducer @Inject constructor(
     }
 }
 
-internal sealed interface MapViewChange {
+sealed interface MapViewChange {
     data class VisiblePins(
         val visibleSummaries: List<ResultSummary>,
         val forceRefresh: Boolean,
     ) : MapViewChange
 
     data class Selection(val summary: ResultSummary?) : MapViewChange
-    data object ClearSelection : MapViewChange
+    object ClearSelection : MapViewChange
     data class CameraSaved(val snapshot: CameraSnapshot) : MapViewChange
 }

@@ -1,11 +1,10 @@
 package com.kakao.vectormap
 
 import android.content.Context
-import android.content.res.Resources
+import android.view.View
 
-class MapView(context: Context) {
+class MapView(context: Context) : View(context) {
     var isFinishManually: Boolean = false
-    val resources: Resources = context.resources
 
     fun start(
         @Suppress("UNUSED_PARAMETER") lifeCycleCallback: MapLifeCycleCallback,

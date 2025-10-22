@@ -12,7 +12,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MapNavigationModule {
+object MapDestinationModule {
+
     @Provides
     @IntoSet
     fun provideMapDestination(): ComposableDestination = MapDestination

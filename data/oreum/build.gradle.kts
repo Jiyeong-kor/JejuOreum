@@ -23,6 +23,7 @@ android {
 
         val apiBaseUrl = localProperties.getProperty("jejuOreumBaseUrl")
             ?: throw GradleException("Missing jejuOreumBaseUrl in local.properties")
+
         buildConfigField("String", "OREUM_BASE_URL", "\"$apiBaseUrl\"")
     }
 }

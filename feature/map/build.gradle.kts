@@ -27,8 +27,13 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(platform(libs.coil.bom))
+    implementation(libs.coil3.coil)
+    implementation(libs.coil3.coil.compose)
+    implementation(libs.coil.network.okhttp)
     if (!useKakaoStub) {
         implementation(libs.kakao.v2.all)
         implementation(libs.kakao.vectormap)

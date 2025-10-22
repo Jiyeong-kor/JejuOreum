@@ -13,7 +13,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.jeong.jejuoreum.feature.map.presentation.map.MapEvent
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -79,9 +78,9 @@ fun MapViewHost(
         }
     }
 
-    AndroidView(
+    AndroidView<MapView>(
         modifier = modifier,
-        factory = {
+        factory = { _ ->
             mapView.start(
                 object : MapLifeCycleCallback() {
                     override fun onMapDestroy() {

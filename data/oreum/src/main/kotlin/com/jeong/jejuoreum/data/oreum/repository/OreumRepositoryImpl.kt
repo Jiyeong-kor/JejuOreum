@@ -21,7 +21,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 @Singleton
-internal class OreumRepositoryImpl @Inject constructor(
+class OreumRepositoryImpl @Inject constructor(
     private val remoteDataSource: OreumRemoteDataSource,
     private val localDataSource: OreumLocalDataSource,
     private val dispatcherProvider: CoroutineDispatcherProvider,

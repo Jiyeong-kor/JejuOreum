@@ -5,7 +5,7 @@ import com.jeong.jejuoreum.core.navigation.OreumNavigation
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint
 import javax.inject.Inject
 
-internal class MapCameraStateStorage @Inject constructor(
+class MapCameraStateStorage @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) {
 

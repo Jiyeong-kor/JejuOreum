@@ -5,7 +5,7 @@ import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import com.jeong.jejuoreum.feature.map.presentation.model.OreumSummaryUiMapper
 import javax.inject.Inject
 
-internal class MapSearchStateReducer @Inject constructor(
+class MapSearchStateReducer @Inject constructor(
     private val summaryUiMapper: OreumSummaryUiMapper,
 ) : StateReducer<SearchState, MapSearchChange> {
 
@@ -34,7 +34,7 @@ internal class MapSearchStateReducer @Inject constructor(
     private fun List<ResultSummary>.toUiModels() = map(summaryUiMapper::map)
 }
 
-internal sealed interface MapSearchChange {
+sealed interface MapSearchChange {
     data object PanelClosed : MapSearchChange
     data object EmptyQuery : MapSearchChange
     data class Matches(val query: String, val results: List<ResultSummary>) : MapSearchChange
