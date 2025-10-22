@@ -21,7 +21,10 @@ class KotlinLibraryConventionPlugin : Plugin<Project> {
 
                 compilerOptions {
                     jvmTarget.set(JvmTarget.JVM_17)
-                    freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+                    freeCompilerArgs.addAll(
+                        "-opt-in=kotlin.RequiresOptIn",
+                        "-Xannotation-default-target=param-property",
+                    )
                 }
             }
         }

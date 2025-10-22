@@ -46,7 +46,8 @@ internal fun Project.configureKotlinAndroid(
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
             freeCompilerArgs.addAll(
-                "-opt-in=kotlin.RequiresOptIn"
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xannotation-default-target=param-property",
             )
         }
     }

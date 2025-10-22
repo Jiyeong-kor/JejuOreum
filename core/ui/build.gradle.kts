@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.coil3.coil)
     implementation(libs.coil3.coil.compose)
+    implementation(libs.coil3.coil.svg)
     implementation(libs.coil.network.okhttp)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)

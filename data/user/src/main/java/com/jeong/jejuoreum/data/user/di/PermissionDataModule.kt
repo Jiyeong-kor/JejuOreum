@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface PermissionDataModule {
+internal interface PermissionDataModule {
 
     @Binds
     fun bindsPermissionRepository(
