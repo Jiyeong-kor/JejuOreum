@@ -30,9 +30,12 @@ val useKakaoStub = providers.environmentVariable("USE_KAKAO_STUB").orNull?.toBoo
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(project(":core:presentation"))
+    implementation(project(":core:architecture"))
     implementation(project(":core:ui"))
     implementation(project(":domain:oreum"))
+    implementation(project(":domain:user"))
+    implementation(project(":data:oreum"))
+    implementation(project(":data:user"))
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

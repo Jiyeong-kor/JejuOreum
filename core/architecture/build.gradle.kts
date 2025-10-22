@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.jeong.jejuoreum.core.presentation"
+    namespace = "com.jeong.jejuoreum.core.architecture"
 }
 
 dependencies {

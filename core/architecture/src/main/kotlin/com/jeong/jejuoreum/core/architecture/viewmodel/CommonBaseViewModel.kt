@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.core.presentation.viewmodel
+package com.jeong.jejuoreum.core.architecture.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,8 +6,8 @@ import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
 import com.jeong.jejuoreum.core.common.viewmodel.UiContract
-import com.jeong.jejuoreum.core.presentation.R
-import com.jeong.jejuoreum.core.presentation.UiText
+import com.jeong.jejuoreum.core.architecture.R
+import com.jeong.jejuoreum.core.architecture.UiText
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher

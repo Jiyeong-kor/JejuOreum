@@ -1,6 +1,6 @@
 package com.jeong.jejuoreum.feature.onboarding.presentation
 
-import com.jeong.jejuoreum.core.presentation.viewmodel.CommonBaseViewModel
+import com.jeong.jejuoreum.core.architecture.viewmodel.CommonBaseViewModel
 import com.jeong.jejuoreum.domain.user.model.NicknameValidationResult
 import com.jeong.jejuoreum.domain.user.usecase.CheckNicknameAvailabilityUseCase
 import com.jeong.jejuoreum.domain.user.usecase.EnsureAnonymousUserUseCase

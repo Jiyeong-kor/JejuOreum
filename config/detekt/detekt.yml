@@ -15,6 +15,6 @@ style:
     imports:
       - 'androidx.lifecycle.ViewModel'
     excludes:
-      - '**/core/presentation/**'
+      - '**/core/architecture/**'
       - '**/app/**'
       - '**/feature/**/presentation/**'

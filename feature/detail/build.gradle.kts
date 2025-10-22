@@ -10,10 +10,13 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(project(":core:presentation"))
+    implementation(project(":core:architecture"))
     implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
     implementation(project(":domain:oreum"))
     implementation(project(":domain:review"))
     implementation(project(":domain:user"))
+    implementation(project(":data:oreum"))
+    implementation(project(":data:review"))
+    implementation(project(":data:user"))
 }

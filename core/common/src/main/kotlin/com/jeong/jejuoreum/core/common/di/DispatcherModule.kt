@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.data.remote.di
+package com.jeong.jejuoreum.core.common.di
 
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.coroutines.DefaultCoroutineDispatcherProvider
@@ -13,11 +13,11 @@ import kotlinx.coroutines.Dispatchers
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CoroutineDispatchersModule {
+object DispatcherModule {
 
     @Provides
     @Singleton
-    fun providesCoroutineDispatcherProvider(
+    fun provideDispatcherProvider(
         @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher,
         @Named("defaultDispatcher") defaultDispatcher: CoroutineDispatcher,
         @Named("mainDispatcher") mainDispatcher: CoroutineDispatcher,

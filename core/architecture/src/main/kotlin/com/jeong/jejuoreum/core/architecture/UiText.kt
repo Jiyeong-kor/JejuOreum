@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.core.presentation
+package com.jeong.jejuoreum.core.architecture
 
 import androidx.annotation.StringRes
 

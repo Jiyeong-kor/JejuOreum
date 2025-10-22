@@ -35,7 +35,10 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:ui"))
     implementation(project(":feature:map"))
-    implementation(project(":data:oreum"))
+    implementation(project(":feature:detail"))
+    implementation(project(":feature:onboarding"))
+    implementation(project(":feature:profile"))
+    implementation(project(":feature:splash"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))

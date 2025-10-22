@@ -3,7 +3,7 @@ package com.jeong.jejuoreum.feature.map.presentation.map
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
-import com.jeong.jejuoreum.core.presentation.UiText
+import com.jeong.jejuoreum.core.architecture.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.GeoBounds
 import com.jeong.jejuoreum.domain.oreum.entity.GeoPoint

@@ -3,7 +3,7 @@ package com.jeong.jejuoreum.feature.profile.presentation.favorite
 import com.jeong.jejuoreum.core.common.UiEffect
 import com.jeong.jejuoreum.core.common.UiEvent
 import com.jeong.jejuoreum.core.common.UiState
-import com.jeong.jejuoreum.core.presentation.UiText
+import com.jeong.jejuoreum.core.architecture.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 
 data class MyFavoriteUiState(

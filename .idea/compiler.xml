@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="17">
+      <module name="JejuOreum.core.presentation" target="23" />
       <module name="JejuOreum.feature.join" target="23" />
       <module name="JejuOreum.feature.oreum" target="23" />
       <module name="Jiyeong_JJOreum.JejuOreum.feature.main" target="23" />

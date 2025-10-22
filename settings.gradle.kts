@@ -34,7 +34,7 @@ include(
     ":core:common",
     ":core:designsystem",
     ":core:navigation",
-    ":core:presentation",
+    ":core:architecture",
     ":core:testing",
     ":core:ui",
     ":data:local",
