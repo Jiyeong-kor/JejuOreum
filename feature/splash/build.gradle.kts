@@ -2,6 +2,7 @@ import java.util.Properties
 
 plugins {
     id("jejuoreum.android.library")
+    id("jejuoreum.compose")
     id("jejuoreum.hilt")
 }
 
@@ -37,6 +38,13 @@ dependencies {
     implementation(project(":data:oreum"))
     implementation(project(":data:user"))
 
+    implementation(platform(libs.androidx.compose.bom))
+
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     if (!useKakaoStub) {

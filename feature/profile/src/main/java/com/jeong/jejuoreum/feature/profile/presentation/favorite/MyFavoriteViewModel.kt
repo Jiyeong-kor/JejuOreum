@@ -96,7 +96,7 @@ class MyFavoriteViewModel @Inject constructor(
             toggleResult
                 .onFailure(::handleFailure)
                 .onSuccess {
-            refreshOreumsUseCase()
+                    refreshOreumsUseCase()
                         .onFailure(::handleFailure)
                 }
         }

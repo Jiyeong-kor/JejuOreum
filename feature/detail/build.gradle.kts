@@ -19,4 +19,16 @@ dependencies {
     implementation(project(":data:oreum"))
     implementation(project(":data:review"))
     implementation(project(":data:user"))
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.coil.bom))
+
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.coil3.coil)
+    implementation(libs.coil3.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }

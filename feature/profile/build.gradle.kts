@@ -18,4 +18,14 @@ dependencies {
     implementation(project(":domain:user"))
     implementation(project(":data:oreum"))
     implementation(project(":data:user"))
+
+    implementation(platform(libs.androidx.compose.bom))
+
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.timber)
 }
