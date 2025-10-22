@@ -1,10 +1,6 @@
 plugins {
-    id("jejuoreum.android.library")
+    id("jejuoreum.kotlin.library")
     id("jejuoreum.hilt")
-}
-
-android {
-    namespace = "com.jeong.jejuoreum.core.common"
 }
 
 dependencies {
