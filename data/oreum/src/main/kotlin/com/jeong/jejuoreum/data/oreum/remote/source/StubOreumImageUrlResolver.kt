@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class StubOreumImageUrlResolver @Inject constructor(
-    @Named(OREUM_IMAGE_BASE_URL) private val baseUrl: String,
+    @param:Named(OREUM_IMAGE_BASE_URL) private val baseUrl: String,
 ) {
 
     fun resolve(relativePath: String): String {

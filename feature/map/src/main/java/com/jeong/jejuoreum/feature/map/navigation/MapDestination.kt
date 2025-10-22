@@ -10,7 +10,8 @@ object MapDestination : ComposableDestination {
     override val route: String = "map"
 
     override fun NavGraphBuilder.composableDestination() {
-        composable(route) {
+        val destinationRoute = requireNotNull(route)
+        composable(destinationRoute) {
             MapRoute(
                 onNavigateToDetail = MapRouteDefaults.noopNavigateToDetail,
             )
