@@ -1,6 +1,7 @@
 plugins {
     id("jejuoreum.android.library")
     id("jejuoreum.compose")
+    id("jejuoreum.hilt")
     id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
@@ -12,6 +13,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
     implementation(project(":core:architecture"))
+    implementation(project(":core:common"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.coil.bom))
@@ -29,5 +31,7 @@ dependencies {
     implementation(libs.coil3.coil)
     implementation(libs.coil3.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
 }

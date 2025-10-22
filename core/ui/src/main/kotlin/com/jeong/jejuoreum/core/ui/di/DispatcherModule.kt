@@ -1,4 +1,4 @@
-package com.jeong.jejuoreum.core.common.di
+package com.jeong.jejuoreum.core.ui.di
 
 import com.jeong.jejuoreum.core.common.coroutines.CoroutineDispatcherProvider
 import com.jeong.jejuoreum.core.common.coroutines.DefaultCoroutineDispatcherProvider
