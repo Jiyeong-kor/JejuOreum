@@ -48,6 +48,7 @@ internal fun Project.configureKotlinAndroid(
             freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
                 "-Xannotation-default-target=param-property",
+                "-Xskip-metadata-version-check",
             )
         }
     }
