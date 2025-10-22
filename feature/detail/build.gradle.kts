@@ -9,6 +9,11 @@ plugins {
 
 android {
     namespace = "com.jeong.jejuoreum.feature.detail"
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 }
 
 dependencies {

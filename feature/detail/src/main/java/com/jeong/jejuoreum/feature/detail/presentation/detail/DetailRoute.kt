@@ -49,6 +49,7 @@ import coil3.compose.AsyncImage
 import com.jeong.jejuoreum.core.architecture.UiText
 import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.core.ui.resources.DesignSystemAssets
+import com.jeong.jejuoreum.core.designsystem.R as DesignSystemR
 import com.jeong.jejuoreum.feature.detail.R
 import com.jeong.jejuoreum.domain.review.entity.ReviewItem
 import java.text.SimpleDateFormat
@@ -245,8 +246,8 @@ private fun BottomButtonSection(
         IconButton(onClick = onFavoriteClick) {
             Icon(
                 painter = painterResource(
-                    id = if (isFavorite) R.drawable.oreum_favorite_selected
-                    else R.drawable.oreum_favorite_unselected
+                    id = if (isFavorite) DesignSystemR.drawable.oreum_favorite_selected
+                    else DesignSystemR.drawable.oreum_favorite_unselected
                 ),
                 contentDescription = stringResource(id = R.string.oreum_desc_favorite_icon),
                 tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface,
@@ -385,8 +386,8 @@ private fun ReviewItem(
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if (review.isLiked) R.drawable.oreum_favorite_selected
-                        else R.drawable.oreum_favorite_unselected
+                        id = if (review.isLiked) DesignSystemR.drawable.oreum_favorite_selected
+                        else DesignSystemR.drawable.oreum_favorite_unselected
                     ),
                     contentDescription = stringResource(id = R.string.oreum_review_like_desc),
                     tint = if (review.isLiked) MaterialTheme.colorScheme.primary

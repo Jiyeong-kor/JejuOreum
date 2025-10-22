@@ -13,10 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.res.painterResource
+import com.jeong.jejuoreum.core.designsystem.R as DesignSystemR
 import com.jeong.jejuoreum.feature.onboarding.R
 
 @Composable
@@ -32,7 +33,7 @@ fun JoinTermDialogContent(onClose: () -> Unit) {
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_menu_close_clear_cancel),
+                    painter = painterResource(id = DesignSystemR.drawable.ic_close),
                     contentDescription = stringResource(id = R.string.back_button_desc)
                 )
             }
