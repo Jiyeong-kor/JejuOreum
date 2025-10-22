@@ -4,7 +4,7 @@ import com.jeong.jejuoreum.core.ui.model.OreumSummaryUiModel
 import com.jeong.jejuoreum.domain.oreum.entity.ResultSummary
 import javax.inject.Inject
 
-internal class MyFavoriteUiMapper @Inject constructor() {
+class MyFavoriteUiMapper @Inject constructor() {
 
     fun mapToUiModels(summaries: List<ResultSummary>): List<OreumSummaryUiModel> =
         summaries.map(::mapToUiModel)

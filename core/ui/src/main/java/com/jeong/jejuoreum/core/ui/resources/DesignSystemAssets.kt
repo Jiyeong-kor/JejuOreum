@@ -38,5 +38,8 @@ object DesignSystemAssets {
 
         @StringRes
         val profileTitle: Int = DesignSystemR.string.my_title
+
+        @StringRes
+        val stampIconDescription: Int = DesignSystemR.string.oreum_desc_stamp_icon
     }
 }

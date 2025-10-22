@@ -69,7 +69,9 @@ fun MyStampScreen(
             )
             Image(
                 painter = painterResource(id = DesignSystemAssets.Drawable.stamp),
-                contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
+                contentDescription = stringResource(
+                    id = DesignSystemAssets.Strings.stampIconDescription
+                ),
                 modifier = Modifier.size(
                     dimensionResource(id = R.dimen.profile_stamp_header_icon_size)
                 ),
@@ -133,7 +135,9 @@ private fun StampItem(
     ) {
         Image(
             painter = painterResource(id = DesignSystemAssets.Drawable.stampMarkerSelected),
-            contentDescription = stringResource(id = R.string.oreum_desc_stamp_icon),
+            contentDescription = stringResource(
+                id = DesignSystemAssets.Strings.stampIconDescription
+            ),
             modifier = Modifier.size(
                 dimensionResource(id = R.dimen.profile_stamp_item_icon_size)
             )
