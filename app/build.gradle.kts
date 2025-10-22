@@ -1,4 +1,6 @@
 import com.jeong.jejuoreum.buildlogic.SecretKey
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.tasks.bundling.Jar
 
 plugins {
     alias(libs.plugins.google.gms.google.services)
@@ -64,3 +66,12 @@ secrets {
     stringField(name = "APP_KEY", key = SecretKey.AppKey)
     stringField(name = "JEJU_OREUM_URL", key = SecretKey.JejuOreumBaseUrl)
 }
+
+tasks.withType<Jar>().configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.matching { it.name.contains("bundleLibCompileToJarDebug") }
+    .configureEach {
+        mustRunAfter("clean")
+    }

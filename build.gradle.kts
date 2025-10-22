@@ -1,6 +1,8 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.tasks.bundling.Jar
 
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -29,3 +31,12 @@ subprojects {
         }
     }
 }
+
+tasks.withType<Jar>().configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.matching { it.name.contains("bundleLibCompileToJarDebug") }
+    .configureEach {
+        mustRunAfter("clean")
+    }

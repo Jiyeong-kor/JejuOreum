@@ -1,3 +1,6 @@
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.tasks.bundling.Jar
+
 plugins {
     id("jejuoreum.android.library")
     id("jejuoreum.compose")
@@ -12,3 +15,12 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui)
 }
+
+tasks.withType<Jar>().configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.matching { it.name.contains("bundleLibCompileToJarDebug") }
+    .configureEach {
+        mustRunAfter("clean")
+    }

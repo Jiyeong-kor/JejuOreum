@@ -1,3 +1,6 @@
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.tasks.bundling.Jar
+
 plugins {
     id("jejuoreum.android.library")
     id("jejuoreum.compose")
@@ -16,7 +19,6 @@ dependencies {
     implementation(project(":core:common"))
 
     implementation(platform(libs.androidx.compose.bom))
-    implementation(platform(libs.coil.bom))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
@@ -28,11 +30,20 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.coil3.coil)
-    implementation(libs.coil3.coil.compose)
-    implementation(libs.coil3.coil.svg)
+    implementation("io.coil-kt:coil:3.0.0")
+    implementation("io.coil-kt:coil-compose:3.0.0")
+    implementation("io.coil-kt:coil-svg:3.0.0")
     implementation(libs.coil.network.okhttp)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
 }
+
+tasks.withType<Jar>().configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.matching { it.name.contains("bundleLibCompileToJarDebug") }
+    .configureEach {
+        mustRunAfter("clean")
+    }
