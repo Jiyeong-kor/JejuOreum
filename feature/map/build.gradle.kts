@@ -17,6 +17,7 @@ val useKakaoStub = providers.environmentVariable("USE_KAKAO_STUB").orNull?.toBoo
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:designsystem"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":core:architecture"))
@@ -34,14 +35,18 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
+
     implementation(platform(libs.coil.bom))
-    implementation(libs.coil3.coil)
-    implementation(libs.coil3.coil.compose)
-    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil3.core)
+    implementation(libs.coil3.compose)
+    implementation(libs.coil3.svg)
+    implementation(libs.coil3.network.okhttp)
+
     if (!useKakaoStub) {
         implementation(libs.kakao.v2.all)
         implementation(libs.kakao.vectormap)
     }
+
     implementation(libs.play.services.location)
     implementation(libs.timber)
     implementation(platform(libs.androidx.compose.bom))

@@ -33,6 +33,8 @@ val useKakaoStub = providers.environmentVariable("USE_KAKAO_STUB").orNull?.toBoo
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:navigation"))
+    implementation(project(":core:designsystem"))
     implementation(project(":core:architecture"))
     implementation(project(":core:ui"))
     implementation(project(":domain:oreum"))

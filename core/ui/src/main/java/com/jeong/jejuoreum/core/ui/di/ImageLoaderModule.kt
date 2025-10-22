@@ -2,7 +2,7 @@ package com.jeong.jejuoreum.core.ui.di
 
 import android.content.Context
 import coil3.ImageLoader
-import coil3.decode.SvgDecoder
+import coil3.svg.SvgDecoder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

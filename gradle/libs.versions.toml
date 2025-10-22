@@ -73,11 +73,14 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationCompose" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-ui = { module = "androidx.compose.ui:ui" }
+
+# Coil 3.x (io.coil-kt.coil3)
 coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coilBom" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp" }
-coil3-coil = { module = "io.coil-kt.coil3:coil" }
-coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose" }
-coil3-coil-svg = { module = "io.coil-kt.coil3:coil-svg" }
+coil3-core = { module = "io.coil-kt.coil3:coil" }
+coil3-compose = { module = "io.coil-kt.coil3:coil-compose" }
+coil3-svg = { module = "io.coil-kt.coil3:coil-svg" }
+coil3-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp" }
+
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }

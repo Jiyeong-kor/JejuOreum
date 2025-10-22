@@ -15,3 +15,4 @@ abstract class DetailPresentationModule {
     abstract fun bindDetailMessageProvider(
         impl: AndroidDetailMessageProvider,
     ): DetailMessageProvider
+}

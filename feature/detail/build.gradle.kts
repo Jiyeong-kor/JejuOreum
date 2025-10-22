@@ -14,6 +14,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:architecture"))
+    implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
     implementation(project(":domain:oreum"))
@@ -31,9 +32,11 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.coil3.coil)
-    implementation(libs.coil3.coil.compose)
-    implementation(libs.coil.network.okhttp)
+
+    implementation(libs.coil3.core)
+    implementation(libs.coil3.compose)
+    implementation(libs.coil3.svg)
+    implementation(libs.coil3.network.okhttp)
 }
 
 tasks.withType<Jar>().configureEach {
