@@ -29,6 +29,7 @@ android {
                 file.inputStream().use { load(it) }
             }
         }
+
         val appKey = localProperties.getProperty("appKey") ?: ""
         buildConfigField("String", "APP_KEY", "\"$appKey\"")
 
@@ -45,6 +46,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -57,9 +59,6 @@ android {
 }
 
 kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
-    }
     jvmToolchain(21)
 }
 
@@ -71,51 +70,37 @@ java {
 
 dependencies {
 
-    implementation(libs.androidx.material.icons.extended)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    implementation(kotlin("test"))
+    // BOM
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.coil.bom))
+    implementation(platform(libs.firebase.bom))
+
+    // 번들 적용
+    implementation(libs.bundles.androidx.core)
+    implementation(libs.bundles.network)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.coil3)
+    implementation(libs.bundles.firebase)
+
+    // 개별 라이브러리
     implementation(libs.android)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.foundation)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.runtime.livedata)
-    implementation(libs.androidx.ui)
-    implementation(libs.coil.network.okhttp)
-    implementation(libs.coil3.coil)
-    implementation(libs.coil3.coil.compose)
-    implementation(libs.converter.gson)
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore)
-    implementation(libs.foundation)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.kakao.v2.all)
-    implementation(libs.logging.interceptor)
     implementation(libs.lottie)
     implementation(libs.lottie.compose)
     implementation(libs.material)
-    implementation(libs.okhttp)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
-    implementation(libs.retrofit)
     implementation(libs.rxbinding)
     implementation(libs.tedpermission.coroutine)
     implementation(libs.tedpermission.normal)
     implementation(libs.timber)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(platform(libs.coil.bom))
-    implementation(platform(libs.firebase.bom))
+
+    // Hilt KSP
     ksp(libs.hilt.android.compiler)
-    testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.play.services)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
+
+    // 테스트
+    testImplementation(kotlin("test"))
+    testImplementation(libs.bundles.test.unit)
+    androidTestImplementation(libs.bundles.test.android)
 }

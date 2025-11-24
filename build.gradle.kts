@@ -5,5 +5,5 @@ plugins {
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.ksp) apply false
-    alias(libs.plugins.kotlin.plugin.compose)
+    alias(libs.plugins.kotlin.plugin.compose) apply false
 }

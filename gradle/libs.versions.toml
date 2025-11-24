@@ -1,50 +1,55 @@
 [versions]
-activityCompose = "1.11.0"
-agp = "8.13.0"
-android = "2.12.8"
-coilBom = "3.3.0"
-composeBom = "2025.09.01"
-converterGson = "3.0.0"
-coreKtx = "1.17.0"
-coreSplashscreen = "1.0.1"
-datastore = "1.1.7"
-espressoCore = "3.7.0"
-firebaseAuthKtx = "23.2.1"
-firebaseBom = "34.3.0"
-firebaseFirestore = "26.0.1"
-foundation = "1.9.2"
-googleGmsGoogleServices = "4.4.3"
+# --- 빌드 도구 및 플러그인 ---
+agp = "8.13.1"
+kotlin = "2.2.21"
+ksp = "2.2.21-2.0.4"
 hilt = "2.57.2"
+googleGmsGoogleServices = "4.4.4"
+
+# --- Jetpack/AndroidX ---
+activityCompose = "1.12.0"
+composeBom = "2025.11.01"
+coreKtx = "1.17.0"
+coreSplashscreen = "1.2.0"
+datastore = "1.2.0"
 hiltNavigationCompose = "1.3.0"
-junit = "4.13.2"
-junitVersion = "1.3.0"
-kakaoV2All = "2.20.6"
-kotlin = "2.2.20"
-kotlinxCoroutinesPlayServices = "1.10.2"
-kotlinxCoroutinesTest = "1.10.2"
-ksp = "2.2.20-2.0.3"
-lifecycleLivedataKtx = "2.9.4"
-lifecycleRuntimeCompose = "2.9.4"
-lifecycleViewmodelKtx = "2.9.4"
-loggingInterceptor = "5.1.0"
-lottie = "6.6.9"
-lottieCompose = "6.6.9"
 material = "1.13.0"
-mockk = "1.14.5"
-navigationCompose = "2.9.5"
-okhttp = "5.1.0"
+navigationCompose = "2.9.6"
+runtimeLivedata = "1.9.5"
+
+# --- 네트워킹/데이터/이미지 ---
+okhttp = "5.3.2"
+loggingInterceptor = "5.3.2"
+retrofit = "3.0.0"
+coilBom = "3.3.0"
+
+# --- Firebase ---
+firebaseBom = "34.6.0"
+
+# --- Google Maps/Location ---
 playServicesLocation = "21.3.0"
 playServicesMaps = "19.2.0"
-retrofit = "3.0.0"
-runtimeLivedata = "1.9.2"
-rxbinding = "4.0.0"
+
+# --- 기타 서드파티 라이브러리 ---
+# android = { module = "com.kakao.maps.open:android", version.ref = "android" }에 사용됨
+android = "2.13.0"
+lottie = "6.7.1"
+lottieCompose = "6.7.1"
+timber = "5.0.1"
 tedpermissionCoroutine = "3.4.2"
 tedpermissionNormal = "3.4.2"
-timber = "5.0.1"
+rxbinding = "4.0.0"
+
+# --- 테스트 ---
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+mockk = "1.14.6"
+kotlinxCoroutinesTest = "1.10.2"
 
 [libraries]
-androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended"}
 android = { module = "com.kakao.maps.open:android", version.ref = "android" }
+
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,41 +58,53 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
-androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-ui = { module = "androidx.compose.ui:ui" }
+
+converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
 coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coilBom" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp" }
 coil3-coil = { module = "io.coil-kt.coil3:coil" }
 coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose" }
-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+
+# Firebase: BoM으로 버전 관리
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-kakao-v2-all = { module = "com.kakao.sdk:v2-all", version.ref = "kakaoV2All" }
-kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
+
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
+
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+
 rxbinding = { group = "com.jakewharton.rxbinding4", name = "rxbinding", version.ref = "rxbinding" }
+
 tedpermission-coroutine = { module = "io.github.ParkSangGwon:tedpermission-coroutine", version.ref = "tedpermissionCoroutine" }
 tedpermission-normal = { module = "io.github.ParkSangGwon:tedpermission-normal", version.ref = "tedpermissionNormal" }
+
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 [plugins]
@@ -97,3 +114,55 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[bundles]
+
+# Jetpack Compose 전체 묶음
+compose = [
+    "androidx-activity-compose",
+    "androidx-foundation",
+    "androidx-material-icons-extended",
+    "androidx-material3",
+    "androidx-navigation-compose",
+    "androidx-runtime-livedata",
+    "androidx-ui"
+]
+
+# Coil 3
+coil3 = [
+    "coil-network-okhttp",
+    "coil3-coil",
+    "coil3-coil-compose"
+]
+
+# Firebase (BoM 사용)
+firebase = [
+    "firebase-auth",
+    "firebase-firestore"
+]
+
+network = [
+    "retrofit",
+    "converter-gson",
+    "okhttp",
+    "logging-interceptor"
+]
+
+# 안드로이드 기본
+androidx-core = [
+    "androidx-core-ktx",
+    "androidx-core-splashscreen",
+    "androidx-datastore-preferences"
+]
+
+# 테스트
+test-unit = [
+    "junit",
+    "kotlinx-coroutines-test",
+    "mockk"
+]
+
+test-android = [
+    "androidx-espresso-core",
+    "androidx-junit"
+]
