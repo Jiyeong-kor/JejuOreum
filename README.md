@@ -9,7 +9,7 @@
 
 - **앱 이름**: JejuOreum  
 - **개발 기간**: 2025.09 ~
-- (Compose & Hilt로 마이그레이션 ``feat/compose-di-migration`` 브랜치에 완료, 멀티모듈을 사용한 Clean Architecture 마이그레이션 ``feat/hybrid-architecture-migration`` 브랜치에 진행 중)
+- (Compose & Hilt로 마이그레이션 ``feat/compose-di-migration`` 브랜치에 완료, 멀티모듈을 사용한 Clean Architecture 마이그레이션 ``refactor/hybrid-architecture-modularization`` 브랜치에 진행 중)
 - **플랫폼**: Android  
 - **개발 언어**: Kotlin  
 - **개발 환경**: Android Studio  
