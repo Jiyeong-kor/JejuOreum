@@ -14,6 +14,7 @@ import com.jeong.jjoreum.presentation.ui.base.ViewBindingBaseFragment
 import com.jeong.jjoreum.presentation.viewmodel.AppViewModelFactory
 import com.jeong.jjoreum.presentation.viewmodel.WriteReviewViewModel
 import com.jeong.jjoreum.repository.ReviewRepositoryImpl
+import com.jeong.jjoreum.util.setThrottledOnClickListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -71,11 +72,11 @@ class WriteReviewFragment :
         viewModel.loadReviews(oreumIdx.toString())
         observeReviews()
 
-        binding?.btnSaveReview?.setOnClickListener {
+        binding?.btnSaveReview?.setThrottledOnClickListener(1000L) {
             val reviewText = binding?.editReview?.text?.toString()?.trim()
             if (reviewText.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), "후기를 입력하세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+                return@setThrottledOnClickListener
             }
 
             val uid = FirebaseAuth.getInstance().currentUser?.uid

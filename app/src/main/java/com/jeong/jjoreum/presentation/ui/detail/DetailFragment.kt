@@ -25,6 +25,7 @@ import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
 import com.jeong.jjoreum.repository.ReviewRepositoryImpl
 import com.jeong.jjoreum.repository.StampRepositoryImpl
 import com.jeong.jjoreum.repository.UserInteractionRepositoryImpl
+import com.jeong.jjoreum.util.setThrottledOnClickListener
 import com.jeong.jjoreum.util.toastMessage
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -75,8 +76,9 @@ class DetailFragment :
             adapter = reviewAdapter
         }
 
-        binding?.detailFavorite?.setOnClickListener {
-            val oreumIdx = viewModel.oreumDetail.value?.idx?.toString() ?: return@setOnClickListener
+        binding?.detailFavorite?.setThrottledOnClickListener(500L) {
+            val oreumIdx = viewModel.oreumDetail.value?.idx?.toString()
+                ?: return@setThrottledOnClickListener
             val isCurrentlyLiked = viewModel.isFavorite.value
             viewModel.toggleFavorite(oreumIdx)
             toastMessage(if (!isCurrentlyLiked) "관심 오름에 추가되었습니다" else "관심 오름에서 제외되었습니다")
@@ -86,8 +88,8 @@ class DetailFragment :
             })
         }
 
-        binding?.detailStamp?.setOnClickListener {
-            val oreum = viewModel.oreumDetail.value ?: return@setOnClickListener
+        binding?.detailStamp?.setThrottledOnClickListener(500L) {
+            val oreum = viewModel.oreumDetail.value ?: return@setThrottledOnClickListener
             if (viewModel.hasStamp.value) {
                 val action = DetailFragmentDirections.actionDetailFragmentToWriteReviewFragment(
                     oreum.idx, oreum.oreumKname

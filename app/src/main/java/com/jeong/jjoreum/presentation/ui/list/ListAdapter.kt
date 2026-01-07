@@ -10,6 +10,7 @@ import coil.load
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.databinding.ItemListBinding
+import com.jeong.jjoreum.util.setThrottledOnClickListener
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -71,11 +72,11 @@ class ListAdapter(
             stampText.text = item.totalStamps.toString()
             favoriteCountText.text = item.totalFavorites.toString()
 
-            favoriteIcon.setOnClickListener {
+            favoriteIcon.setThrottledOnClickListener(400L) {
                 onFavoriteClick(item)
             }
 
-            stampIcon.setOnClickListener {
+            stampIcon.setThrottledOnClickListener(400L) {
                 onStampClick(item)
             }
 
