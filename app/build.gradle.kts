@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.jeong.jjoreum"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -57,65 +57,69 @@ android {
 }
 
 kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
-    }
     jvmToolchain(21)
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
 dependencies {
-
-    implementation(libs.androidx.material.icons.extended)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    implementation(kotlin("test"))
-    implementation(libs.android)
-    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.datastore.preferences)
+
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     implementation(libs.androidx.ui)
-    implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.runtime.livedata)
+
+    implementation(libs.androidx.ui.tooling.preview)
+
+    debugImplementation(libs.androidx.ui.tooling)
+
+    implementation(platform(libs.coil.bom))
     implementation(libs.coil3.coil)
     implementation(libs.coil3.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)
-    implementation(libs.foundation)
+
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.android.compiler)
+
+    implementation(libs.kakao.maps)
     implementation(libs.kakao.v2.all)
-    implementation(libs.logging.interceptor)
-    implementation(libs.lottie)
-    implementation(libs.lottie.compose)
-    implementation(libs.material)
-    implementation(libs.okhttp)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
-    implementation(libs.retrofit)
+
+    implementation(libs.material)
+    implementation(libs.lottie)
+    implementation(libs.lottie.compose)
     implementation(libs.rxbinding)
     implementation(libs.tedpermission.coroutine)
     implementation(libs.tedpermission.normal)
     implementation(libs.timber)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(platform(libs.coil.bom))
-    implementation(platform(libs.firebase.bom))
-    ksp(libs.hilt.android.compiler)
+
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.play.services)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)
+
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
 }
