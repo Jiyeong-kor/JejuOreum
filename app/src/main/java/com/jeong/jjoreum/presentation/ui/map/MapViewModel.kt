@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jeong.jjoreum.data.model.api.ResultSummary
 import com.jeong.jjoreum.repository.OreumRepository
 import com.kakao.vectormap.LatLng
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+@OptIn(FlowPreview::class)
 class MapViewModel(
     private val repository: OreumRepository
 ) : ViewModel() {
@@ -34,11 +36,16 @@ class MapViewModel(
                 .debounce(300)
                 .distinctUntilChanged()
                 .collectLatest { query ->
+                    if (query.isBlank()) {
+                        _uiState.value = MapUiState.Idle
+                        return@collectLatest
+                    }
                     val result = oreumList.value.filter {
-                        query.isBlank() || it.oreumKname.contains(query, true) || it.oreumAddr.contains(
-                            query,
-                            true
-                        )
+                        it.oreumKname.contains(query, true) ||
+                                it.oreumAddr.contains(
+                                    query,
+                                    true
+                                )
                     }
                     _uiState.value = if (result.isEmpty() && query.isNotBlank()) {
                         MapUiState.NoResults
