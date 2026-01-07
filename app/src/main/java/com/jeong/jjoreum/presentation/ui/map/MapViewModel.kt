@@ -8,6 +8,9 @@ import com.jeong.jjoreum.repository.OreumRepository
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -20,24 +23,34 @@ class MapViewModel(
     val uiState: StateFlow<MapUiState> = _uiState
 
     private val _selectedOreum = MutableStateFlow<ResultSummary?>(null)
+    private val searchQuery = MutableStateFlow("")
 
     init {
         viewModelScope.launch {
             repository.loadOreumListIfNeeded()
         }
+        viewModelScope.launch {
+            searchQuery
+                .debounce(300)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    val result = oreumList.value.filter {
+                        query.isBlank() || it.oreumKname.contains(query, true) || it.oreumAddr.contains(
+                            query,
+                            true
+                        )
+                    }
+                    _uiState.value = if (result.isEmpty() && query.isNotBlank()) {
+                        MapUiState.NoResults
+                    } else {
+                        MapUiState.SearchResults(result)
+                    }
+                }
+        }
     }
 
     fun onSearchQueryChanged(query: String) {
-        viewModelScope.launch {
-            val result = oreumList.value.filter {
-                query.isBlank() || it.oreumKname.contains(query, true) || it.oreumAddr.contains(
-                    query,
-                    true
-                )
-            }
-            _uiState.value = if (result.isEmpty() && query.isNotBlank()) MapUiState.NoResults
-            else MapUiState.SearchResults(result)
-        }
+        searchQuery.value = query
     }
 
     fun selectOreum(latLng: LatLng) {
