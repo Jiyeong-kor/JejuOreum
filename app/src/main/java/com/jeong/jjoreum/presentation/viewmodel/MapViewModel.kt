@@ -12,9 +12,13 @@ import com.jeong.jjoreum.presentation.ui.map.MapUiState
 import com.jeong.jjoreum.repository.OreumRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,6 +27,7 @@ import kotlin.math.min
 
 data class CameraSnapshot(val center: GeoPoint, val zoomLevel: Int)
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class MapViewModel @Inject constructor(
     repository: OreumRepository,
@@ -53,21 +58,29 @@ class MapViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            _searchQuery
+                .debounce(300)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    val q = query.trim()
+                    if (q.isBlank()) {
+                        _uiState.value = MapUiState.Hidden
+                        return@collectLatest
+                    }
+                    val result = oreumList.value.filter { item ->
+                        item.oreumKname.contains(q) || item.oreumAddr.contains(q)
+                    }
+                    _uiState.value =
+                        if (result.isEmpty()) MapUiState.NoResults
+                        else MapUiState.SearchResults(result)
+                }
+        }
+    }
+
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
-        viewModelScope.launch {
-            val q = query.trim()
-            if (q.isBlank()) {
-                _uiState.value = MapUiState.Hidden
-                return@launch
-            }
-            val result = oreumList.value.filter { item ->
-                item.oreumKname.contains(q) || item.oreumAddr.contains(q)
-            }
-            _uiState.value =
-                if (result.isEmpty()) MapUiState.NoResults
-                else MapUiState.SearchResults(result)
-        }
     }
 
     private data class ViewportSnapshot(val bounds: GeoBounds, val zoom: Int)
