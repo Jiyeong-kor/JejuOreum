@@ -1,7 +1,6 @@
 package com.jeong.jjoreum.presentation.ui.list
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,10 +33,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
+import com.jeong.jjoreum.util.extensions.throttleClickable
 
 @Composable
 fun ListScreen(
@@ -109,7 +109,7 @@ fun ListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onItemClick(oreum) },
+            .throttleClickable(500L) { onItemClick(oreum) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(
@@ -159,7 +159,7 @@ fun ListItem(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onFavoriteClick(oreum) }
+                        modifier = Modifier.throttleClickable(500L) { onFavoriteClick(oreum) }
                     ) {
                         Icon(
                             painter = if (oreum.userLiked) {
@@ -181,7 +181,7 @@ fun ListItem(
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onStampClick(oreum) }
+                        modifier = Modifier.throttleClickable(500L) { onStampClick(oreum) }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_stamp_variant),

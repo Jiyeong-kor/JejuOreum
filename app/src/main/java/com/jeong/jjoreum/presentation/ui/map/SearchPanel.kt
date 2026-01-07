@@ -1,7 +1,6 @@
 package com.jeong.jjoreum.presentation.ui.map
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.model.api.ResultSummary
+import com.jeong.jjoreum.util.extensions.throttleClickable
 
 @Composable
 fun SearchPanel(
@@ -83,7 +83,7 @@ fun SearchPanel(
                                 Modifier
                                     .fillMaxWidth()
                                     .background(Color.White)
-                                    .clickable { onResultClick(item) }
+                                    .throttleClickable(500L) { onResultClick(item) }
                                     .padding(12.dp)
                             ) {
                                 AsyncImage(

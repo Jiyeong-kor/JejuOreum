@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,16 +46,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.data.local.PermissionManager
 import com.jeong.jjoreum.data.model.entity.ReviewItem
 import com.jeong.jjoreum.presentation.viewmodel.DetailViewModel
-import kotlinx.coroutines.launch
+import com.jeong.jjoreum.util.extensions.throttleClickable
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @Composable
 fun DetailScreen(
@@ -228,7 +228,10 @@ fun BottomButtonSection(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onFavoriteClick) {
+        IconButton(
+            onClick = {},
+            modifier = Modifier.throttleClickable(500L, onClick = onFavoriteClick)
+        ) {
             Icon(
                 painter = painterResource(
                     id = if (isFavorite) R.drawable.ic_favorite_selected
@@ -240,8 +243,10 @@ fun BottomButtonSection(
             )
         }
         Button(
-            onClick = onStampClick,
-            modifier = Modifier.weight(1f),
+            onClick = {},
+            modifier = Modifier
+                .weight(1f)
+                .throttleClickable(500L, onClick = onStampClick),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -367,7 +372,7 @@ fun ReviewItem(
             // 좋아요 버튼
             Row(
                 modifier = Modifier
-                    .clickable { onLikeClick(review.userId, oreumId) },
+                    .throttleClickable(500L) { onLikeClick(review.userId, oreumId) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
