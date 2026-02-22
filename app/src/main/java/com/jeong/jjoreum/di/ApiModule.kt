@@ -1,6 +1,5 @@
 package com.jeong.jjoreum.di
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appcompat.content.res.AppCompatResources
 import coil3.ImageLoader
@@ -35,36 +34,10 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
-        val trustAllCerts = arrayOf<TrustManager>(
-            @SuppressLint("CustomX509TrustManager") object :
-                X509TrustManager {
-                @SuppressLint("TrustAllX509TrustManager")
-                override fun checkClientTrusted(
-                    chain: Array<out X509Certificate>?,
-                    authType: String?
-                ) {
-                }
-
-                @SuppressLint("TrustAllX509TrustManager")
-                override fun checkServerTrusted(
-                    chain: Array<out X509Certificate>?,
-                    authType: String?
-                ) {
-                }
-
-                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-            })
-        val sslContext = SSLContext.getInstance("TLS")
-        sslContext.init(null, trustAllCerts, SecureRandom())
-
-        return OkHttpClient.Builder()
-            .sslSocketFactory(
-                sslContext.socketFactory, trustAllCerts[0] as X509TrustManager
-            )
-            .hostnameVerifier { _, _ -> true }
-            .connectTimeout(
-                20, TimeUnit.SECONDS
-            ).readTimeout(15, TimeUnit.SECONDS)
+        val builder = OkHttpClient.Builder()
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = if (BuildConfig.DEBUG) {
                     HttpLoggingInterceptor.Level.BODY
@@ -72,7 +45,27 @@ object ApiModule {
                     HttpLoggingInterceptor.Level.NONE
                 }
             })
-            .build()
+
+        // 제주 공공 API 인증서 체인 이슈로 디버그 환경에서만 우회 허용
+        // 릴리즈에서는 기본 TrustManager/HostnameVerifier를 사용해 안전성 유지
+        if (BuildConfig.DEBUG) {
+            val trustAllCerts = arrayOf<TrustManager>(
+                object : X509TrustManager {
+                    override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) = Unit
+                    override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) = Unit
+                    override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
+                }
+            )
+            val sslContext = SSLContext.getInstance("TLS")
+            sslContext.init(null, trustAllCerts, SecureRandom())
+
+            builder.sslSocketFactory(
+                sslContext.socketFactory,
+                trustAllCerts[0] as X509TrustManager
+            ).hostnameVerifier { _, _ -> true }
+        }
+
+        return builder.build()
     }
 
     @Singleton

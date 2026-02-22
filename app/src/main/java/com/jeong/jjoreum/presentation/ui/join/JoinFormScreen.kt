@@ -30,7 +30,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.jeong.jjoreum.R
 import com.jeong.jjoreum.presentation.viewmodel.JoinViewModel
-import com.jeong.jjoreum.util.extensions.throttleClickable
 
 @Composable
 fun JoinFormScreen(
@@ -139,16 +138,11 @@ fun JoinFormScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = {},
+            onClick = onNextClick,
             enabled = isTermChecked && !isLoading && !isInvalid && isAvailable,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp, bottom = 16.dp)
-                .throttleClickable(
-                    periodMillis = 500L,
-                    enabled = isTermChecked && !isLoading && !isInvalid && isAvailable,
-                    onClick = onNextClick
-                )
         ) {
             Text(
                 text = stringResource(id = R.string.join_form_btn_next),

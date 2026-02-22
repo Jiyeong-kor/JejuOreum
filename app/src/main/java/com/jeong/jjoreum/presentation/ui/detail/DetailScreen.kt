@@ -229,8 +229,7 @@ fun BottomButtonSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = {},
-            modifier = Modifier.throttleClickable(500L, onClick = onFavoriteClick)
+            onClick = onFavoriteClick
         ) {
             Icon(
                 painter = painterResource(
@@ -243,10 +242,9 @@ fun BottomButtonSection(
             )
         }
         Button(
-            onClick = {},
+            onClick = onStampClick,
             modifier = Modifier
-                .weight(1f)
-                .throttleClickable(500L, onClick = onStampClick),
+                .weight(1f),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
