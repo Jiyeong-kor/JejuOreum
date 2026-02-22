@@ -135,7 +135,7 @@ class DetailFragment :
                         detailExplain.text = it.explain
 
                         val imageLoader = ImageLoader.Builder(requireContext())
-                            .okHttpClient { RetrofitOkHttpManager.getUnsafeOkHttpClient() }
+                            .okHttpClient { RetrofitOkHttpManager.getOkHttpClient() }
                             .build()
 
                         val request = ImageRequest.Builder(requireContext())

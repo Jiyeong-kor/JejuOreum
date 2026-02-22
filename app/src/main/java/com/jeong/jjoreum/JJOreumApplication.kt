@@ -23,7 +23,7 @@ class JJOreumApplication : Application(), ImageLoaderFactory {
     }
 
     override fun newImageLoader(): ImageLoader {
-        val client = RetrofitOkHttpManager.getUnsafeOkHttpClient()
+        val client = RetrofitOkHttpManager.getOkHttpClient()
         return ImageLoader.Builder(this)
             .okHttpClient(client)
             .build()
